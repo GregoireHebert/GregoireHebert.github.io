@@ -1,1 +1,9 @@
 theme: jekyll-theme-cayman
+title: Grégoire hébert - blog
+email: gregoire@les-tilleuls.coop
+description: Mes défis techniques :)
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: gheb_dev
+github_username:  gregoirehebert
+
