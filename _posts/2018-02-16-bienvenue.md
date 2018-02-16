@@ -2,7 +2,7 @@
 layout: default
 title:  "Bienvenue"
 date:   2018-02-16 08:06:05 +0100
-categories: blog note
+categories: note
 long_description: "Je vous souhaite la bienvenue !"
 
 ---
