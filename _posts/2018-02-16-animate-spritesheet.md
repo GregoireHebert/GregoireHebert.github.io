@@ -1,11 +1,10 @@
 ---
-layout: default
+layout: post
 title:  "SpriteSheet Animation"
 date:   2018-02-16 21:30:00 +0100
 categories: front
 long_description: "Animating a spritesheet, is easy when using a software, but what if I want to do it only using CSS ?"
 ---
-
 
 Animating spritesheet, is easy when using a software, but what if I want to do it only using CSS ?
 Alright first of all I need a sprite sheet to move this guy:

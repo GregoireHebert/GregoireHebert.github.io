@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title:  "Bienvenue"
 date:   2018-02-16 08:06:05 +0100
 categories: note
