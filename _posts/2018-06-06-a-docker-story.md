@@ -6,13 +6,13 @@ categories: devops
 long_description: "Docker can be greedy when using your host memory, particularly through time. Is there a radical solution to free some space ?"
 ---
 
-Recently my hard drive and the / partition in particular went south, I had the wonderful following message:
+Recently my hard drive and the `/` partition in particular went south, I had the wonderful following message:
 HardDrive Full, no more space disk available. 
 And of course it was during a masterclass demonstration, And it froze my laptop :(
 
 I then cleared my computer (chrome, tmp, download) thanks to BleachBit.
 It did some work and cleaned a bit of unused filed.
-Then I realised most of it were on /home, so not really the same partition in my case.
+Then I realised most of it were on `/home`, so not really the same partition in my case.
 So I digged a bit more and found out that docker was the troublemaker.
 
 So I began with a sweet `docker system prune` then `docker volumes prune`
@@ -62,6 +62,7 @@ service docker start
 Here you go girl !!!
 22G back in the pocket :)
 
+Not so hard to free some space xD
 And please don't do this unless you know what you are doing :)
 
-Have a great day ^^
+Have a great day ^^.
