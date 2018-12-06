@@ -16,9 +16,7 @@ The Doctrine Migrations bundle.
 Ok so you open the github page of this project and see this little abstract:
 
 {% highlight text %}
-```
 Database migrations help you version the changes in your database schema and apply them in a predictable way on every server running the application.
-```
 {% endhighlight %}
 
 This is perfect, I have now a way to update in a better way my schemas!
@@ -28,7 +26,6 @@ Then I opened the project documentation to find use cases.
 And I find this:
 
 {% highlight php %}
-```
 public function up(Schema $schema) : void
 {
     $users = [
@@ -41,7 +38,6 @@ public function up(Schema $schema) : void
         $this->addSql('UPDATE user SET happy = true WHERE name = :name AND id = :id', $user);
     }
 }
-```
 {% endhighlight %}
 
 But... There is no schema update at all!
@@ -57,25 +53,19 @@ Fortunately someone had [the idea before me](https://github.com/doctrine/migrati
 If you look at the different discussions around this feature, you'd see some comments like:
 
 {% highlight text %}
-```
 I think that it's impossible to guarantee that an automatic process like that wouldn't loose data.
 From what you describe, to me the only solution is to generate those migrations manually.
-```
 {% endhighlight %}
 
 {% highlight text %}
-```
 Well if it's only for the schema, it looks like a hard feature to provide and it would probably be easier to do it by hand.
-```
 {% endhighlight %}
 
 and from Stof:
 
 {% highlight text %}
-```
 Well, there is a way to generate such migrations: get a database which is at version 1, and then run the diff command. This will give you the schema migration from v1 to v2, and it is much simpler than trying to parse old migrations to infer the old schema to build the migration.
 Btw, be careful that a real migration involves migration data too, and you would have to redo all the work there in your big migration. [...]
-```
 {% endhighlight %}
 
 Exactly! What happens to my data changes? It cannot reliably just copy and paste my code nor guess what changes I wanted to apply without risks!
