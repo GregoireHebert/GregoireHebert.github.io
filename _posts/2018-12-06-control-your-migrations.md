@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Control your migrations"
-date:   2018-12-06 11:00:00 +0100
+date:   2018-06-12 11:00:00 +0100
 categories: php, symfony, doctrine, migrations
 long_description: "Do you really think you handle doctrine migrations properly?"
 ---
