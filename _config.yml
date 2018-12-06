@@ -1,6 +1,6 @@
 theme: jekyll-theme-cayman
 title: Grégoire Hébert - blog
-description: Lead-Developper et formateur @ Les-tilleuls.coop
+description: Senior Developer & Traner @ Les-tilleuls.coop
 email: gregoire@les-tilleuls.coop
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://gregoirehebert.github.io" # the base hostname & protocol for your site, e.g. http://example.com

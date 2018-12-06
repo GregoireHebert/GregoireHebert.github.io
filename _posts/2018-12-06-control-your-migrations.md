@@ -3,7 +3,7 @@ layout: post
 title:  "Control your migrations"
 date:   2018-12-06 11:00:00 +0100
 categories: php, symfony, doctrine, migrations
-long_description: "With the incoming 2.0 @doctrineproject migration it will be possible to rollup you migrations. This means reducing all the schema modification to one after/during a release. And I said schema, not actual data content. I'll show you how it can be done."
+long_description: "Do you really think you handle doctrine migrations properly?"
 ---
 
 It's been a while that I am using doctrine now.
