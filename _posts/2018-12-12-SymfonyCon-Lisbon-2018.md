@@ -2,12 +2,9 @@
 layout: post
 title:  "SymfonyCon Lisbon 2018"
 date:   2018-12-12 13:00:00 +0100
-categories: php, symfony, events
+categories: php symfony events
 long_description: "If you've missed the SymfonyCon this year, and waiting for the video replays, here are my impressions!"
 ---
-
-Symfony Con Lisbon 2018
-==========
 
 As every year, is beginning the SymfonyCon!
 
