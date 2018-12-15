@@ -77,7 +77,7 @@ Ryan Weaver is the creator of `Encore`. This tool exist to combine the best of t
 
 ## Last talk I’ve seen is one from Kévin Dunglas about Mercure
 
-Mercure is a protocol allowing to push data updates to web browsers and other HTTP clients leveraging the strength of http2, (which websocket can’t and won’t do), bringing to you a secure and fast multiplexed pub/sub system. Kévin did a demonstration through a application available at (symfonycon.les-tilleuls.coop)[symfonycon.les-tilleuls.coop] which is a joined-in clone where you can comment and rate talks during a conference and interact by pushing smiley buttons. These buttons would trigger an animation that you can see on every screen subscribed to the mercure hub. A tool to keep a eye on!
+Mercure is a protocol allowing to push data updates to web browsers and other HTTP clients leveraging the strength of http2, (which websocket can’t and won’t do), bringing to you a secure and fast multiplexed pub/sub system. Kévin did a demonstration through a application available at [symfonycon.les-tilleuls.coop](symfonycon.les-tilleuls.coop) which is a joined-in clone where you can comment and rate talks during a conference and interact by pushing smiley buttons. These buttons would trigger an animation that you can see on every screen subscribed to the mercure hub. A tool to keep a eye on!
 
 
 Feel free to contact me if you've got any question :)
