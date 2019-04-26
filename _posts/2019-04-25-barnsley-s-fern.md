@@ -139,9 +139,7 @@ And because I don't care I'll use a prototype x) and update the draw function ac
 
 ![Formula]({{ "/assets/some-toys/result.png" | absolute_url }})
 
-The code is available [here](https://gist.githubusercontent.com/GregoireHebert/c6d22e202cb219358bb921e0f8fe4802/raw/739985f3ff695d3b23f5e4d85777acfae5e84852/fougere.html).
-
 Isn't that cool ?? ahah :D
 Try some mutations and see what happens :)
 
-
+The code is available [here](https://gist.githubusercontent.com/GregoireHebert/c6d22e202cb219358bb921e0f8fe4802/raw/739985f3ff695d3b23f5e4d85777acfae5e84852/fougere.html).
