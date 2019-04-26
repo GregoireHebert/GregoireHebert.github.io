@@ -1,15 +1,13 @@
 ---
 layout: post
 title:  "Barnsley's fern"
-date:   2018-12-12 13:00:00 +0100
+date:   2019-04-25 10:00:00 +0100
 categories: html css js
 long_description: "When I am bored or just want to test something for fun I do that kind of things. Let met show you one :)"
 ---
 
 Ok, I've never suspected I would love this so much ahah !
 But once you enter the world of fractals... you'll always want more.
-
-# Barnsley's fern
 
 My first playground is a fractal that looks like a leaf. Not any leaf, a fern leaf.
 This comes from Michael Barnsley work upon fractals. It demonstrate an example of an iterated function system.
@@ -138,6 +136,8 @@ And because I don't care I'll use a prototype x) and update the draw function ac
         ctx.fillRect(px,py,1,1);
     }
 {% endhighlight %}
+
+![Formula]({{ "/assets/some-toys/result.png" | absolute_url }})
 
 The code is available [here](https://gist.githubusercontent.com/GregoireHebert/c6d22e202cb219358bb921e0f8fe4802/raw/739985f3ff695d3b23f5e4d85777acfae5e84852/fougere.html).
 
