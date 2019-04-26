@@ -3,7 +3,7 @@ title: Grégoire Hébert - blog
 description: Senior Developer & Trainer @ Les-tilleuls.coop
 email: contact@gheb.dev
 baseurl: "/" # the subpath of your site, e.g. /blog
-url: "https://gheb.dev" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://gregoirehebert.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: "gheb_dev"
 github_username:  "gregoirehebert"
 linkedin_username:  "grégoire-hébert"
