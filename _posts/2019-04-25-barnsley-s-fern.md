@@ -16,7 +16,7 @@ Usually represented on 3 dimensions, they are often computed and drawn in 2D. Th
 
 Barnsley's fern uses 4 affine transformations.
 
-![Formula]({{ "/assets/some-toys/formula.png" | absolute_url }})
+![Formula]({{ "/assets/barnsley-fern/formula.png" | absolute_url }})
 
 w	| a	| b	| c	| d	| e	| f	| p	| Portion generated
 ƒ1	| 0	| 0	| 0	| 0.16	| 0	| 0	| 0.01	| Stem
@@ -137,9 +137,9 @@ And because I don't care I'll use a prototype x) and update the draw function ac
     }
 {% endhighlight %}
 
-![Formula]({{ "/assets/some-toys/result.png" | absolute_url }})
+![Result]({{ "/assets/barnsley-fern/result.png" | absolute_url }})
 
 Isn't that cool ?? ahah :D
 Try some mutations and see what happens :)
 
-The code is available [here](https://gist.githubusercontent.com/GregoireHebert/c6d22e202cb219358bb921e0f8fe4802/raw/739985f3ff695d3b23f5e4d85777acfae5e84852/fougere.html).
+The code is available [here](https://gist.github.com/GregoireHebert/c6d22e202cb219358bb921e0f8fe4802).
