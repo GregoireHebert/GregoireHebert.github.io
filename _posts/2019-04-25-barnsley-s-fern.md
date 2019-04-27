@@ -3,7 +3,7 @@ layout: post
 title:  "Barnsley's fern"
 date:   2019-04-25 10:00:00 +0100
 categories: html css js
-long_description: "When I am bored or just want to test something for fun I do that kind of things. Let met show you one :)"
+long_description: "When I am bored or just want to test something for fun I do that kind of things. Let met show you one :) Part 1"
 ---
 
 Ok, I've never suspected I would love this so much ahah !

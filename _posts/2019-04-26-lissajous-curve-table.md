@@ -3,7 +3,7 @@ layout: post
 title:  "Lissajous curve table"
 date:   2019-04-26 10:00:00 +0100
 categories: html css js
-long_description: "When I am bored or just want to test something for fun I do that kind of things. Let met show you one :)"
+long_description: "When I am bored or just want to test something for fun I do that kind of things. Let met show you one :) Part 2"
 ---
 
 This time it's not a fractal.
