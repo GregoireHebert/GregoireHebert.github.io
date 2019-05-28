@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Barnsley’s fern | Grégoire Hébert - blog</title>
+    <meta property="og:title" content="Barnsley’s fern" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="description" content="Ok, I’ve never suspected I would love this so much ahah ! But once you enter the world of fractals… you’ll always want more." />
+    <meta property="og:description" content="Ok, I’ve never suspected I would love this so much ahah ! But once you enter the world of fractals… you’ll always want more." />
+    <link rel="canonical" href="http://localhost:4000/html/css/js/2019/04/25/barnsley-s-fern.html" />
+    <meta property="og:url" content="http://localhost:4000/html/css/js/2019/04/25/barnsley-s-fern.html" />
+    <meta property="og:site_name" content="Grégoire Hébert - blog" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2019-04-25T11:00:00+02:00" />
+    <script type="application/ld+json">
+        {"description":"Ok, I’ve never suspected I would love this so much ahah ! But once you enter the world of fractals… you’ll always want more.","@type":"BlogPosting","headline":"Barnsley’s fern","dateModified":"2019-04-25T11:00:00+02:00","datePublished":"2019-04-25T11:00:00+02:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/html/css/js/2019/04/25/barnsley-s-fern.html"},"url":"http://localhost:4000/html/css/js/2019/04/25/barnsley-s-fern.html","@context":"http://schema.org"}</script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<link href="../../index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="loading">
+        <div id="spinner"></div>
+    </div>
+    <div id="profile">
+        <div id="profile_img" style="background: url(https://avatars1.githubusercontent.com/u/878701?v=4) center;"></div>
+        <div id="username"><span style="display:block;">Grégoire Hébert</span><a href="https://github.com/GregoireHebert">@GregoireHebert</a></div>
+        <div id="userbio" style="display: block;">
+            Senior developer and trainer.<br/>
+            CEO of <a href="https://masterclass.les-tilleuls.coop">MasterClass</a><br/>
+            GA enthusiast.<br/>
+            Foods and drinks lover.
+        </div>
+        <div id="about">
+            <span style="display:block;"><i class="fas fa-users"></i> &nbsp; La Coopérative des Tilleuls</span>
+            <span style="display:block;"><i class="fab fa-twitter"></i> &nbsp; <a href="https://www.twitter.com/gheb_dev">@gheb_dev</a></span>
+            <span style="display:block;"><i class="fas fa-envelope"></i> &nbsp; <a href="mailto:contact@gheb.dev">contact@gheb.dev</a></span>
+            <span style="display:block;"><i class="fas fa-link"></i> &nbsp; <a href="https://les-tilleuls.coop">https://les-tilleuls.coop</a></span>
+            <span style="display:block;"><i class="fas fa-map-marker-alt"></i> &nbsp;&nbsp; Lille (59), France</span>
+        </div>
+    </div>
+    <div id="display">
+        <h1><a class="go_back" href="/"><i class="fas fa-arrow-left"></i></a>Barnsley's fern</h1>
+
+        <p>Ok, I’ve never suspected I would love this so much ahah !
+            But once you enter the world of fractals… you’ll always want more.</p>
+
+        <p>My first playground is a fractal that looks like a leaf. Not any leaf, a fern leaf.
+            This comes from Michael Barnsley work upon fractals. It demonstrate an example of an iterated function system.
+            A fractal is the union of several copies of a geometric model, each being transformed by a function.
+            Usually represented on 3 dimensions, they are often computed and drawn in 2D. The canonical example is the Sierpiński triangle.</p>
+
+        <p>Barnsley’s fern uses 4 affine transformations.</p>
+
+        <p><img src="http://localhost:4000/assets/barnsley-fern/formula.png" alt="Formula" /></p>
+
+        <table>
+            <tbody>
+            <tr>
+                <td>w</td>
+                <td>a</td>
+                <td>b</td>
+                <td>c</td>
+                <td>d</td>
+                <td>e</td>
+                <td>f</td>
+                <td>p</td>
+                <td>Portion generated</td>
+            </tr>
+            <tr>
+                <td>ƒ1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0.16</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0.01</td>
+                <td>Stem</td>
+            </tr>
+            <tr>
+                <td>ƒ2</td>
+                <td>0.85</td>
+                <td>0.04</td>
+                <td>−0.04</td>
+                <td>0.85</td>
+                <td>0</td>
+                <td>1.60</td>
+                <td>0.85</td>
+                <td>Successively smaller leaflets</td>
+            </tr>
+            <tr>
+                <td>ƒ3</td>
+                <td>0.20</td>
+                <td>−0.26</td>
+                <td>0.23</td>
+                <td>0.22</td>
+                <td>0</td>
+                <td>1.60</td>
+                <td>0.07</td>
+                <td>Largest left-hand leaflet</td>
+            </tr>
+            <tr>
+                <td>ƒ4</td>
+                <td>−0.15</td>
+                <td>0.28</td>
+                <td>0.26</td>
+                <td>0.24</td>
+                <td>0</td>
+                <td>0.44</td>
+                <td>0.07</td>
+                <td>Largest right-hand leaflet</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p>This table up here is not immutable, try to tweek it’s values and see what happens :)</p>
+
+        <p>Anyway, to begin with, I need to draw. and to draw I can use a canvas.</p>
+
+        <figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"description"</span> <span class="na">content=</span><span class="s">"Barnsley's fern"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> <span class="na">content=</span><span class="s">"width=device-width, initial-scale=1"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;title&gt;</span>Barnsley's fern<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;canvas</span> <span class="na">id=</span><span class="s">"fern"</span> <span class="na">width=</span><span class="s">"600"</span> <span class="na">height=</span><span class="s">"600"</span><span class="nt">&gt;&lt;/canvas&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span></code></pre></figure>
+
+        <p>Now, I need to write a bit of javascript code.
+            First, in a script tag, while getting the canvas element, I define the context as a 2D one, we won’t deal with 3D today.
+            And I grab it’s dimensions.</p>
+
+        <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+    <span class="kd">const</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'fern'</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">canvasWidth</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">canvasHeight</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">"2d"</span><span class="p">);</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+        <p>Let define the starting points and position.</p>
+
+        <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">    <span class="c1">// ...</span>
+
+    <span class="kd">let</span> <span class="nx">pointX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">pointY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></code></pre></figure>
+
+        <p>For a defined serie, I’ll draw a point, a dot, and between each iteration, I’ll copy it’s values,
+            then transform it according to the function and the given values in the table up above.
+            Let’s say I’ll draw 150’000 dots.</p>
+
+        <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">    <span class="c1">// ...</span>
+    <span class="kd">let</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="o">++</span><span class="nx">c</span> <span class="o">&lt;</span> <span class="mi">150000</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">drawPoint</span><span class="p">();</span>
+        <span class="nx">nextPoint</span><span class="p">();</span>
+    <span class="p">}</span></code></pre></figure>
+
+        <p>Let’s code the drawPoint function.
+            I’ll use the fillRect method to depict and draw the point in the canvas.</p>
+
+        <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">    <span class="c1">// ...</span>
+
+    <span class="kd">function</span> <span class="nx">drawPoint</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillRect</span><span class="p">(</span><span class="nx">px</span><span class="p">,</span><span class="nx">py</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span></code></pre></figure>
+
+        <p>Let’s see the nextPoint method.
+            This is the method that will implement the maths.
+            This is the method you’ll want to tweak.</p>
+
+        <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">    <span class="kd">function</span> <span class="nx">nextPoint</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">r</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">r</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">pointX</span> <span class="o">=</span>  <span class="mi">0</span><span class="p">;</span>
+            <span class="nx">pointY</span> <span class="o">=</span>  <span class="mf">0.16</span> <span class="o">*</span> <span class="nx">y</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">r</span> <span class="o">&lt;</span> <span class="mf">0.86</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">pointX</span> <span class="o">=</span>  <span class="mf">0.85</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span>  <span class="mf">0.04</span> <span class="o">*</span> <span class="nx">y</span><span class="p">;</span>
+            <span class="nx">pointY</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.04</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span>  <span class="mf">0.85</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="mf">1.6</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">r</span> <span class="o">&lt;</span> <span class="mf">0.93</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">pointX</span> <span class="o">=</span>  <span class="mf">0.20</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span> <span class="o">-</span><span class="mf">0.26</span> <span class="o">*</span> <span class="nx">y</span><span class="p">;</span>
+            <span class="nx">pointY</span> <span class="o">=</span>  <span class="mf">0.23</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span>  <span class="mf">0.22</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="mf">1.6</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">pointX</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.15</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span>  <span class="mf">0.28</span> <span class="o">*</span> <span class="nx">y</span><span class="p">;</span>
+            <span class="nx">pointY</span> <span class="o">=</span>  <span class="mf">0.26</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">+</span>  <span class="mf">0.24</span> <span class="o">*</span> <span class="nx">y</span> <span class="o">+</span> <span class="mf">0.44</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">x</span> <span class="o">=</span> <span class="nx">pointX</span><span class="p">;</span>
+        <span class="nx">y</span> <span class="o">=</span> <span class="nx">pointY</span><span class="p">;</span>
+    <span class="p">}</span></code></pre></figure>
+
+        <p>We could be done. But unfortunately, I need to make my point to be visible and proportionnaly dispatch within my canvas.
+            If I stop here, I won’t see anything but disappointment. To map the point with the canvas I’ll create a map method.
+            And because I don’t care I’ll use a prototype x) and update the draw function accordingly.</p>
+
+        <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">    <span class="c1">// ...</span>
+
+    <span class="nb">Number</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">map</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">in_min</span><span class="p">,</span> <span class="nx">in_max</span><span class="p">,</span> <span class="nx">out_min</span><span class="p">,</span> <span class="nx">out_max</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">(</span><span class="k">this</span> <span class="o">-</span> <span class="nx">in_min</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="nx">out_max</span> <span class="o">-</span> <span class="nx">out_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">in_max</span> <span class="o">-</span> <span class="nx">in_min</span><span class="p">)</span> <span class="o">+</span> <span class="nx">out_min</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">drawPoint</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">px</span> <span class="o">=</span> <span class="nx">x</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="o">-</span><span class="mf">2.1820</span><span class="p">,</span> <span class="mf">2.6558</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">canvasWidth</span><span class="p">);</span>
+        <span class="kd">let</span> <span class="nx">py</span> <span class="o">=</span> <span class="nx">y</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">9.9983</span><span class="p">,</span> <span class="nx">canvasHeight</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillRect</span><span class="p">(</span><span class="nx">px</span><span class="p">,</span><span class="nx">py</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span></code></pre></figure>
+
+        <p><img src="http://localhost:4000/assets/barnsley-fern/result.png" alt="Result" /></p>
+
+        <p>Isn’t that cool ?? ahah :D
+            Try some mutations and see what happens :)</p>
+
+        <p>The code is available <a href="https://gist.github.com/GregoireHebert/c6d22e202cb219358bb921e0f8fe4802">here</a>.</p>
+
+
+
+        <div class="PageNavigation">
+
+            <a class="prev" href="/blog/SymfonyCon-Lisbon-2018">&laquo; SymfonyCon Lisbon 2018</a>
+
+            <a class="next" href="/blog/lissajous-curve-table">Lissajous curve table &raquo;</a>
+
+        </div>
+    </div>
+    <div id="footer_blog">
+        <a href="https://github.com/imfunniee" target="_blank">made on earth by a human</a>
+    </div>
+    <script type="text/javascript">
+    setTimeout(function(){
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function(){
+        document.getElementById("loading").classList.remove("animated");
+        document.getElementById("loading").classList.remove("fadeOut");
+        document.getElementById("loading").style.display = "none";
+        },50);
+    },1500);
+    $.getJSON("../../config.json", function(user){
+        var icon = document.createElement("link");
+        icon.setAttribute("rel", "icon");
+        icon.setAttribute("href", user[0].userimg);
+        icon.setAttribute("type", "image/png");
+        document.getElementsByTagName("head")[0].appendChild(icon);
+    });
+    </script>
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45648310-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</body></html>

@@ -1,0 +1,769 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>GregoireHebert</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="index.css">
+<link rel="icon" href="https://avatars1.githubusercontent.com/u/878701?v=4" type="image/png"></head>
+<body>
+    <div id="loading">
+        <div id="spinner"></div>
+    </div>
+    <div id="profile">
+        <div id="profile_img" style="background: url(https://avatars1.githubusercontent.com/u/878701?v=4) center;"></div>
+        <div id="username"><span style="display:block;">Grégoire Hébert</span><a href="https://github.com/GregoireHebert">@GregoireHebert</a></div>
+        <div id="userbio" style="display: block;">
+            Senior developer and trainer.<br/>
+            CEO of <a href="https://masterclass.les-tilleuls.coop">MasterClass</a><br/>
+            GA enthusiast.<br/>
+            Foods and drinks lover.
+        </div>
+        <div id="about">
+                <span style="display:block;"><i class="fas fa-users"></i> &nbsp; La Coopérative des Tilleuls</span>
+                <span style="display:block;"><i class="fab fa-twitter"></i> &nbsp; <a href="https://www.twitter.com/gheb_dev">@gheb_dev</a></span>
+                <span style="display:block;"><i class="fas fa-envelope"></i> &nbsp; <a href="mailto:contact@gheb.dev">contact@gheb.dev</a></span>
+                <span style="display:block;"><i class="fas fa-link"></i> &nbsp; <a href="https://les-tilleuls.coop">https://les-tilleuls.coop</a></span>
+                <span style="display:block;"><i class="fas fa-map-marker-alt"></i> &nbsp;&nbsp; Lille (59), France</span>
+        </div>
+    </div>
+    <div id="display">
+        <div id="blog_section">
+            <h1>Blog.</h1>
+            <div id="blogs"></div>
+        </div>
+        <div id="work">
+            <h1>Work.</h1>
+            <div class="projects" id="work_section">
+                        <a href="https://github.com/GregoireHebert/tamagotchi" target="_blank">
+                        <section>
+                            <div class="section_title">tamagotchi</div>
+                            <div class="about_section">
+                            <span style="display:block;">self-learning tamagotchi</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 8</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 1</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/nn" target="_blank">
+                        <section>
+                            <div class="section_title">nn</div>
+                            <div class="about_section">
+                            <span style="display:none;">undefined</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 8</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 2</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/GregoireHebert.github.io" target="_blank">
+                        <section>
+                            <div class="section_title">GregoireHebert.github.io</div>
+                            <div class="about_section">
+                            <span style="display:none;">undefined</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; Ruby</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/configuration-converter-bundle" target="_blank">
+                        <section>
+                            <div class="section_title">configuration-converter-bundle</div>
+                            <div class="about_section">
+                            <span style="display:block;">Convert your configuration from a format to another</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 2</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/api-platform-config-converter" target="_blank">
+                        <section>
+                            <div class="section_title">api-platform-config-converter</div>
+                            <div class="about_section">
+                            <span style="display:block;">Convert your API Platform configuration from a format to another</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:none;"><i class="fas fa-code"></i>&nbsp; null</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/FI-Symfony" target="_blank">
+                        <section>
+                            <div class="section_title">FI-Symfony</div>
+                            <div class="about_section">
+                            <span style="display:block;">Cours Symfony</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:none;"><i class="fas fa-code"></i>&nbsp; null</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 10</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/formation_php" target="_blank">
+                        <section>
+                            <div class="section_title">formation_php</div>
+                            <div class="about_section">
+                            <span style="display:none;">undefined</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/data-migrations-bundle" target="_blank">
+                        <section>
+                            <div class="section_title">data-migrations-bundle</div>
+                            <div class="about_section">
+                            <span style="display:block;">Migrate your data along side your data structure.</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 2</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/neat-bundle" target="_blank">
+                        <section>
+                            <div class="section_title">neat-bundle</div>
+                            <div class="about_section">
+                            <span style="display:block;">Bundle for neuro evolution by augmenting topologies (NEAT)</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 2</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 1</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/berlin-workshop" target="_blank">
+                        <section>
+                            <div class="section_title">berlin-workshop</div>
+                            <div class="about_section">
+                            <span style="display:none;">undefined</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/test" target="_blank">
+                        <section>
+                            <div class="section_title">test</div>
+                            <div class="about_section">
+                            <span style="display:block;">test gitmoji</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; HTML</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/docker-lemp" target="_blank">
+                        <section>
+                            <div class="section_title">docker-lemp</div>
+                            <div class="about_section">
+                            <span style="display:block;">docker-compose lemp multi projets</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; Nginx</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 1</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/hesf4" target="_blank">
+                        <section>
+                            <div class="section_title">hesf4</div>
+                            <div class="about_section">
+                            <span style="display:none;">undefined</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 1</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/sheep" target="_blank">
+                        <section>
+                            <div class="section_title">sheep</div>
+                            <div class="about_section">
+                            <span style="display:block;">animated sprite sheets of a sheep in the wild</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; CSS</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 1</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/blog-demo-apip-2.2.0" target="_blank">
+                        <section>
+                            <div class="section_title">blog-demo-apip-2.2.0</div>
+                            <div class="about_section">
+                            <span style="display:none;">undefined</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/io-bundle" target="_blank">
+                        <section>
+                            <div class="section_title">io-bundle</div>
+                            <div class="about_section">
+                            <span style="display:block;">Bridge to the NeatBundle</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/iban-constructor" target="_blank">
+                        <section>
+                            <div class="section_title">iban-constructor</div>
+                            <div class="about_section">
+                            <span style="display:block;">nodejs library iban generator</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/deeka" target="_blank">
+                        <section>
+                            <div class="section_title">deeka</div>
+                            <div class="about_section">
+                            <span style="display:none;">undefined</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/reflexe-security-bundle" target="_blank">
+                        <section>
+                            <div class="section_title">reflexe-security-bundle</div>
+                            <div class="about_section">
+                            <span style="display:block;">Security from namespace to action controllers by adding roles to database</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 2</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 1</span>
+                            </div>
+                        </section>
+                        </a>
+                        <a href="https://github.com/GregoireHebert/doctrine-cross-bundle-mapping-bundle" target="_blank">
+                        <section>
+                            <div class="section_title">doctrine-cross-bundle-mapping-bundle</div>
+                            <div class="about_section">
+                            <span style="display:block;">This Bundle brings cross bundle mapping</span>
+                            </div>
+                            <div class="bottom_section">
+                                <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                <span><i class="fas fa-star"></i>&nbsp; 4</span>
+                                <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                            </div>
+                        </section>
+                        </a></div>
+        </div>
+        <div id="forks" style="display: block;">
+            <h1>Forks.</h1>
+            <div class="projects" id="forks_section">
+                            <a href="https://github.com/GregoireHebert/DoctrineBundle" target="_blank">
+                            <section>
+                                <div class="section_title">DoctrineBundle</div>
+                                <div class="about_section">
+                                <span style="display:block;">Symfony Bundle for Doctrine ORM and DBAL</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/phpdoc-to-typehint" target="_blank">
+                            <section>
+                                <div class="section_title">phpdoc-to-typehint</div>
+                                <div class="about_section">
+                                <span style="display:block;">Add scalar type hints and return types to existing PHP projects using PHPDoc annotations</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/docs" target="_blank">
+                            <section>
+                                <div class="section_title">docs</div>
+                                <div class="about_section">
+                                <span style="display:block;">API Platform documentation</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:none;"><i class="fas fa-code"></i>&nbsp; null</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/recipes-contrib" target="_blank">
+                            <section>
+                                <div class="section_title">recipes-contrib</div>
+                                <div class="about_section">
+                                <span style="display:block;">Symfony Contrib Recipes Repositories</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/core" target="_blank">
+                            <section>
+                                <div class="section_title">core</div>
+                                <div class="about_section">
+                                <span style="display:block;">The Hypermedia REST API component of API Platform: JSON-LD and Hydra support, works with Symfony too</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/recipes" target="_blank">
+                            <section>
+                                <div class="section_title">recipes</div>
+                                <div class="about_section">
+                                <span style="display:block;">Symfony Recipes Repository</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/admin" target="_blank">
+                            <section>
+                                <div class="section_title">admin</div>
+                                <div class="about_section">
+                                <span style="display:block;">A beautiful and fully-featured administration interface builder for hypermedia APIs</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/AliceBundle" target="_blank">
+                            <section>
+                                <div class="section_title">AliceBundle</div>
+                                <div class="about_section">
+                                <span style="display:block;">A Symfony bundle to manage fixtures with Alice and Faker.</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/AliceDataFixtures" target="_blank">
+                            <section>
+                                <div class="section_title">AliceDataFixtures</div>
+                                <div class="about_section">
+                                <span style="display:block;">Nelmio Alice extension to persist the loaded fixtures.</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/javascript-pong" target="_blank">
+                            <section>
+                                <div class="section_title">javascript-pong</div>
+                                <div class="about_section">
+                                <span style="display:block;">A javascript version of the classic 1972 arcade game Pong!</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/PHPMatrix" target="_blank">
+                            <section>
+                                <div class="section_title">PHPMatrix</div>
+                                <div class="about_section">
+                                <span style="display:block;">PHP extension for computing matrix product linking to OpenBLAS and cuBLAS</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; C</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/api-platform" target="_blank">
+                            <section>
+                                <div class="section_title">api-platform</div>
+                                <div class="about_section">
+                                <span style="display:block;">The ultimate PHP framework to build modern web APIs</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/packagist" target="_blank">
+                            <section>
+                                <div class="section_title">packagist</div>
+                                <div class="about_section">
+                                <span style="display:block;">Package Repository Website - try https://packagist.com if you need your own -</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/QualitelisConnectorBundle" target="_blank">
+                            <section>
+                                <div class="section_title">QualitelisConnectorBundle</div>
+                                <div class="about_section">
+                                <span style="display:block;">Qualitelis Connector</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/SyliusShopApiPlugin" target="_blank">
+                            <section>
+                                <div class="section_title">SyliusShopApiPlugin</div>
+                                <div class="about_section">
+                                <span style="display:block;">Shop API for Sylius.</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/Symfony2Extension" target="_blank">
+                            <section>
+                                <div class="section_title">Symfony2Extension</div>
+                                <div class="about_section">
+                                <span style="display:block;">Symfony2 extension for Behat</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/cleave.js" target="_blank">
+                            <section>
+                                <div class="section_title">cleave.js</div>
+                                <div class="about_section">
+                                <span style="display:block;">Format input text content when you are typing...</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/schema-generator" target="_blank">
+                            <section>
+                                <div class="section_title">schema-generator</div>
+                                <div class="about_section">
+                                <span style="display:block;">PHP Model Scaffolding from Schema.org vocabulary</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; Web Ontology Language</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/dotfiles" target="_blank">
+                            <section>
+                                <div class="section_title">dotfiles</div>
+                                <div class="about_section">
+                                <span style="display:block;">Files and scripts used to configure my Ubuntu computer</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; Shell</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/tactician-bundle" target="_blank">
+                            <section>
+                                <div class="section_title">tactician-bundle</div>
+                                <div class="about_section">
+                                <span style="display:block;"> Bundle to integrate Tactician with Symfony projects</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/RestApiTutorial.com" target="_blank">
+                            <section>
+                                <div class="section_title">RestApiTutorial.com</div>
+                                <div class="about_section">
+                                <span style="display:block;">HTML Source code for www.RestApiTutorial.com</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; HTML</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/WebsocketAppDemo" target="_blank">
+                            <section>
+                                <div class="section_title">WebsocketAppDemo</div>
+                                <div class="about_section">
+                                <span style="display:block;">Demo of GosWebSocketBundle</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/ghost-on-heroku" target="_blank">
+                            <section>
+                                <div class="section_title">ghost-on-heroku</div>
+                                <div class="about_section">
+                                <span style="display:block;">One-button Heroku deploy for the Ghost blogging platform.</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/norrisbot" target="_blank">
+                            <section>
+                                <div class="section_title">norrisbot</div>
+                                <div class="about_section">
+                                <span style="display:block;">a Slack bot that kicks asses (roundhouse-kicks to be accurate...)</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/website" target="_blank">
+                            <section>
+                                <div class="section_title">website</div>
+                                <div class="about_section">
+                                <span style="display:block;">The API Platform website</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/iban.js" target="_blank">
+                            <section>
+                                <div class="section_title">iban.js</div>
+                                <div class="about_section">
+                                <span style="display:block;">IBAN &amp; BBAN validation, formatting and conversion in javascript</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/admin-on-rest" target="_blank">
+                            <section>
+                                <div class="section_title">admin-on-rest</div>
+                                <div class="about_section">
+                                <span style="display:block;">A frontend framework for building admin SPAs on top of REST services, using React</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/calavera-react-client" target="_blank">
+                            <section>
+                                <div class="section_title">calavera-react-client</div>
+                                <div class="about_section">
+                                <span style="display:block;">A React client for Calavera</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; JavaScript</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/EscapeWSSEAuthenticationBundle" target="_blank">
+                            <section>
+                                <div class="section_title">EscapeWSSEAuthenticationBundle</div>
+                                <div class="about_section">
+                                <span style="display:block;">Symfony2 bundle to implement WSSE authentication</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/CassandraBundle" target="_blank">
+                            <section>
+                                <div class="section_title">CassandraBundle</div>
+                                <div class="about_section">
+                                <span style="display:block;">Symfony2 bundle on top of the datastax cassandra component</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/symfony-docs" target="_blank">
+                            <section>
+                                <div class="section_title">symfony-docs</div>
+                                <div class="about_section">
+                                <span style="display:block;">The Symfony documentation</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; C++</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a>
+                            <a href="https://github.com/GregoireHebert/AvalancheImagineBundle" target="_blank">
+                            <section>
+                                <div class="section_title">AvalancheImagineBundle</div>
+                                <div class="about_section">
+                                <span style="display:block;">Image manipulation using Imagine and Twig Filters</span>
+                                </div>
+                                <div class="bottom_section">
+                                    <span style="display:inline-block;"><i class="fas fa-code"></i>&nbsp; PHP</span>
+                                    <span><i class="fas fa-star"></i>&nbsp; 0</span>
+                                    <span><i class="fas fa-code-branch"></i>&nbsp; 0</span>
+                                </div>
+                            </section>
+                            </a></div>
+        </div>
+        <div id="footer">
+            <a href="https://github.com/imfunniee" target="_blank">made on earth by a human</a>
+        </div>
+    </div>
+    <script type="text/javascript">
+    setTimeout(function(){
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function(){
+        document.getElementById("loading").classList.remove("animated");
+        document.getElementById("loading").classList.remove("fadeOut");
+        document.getElementById("loading").style.display = "none";
+        },800);
+    },1500);
+    $.getJSON("blog.json", function(blog){
+        blog = blog || [];
+        if(blog.length == 0){
+            return document.getElementById("blog_section").style.display = "none";
+        }
+        for(var i = 0; i < blog.length; i++){
+            $("#blogs").append(`
+            <a href="./blog/${blog[i].url_title}/">
+                <section>
+                    <img src="${blog[i].top_image}">
+                    <div class="blog_container">
+                        <div class="section_title">${blog[i].title}</div>
+                        <div class="about_section">
+                            ${blog[i].sub_title}
+                        </div>
+                    </div>
+                </section>
+            </a>
+            `);
+        }
+    }).fail(function(){
+        return document.getElementById("blog_section").style.display = "none";
+    });
+    </script>
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45648310-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</body></html>
