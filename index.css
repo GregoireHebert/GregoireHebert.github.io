@@ -467,3 +467,7 @@ pre {
   --blog-gray-color: rgb(80, 80, 80);
   --background-background: #fff;
 }
+
+#work_section p {
+    text-align: justify;
+}
