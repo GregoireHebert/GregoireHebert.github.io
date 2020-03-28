@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>RSA TLS AES WTF - partie 1 | Grégoire Hébert - blog</title>
+    <meta property="og:title" content="RSA TLS AES WTF - partie 1" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="description" content="Entrée en matière, dans la sécurité des échanges sur le web." />
+    <meta property="og:description" content="Entrée en matière, dans la sécurité des échanges sur le web." />
+    <link rel="canonical" href="https://knot.gheb.dev/blog/rsa-tls-aes-wtf-part-1" />
+    <meta property="og:url" content="https://knot.gheb.dev/blog/rsa-tls-aes-wtf-part-1" />
+    <meta property="og:site_name" content="Grégoire Hébert - blog" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2020-03-28T22:22:00+01:00" />
+    <script type="application/ld+json">
+        {"description":"Entrée en matière, dans la sécurité des échanges sur le web.","@type":"BlogPosting","headline":"RSA TLS AES WTF - partie 1","dateModified":"2020-03-28T22:22:00+01:00","datePublished":"2020-03-28T22:22:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://knot.gheb.dev/security/rsa-tls-aes-wtf-part-1.html"},"url":"https://knot.gheb.dev/security/rsa-tls-aes-wtf-part-1.html","@context":"http://schema.org"}</script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<link href="../../index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="loading">
+        <div id="spinner"></div>
+    </div>
+    <div id="profile">
+        <div id="profile_img" style="background: url(https://avatars1.githubusercontent.com/u/878701?v=4) center;"></div>
+        <div id="username"><span style="display:block;">Grégoire Hébert</span><a href="https://github.com/GregoireHebert">@GregoireHebert</a></div>
+        <div id="userbio" style="display: block;">
+            Senior developer and trainer.<br/>
+            CEO of <a href="https://masterclass.les-tilleuls.coop">MasterClass</a><br/>
+            GA enthusiast.<br/>
+            Foods and drinks lover.<br/>
+            <br/>
+            <a href="/hire-me" class="hire">You want to work with me ?</a>
+        </div>
+        <div id="about">
+            <span style="display:block;"><i class="fas fa-users"></i> &nbsp; La Coopérative des Tilleuls</span>
+            <span style="display:block;"><i class="fab fa-twitter"></i> &nbsp; <a href="https://www.twitter.com/gheb_dev">@gheb_dev</a></span>
+            <span style="display:block;"><i class="fas fa-envelope"></i> &nbsp; <a href="mailto:contact@gheb.dev">contact@gheb.dev</a></span>
+            <span style="display:block;"><i class="fas fa-link"></i> &nbsp; <a href="https://les-tilleuls.coop">https://les-tilleuls.coop</a></span>
+            <span style="display:block;"><i class="fas fa-map-marker-alt"></i> &nbsp;&nbsp; Lille (59), France</span>
+        </div>
+    </div>
+    <div id="display" class="display-blog">
+        <h1><a class="go_back" href="/"><i class="fas fa-arrow-left"></i></a>RSA TLS AES WTF ?? Partie 1</h1>
+
+        <p><img alt="RSA" src="/../../assets/rsa/rsa1.jpeg" /></p>
+
+        <h2>E2EE</h2>
+        <p>
+            Lorsqu'il s'agit d'échanges de données sur les réseaux, que ce soit sms, email, chat… On peux vouloir empêcher que quiconque puisse y accéder qui ne soit pas notre destinataire. Sauf qu'il y a eu des précédents ou des réseaux terroristes, et organisations criminelles utilisent ces systèmes.<br/><br/>
+            Pour les politiciens, si on penses aux crimes, évidement que ce genre de mécanisme est absolument inadmissible, mais parce que le crime est inadmissible.<br/><br/>
+            Mais est-ce qu'une protection 100% sure de bout en bout est vraiment réalisable?<br/><br/>
+            Dans l'idée d'une protection maximale avec délégation de la transmission via une autorité reconnue pour contrer les mauvais usages, nous pourrions utiliser un serveur intermédiaire.<br/>
+        </p><p>
+            Pour se protéger et éviter qu'une personne capable d'écouter les échanges sur le réseau puisse lire nos messages, nous allons chiffrer nos message à l'aide d'une clé. En fait 2 clés. Une entre nous et le serveur, et une entre le serveur et la personne avec qui nous discutons. <br/><br/>
+            Ce qui fait que si un mandat juridique ordonne la récupération de messages auprès de cette autorité surgit, il est possible d'accéder aux dits messages.<br/><br/>
+            Alors l'argument évident en ce sens, serait que nous n'avons rien à cacher de toute façon! Sauf que de fait ce serveur est un énorme point de vulnérabilité. Et si on pouvait éviter que les photos et messages un peu osés que l'on envoie à nos partenaires se retrouvent publique, et c'est déjà arrivé une paire de fois, finalement là on a envie de se protéger sur toute la ligne.<br/><br/>
+            Alors aujourd'hui on va plutôt opter pour du chiffrage de bout en bout. Il existe déjà des services de messageries comme WhatsApp ou Signal (qui en passant n'utilise pas qu'une seule clé mais plusieurs) qui encode vos messages en bout en bout. Messenger de Facebook aussi, mais il faut l'activer. Alors si vous ne l'avez pas encore fait prenez un instant :)<br/><br/>
+            Enfin avant de rentrer dans le technique il reste un dernier point de vulnérabilité, et il est entre vos mains parce que pour que vous ayez une expérience utilisateur acceptable, tout est décodé au moment ou vous recevez le message, donc il ne vous reste plus que votre code pin, pulpe de votre doigt ou fond d'iris pour vous protéger. Si quelqu'un venait à vous piquer votre téléphone ou ordinateur, c'est fichu. Les points les plus faibles sont les endpoints.<br/><br/>
+            Bon alors comment ça marche cette protection?<br/>
+        </p>
+
+        <p><img alt="RSA" src="/../../assets/rsa/rsa2.jpeg" /></p>
+
+        <p><img alt="RSA" src="/../../assets/rsa/rsa3.png" /></p>
+
+        <p>
+        Le but de TLS est de protéger les échanges et dans certaines implémentations, de garantir l'intégrité des données. L'algorithme se découpe principalement en 3 moments distincts.
+        </p><p>
+        Le premier consiste entre 2 parties de choisir une méthode d'échange de clés.<br/><br/>
+        2 grandes méthodes sont utilisées. RSA et Diffie-Hellmann.<br/><br/>
+        Le second consiste en chiffrer les données échangées. Il y a quelques temps était utilisé le DES (Data encryption standard) qui chiffre sur 56bits. Qui est maintenant devenu obsolète. Alors est apparu le 3DES ! Qui triple la longueur.  Cependant il reste vulnérable aux attaques par collision. Il a fallu développer un nouveau standard plus sécurisé, le nommé AES (Advanced Encryption Standard) dont nous allons parler ensuite.<br/><br/>
+        Et enfin dernière étape, vérifier l'intégrité des données. La plupart du temps on utilisera HMAC ou MD5 pour hasher les données et comparer que les hash sont identiques. Il a été démontré que ces algorithmes ont des faiblesses de collisions. Les versions modernes de TLS utilisent AEAD (Authenticated Encryption with Associated Data) et ajoutent un MAC (un Message Authentication Code) dans le message afin d'en garantir l'authenticité.<br/><br/>
+        Pour créer un certificat TLS, vous avez 2 solutions.<br/><br/>
+        Soit vous faites appel à une autorité qui créera les certificats vous en fournira un à déposer sur votre/vos serveurs et validera que vous êtes bien le possesseur du site à protéger. Lorsque votre navigateur réclamera le port 443 il tâchera de regarder si un certificat répondant à celui défini sur le serveur existe dans sa base de données, dans le cas contraire il contactera les services d'autorité. En cas d'échec il considèrera que le certificat est auto-signé.<br/><br/>
+        Autre alternative, c'est de générer vous même le certificat avec let's encrypt.<br/><br/>
+        Le but n'est pas de se pencher sur la manière d'enregistrer un certificat il y a tout ce qu'il faut sur les internets. Nous allons nous pencher sur les mécaniques derrière TLS.<br/>
+        </p>
+
+        <h2>HACHER vs CHIFFRER</h2>
+
+        <p><img alt="RSA" src="/../../assets/rsa/rsa4.jpeg" /></p>
+
+        <p>
+
+        Pardon de repasser par cette étape scolaire mais je sais bien qu'on a tous nos anglicismes et notre vocabulaire alors je voulais m'assurer que l'on parle bien de la même chose pour toute la durée de cet article :)<br/><br/>
+        Un hachage est une chaîne ou un nombre généré à partir d'une chaîne de texte. La chaîne ou le nombre qui en résulte est d'une longueur fixe, et dont la sortie variera considérablement même avec un minimum de changement dans la chaîne d'entrée. Principe important c'est que pour une entrée donnée, la sortie sera toujours la même. (MD5, SHA, SHA-2, SHA-3) Un bon algorithme de hachage, est un algorithme dont on ne peux pas inverser le processus.<br/>
+
+        </p>
+        <p>
+
+        Le chiffrage transforme les données en une série de caractères illisibles, qui ne sont pas d'une longueur fixe. La différence clé entre le chiffrage et le hachage est que les chaînes chiffrées peuvent être inversées dans leur forme déchiffrées originale si vous avez la bonne clé.<br/><br/>
+        Il existe deux principaux types de chiffrage, le chiffrage par clé symétrique et le chiffrage par clé publique. Dans le chiffrage à clé symétrique, la clé de chiffrage et de déchiffrage est exactement la même. C'est ce à quoi la plupart des gens pensent quand ils pensent au cryptage. La faute aux chaînes "cryptées".<br/><br/>
+        Le chiffrement à clé publique par comparaison a deux clés différentes, l'une utilisée pour chiffrer la chaîne (la clé publique) et l'autre pour la déchiffrer (la clé privée). La clé publique est mise à la disposition de tous pour chiffrer les messages, mais seul le destinataire prévu a accès à la clé privée, et donc la possibilité de déchiffrer les messages. (AES, PGP)<br/><br/>
+        </p>
+
+        <p><img alt="RSA" src="../../assets/rsa/rsa5.png" /></p>
+
+        <em>Pour résumer</em>
+        <p>
+        Le hachage est un moyen idéal de stocker les mots de passe, car les hachages sont intrinsèquement unidirectionnels dans leur nature.<br/><br/>
+        Le chiffrage ne doit être utilisé que lorsqu'il est nécessaire de déchiffrer le message résultant. Par exemple, si vous essayez d'envoyer des messages sécurisés à quelqu'un à l'autre bout du monde, vous devrez utiliser le chiffrage plutôt que le hachage, car le message ne sert à rien pour le destinataire s'il ne peut le déchiffrer.<br/>
+        </p>
+
+        <h2>RSA</h2>
+
+        <p><img alt="RSA" src="/../../assets/rsa/rsa6.jpeg" /></p>
+
+        <p>
+        RSA consiste à créer une paire de clés, l'une sert a chiffrer, l'autre générée à partir de la première, est la seule capable de déchiffrer le message chiffré par la première clé. Pour générer les clés on sélectionne 2 nombre premiers (p et q) de très grande taille. Suffisamment pour qu'il soit impossible de les retrouver avec multiplication entre eux. on notera le résultat du produit n. ce produit est publique. Et c'est un énorme nombre. L'étape suivante consiste à calculer le totien, ce truc sans rentrer dans le détail c'est le nombre d'élément dont le plus grand diviseur commun au sein de n est 1 mod n. Bref,  Si vous êtes à fond dans les maths on en reparlera, toujours est-il que on peux simplifier l'équation par (p-1).(q-1) on le notera ϕ(n).<br/><br/>
+        Pour calculer la clé publique on cherche un nombre premier situé entre 3 et ϕ(n) possédant un plus grand diviseur commun égal à 1 de ϕ(n), c'est à dire que l'on cherche une valeur n'ayant aucun diviseur commun avec ϕ(n) .<br/><br/>
+        On a donc notre clé publique.<br/>
+        <br/>
+        Pour calculer la clé privée il faut trouver le multiplicateur inverse. c'est une valeur dont le produit avec la clé publique résulte en un nombre qui vérifie 1 mod ϕ(n) égal à 1<br/><br/>
+        Choisissons deux nombres premiers : p=11 et q=13. Le multiple n est donc n=p×q=143. Le totient de n est ϕ(n)=(p-1)⋅(q-1)=120.<br/><br/>
+        Pour la clé publique, on choisit un nombre premier aléatoire qui a le plus grand diviseur commun (gcd) de 1 avec ϕ(n) et qui est inférieur à ϕ(n). Choisissons 7 (note : 3 et 5 n'ont pas un gcd de 1 avec ϕ(n). Donc e=7, et pour déterminer d, la clé secrète, il faut trouver l'inverse de 7 avec ϕ(n). Ceci peut être fait avec l'Algorithme d'Euclide Etendu, et donc d=103. Ceci peut être vérifié avec : e⋅d = 1 mod ϕ(n) et 7⋅103 = 721 = 1 mod 120.<br/><br/>
+        Choisissons notre message en clair, `m = 9`.<br/><br/>
+        le chiffrage :<br/><br/>
+        `m^e mod n = 9^7 mod 143 = 48 = c`<br/><br/>
+        le déchiffrage :<br/>
+        `c^d mod n = 48^103 mod 143 = 9 = m`<br/><br/>
+        Pour que tout ceci fonctionne, il faut manuellement communiquer la clé publique. L'avantage du system, c'est qu'il fonctionne dans les 2 sens. Un message chiffré avec la clé publique ne peux être déchiffré qu'avec la clé privée et vice versa.<br/><br/>
+        Et si on avait une procédure qui permette d'échanger sans intervention humaine les clés?<br/>
+        </p>
+
+        <h2>Key exchange Diffie-Hellmann</h2>
+
+        <p>A suivre...</p>
+
+        <div class="PageNavigation">
+
+            <a class="prev" href="/blog/work-for-you">&laquo; You work for you</a>
+
+        </div>
+    </div>
+    <div id="footer_blog">
+        <a href="https://github.com/imfunniee" target="_blank">made on earth by a human</a>
+    </div>
+    <script type="text/javascript">
+    setTimeout(function(){
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function(){
+        document.getElementById("loading").classList.remove("animated");
+        document.getElementById("loading").classList.remove("fadeOut");
+        document.getElementById("loading").style.display = "none";
+        },50);
+    },1500);
+    $.getJSON("../../config.json", function(user){
+        var icon = document.createElement("link");
+        icon.setAttribute("rel", "icon");
+        icon.setAttribute("href", user[0].userimg);
+        icon.setAttribute("type", "image/png");
+        document.getElementsByTagName("head")[0].appendChild(icon);
+    });
+    </script>
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45648310-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</body></html>
