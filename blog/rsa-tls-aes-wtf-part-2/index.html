@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>RSA TLS AES WTF - partie 2 | Grégoire Hébert - blog</title>
+    <meta property="og:title" content="RSA TLS AES WTF - partie 2" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="description" content="Entrée en matière, dans la sécurité des échanges sur le web." />
+    <meta property="og:description" content="Entrée en matière, dans la sécurité des échanges sur le web." />
+    <link rel="canonical" href="https://knot.gheb.dev/blog/rsa-tls-aes-wtf-part-2" />
+    <meta property="og:url" content="https://knot.gheb.dev/blog/rsa-tls-aes-wtf-part-2" />
+    <meta property="og:site_name" content="Grégoire Hébert - blog" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2020-03-29T10:45:00+01:00" />
+    <script type="application/ld+json">
+        {"image": "https://knot.gheb.dev/assets/blog/rsa-part2.gif", "author":"Grégoire Hébert", "publisher":"Grégoire Hébert", "description":"Entrée en matière, dans la sécurité des échanges sur le web.","@type":"BlogPosting","headline":"RSA TLS AES WTF - partie 2","dateModified":"2020-03-29T10:45:00+01:00","datePublished":"2020-03-29T10:45:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://knot.gheb.dev/security/rsa-tls-aes-wtf-part-2.html"},"url":"https://knot.gheb.dev/security/rsa-tls-aes-wtf-part-2.html","@context":"http://schema.org"}</script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<link href="../../index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="loading">
+        <div id="spinner"></div>
+    </div>
+    <div id="profile">
+        <div id="profile_img" style="background: url(https://avatars1.githubusercontent.com/u/878701?v=4) center;"></div>
+        <div id="username"><span style="display:block;">Grégoire Hébert</span><a href="https://github.com/GregoireHebert">@GregoireHebert</a></div>
+        <div id="userbio" style="display: block;">
+            Senior developer and trainer.<br/>
+            CEO of <a href="https://masterclass.les-tilleuls.coop">MasterClass</a><br/>
+            GA enthusiast.<br/>
+            Foods and drinks lover.<br/>
+            <br/>
+            <a href="/hire-me" class="hire">You want to work with me ?</a>
+        </div>
+        <div id="about">
+            <span style="display:block;"><i class="fas fa-users"></i> &nbsp; La Coopérative des Tilleuls</span>
+            <span style="display:block;"><i class="fab fa-twitter"></i> &nbsp; <a href="https://www.twitter.com/gheb_dev">@gheb_dev</a></span>
+            <span style="display:block;"><i class="fas fa-envelope"></i> &nbsp; <a href="mailto:contact@gheb.dev">contact@gheb.dev</a></span>
+            <span style="display:block;"><i class="fas fa-link"></i> &nbsp; <a href="https://les-tilleuls.coop">https://les-tilleuls.coop</a></span>
+            <span style="display:block;"><i class="fas fa-map-marker-alt"></i> &nbsp;&nbsp; Lille (59), France</span>
+        </div>
+    </div>
+    <div id="display" class="display-blog">
+        <h1><a class="go_back" href="/"><i class="fas fa-arrow-left"></i></a>RSA TLS AES WTF ?? Partie 2</h1>
+
+        <div class="PageNavigation">
+
+            <a class="prev" href="/blog/rsa-tls-aes-wtf-part1">&laquo; Lire la partie 1</a>
+
+        </div>
+
+        <h2>Key exchange Diffie-Hellmann</h2>
+
+        <p>
+            Bon déjà le nom est trompeur parce qu'on ne partage pas vraiment les clés telles quelles. On va plutôt échanger des valeurs publiques combinées avec des valeurs privées pour créer une clé commune. Pour bien appréhender la suite, voici l'analogie la plus fréquente. Celle de la peinture, parce qu'une fois mélangée il n'est pas possible de retrouver précisément les teintes d'origine.
+        </p>
+
+        <p><img alt="RSA" src="/../../assets/rsa/rsa7.png" /></p>
+
+        <p>
+            Avant tout, il va falloir que les 2 parties se mettent d'accord sur 2 choses, un "générateur" g et un nombre premier très grand n. Alice possède une clé A privée et Bob une clé B, privée également. Alice et Bob vont utiliser le générateur pour produire une clé publique et privée.
+        </p>
+
+        <p><img alt="RSA" src="/../../assets/rsa/rsa8.png" /></p>
+
+        <p>
+            L'idée est qu'une fois les 2 utilisée, il doit être impossible de faire machine arrière et retrouver les valeurs initiales. On obtient donc Ag et Bg. Ces deux valeurs sont échangées publiquement. Un attaquant possède donc Ag, Bg, g. mais ni A ni B. Alice va ajouter A, à Bg, et Bob va ajouter B à Ag. On va obtenir des 2 côtés une clé conçu depuis A, B et g. Sans les clés privés on peux obtenir éventuellement ABgg mais pas ABg.<br/><br/>
+            En 3 passes, on a maintenant une clé privée que seuls les 2 interlocuteurs connaissent. On va vouloir faire ça au début de chaque "échange".<br/><br/>
+            Pour sécuriser le tout encore plus, dans les méthodes modernes que l'on utilise, on va également y ajouter des données variables pour in fine obtenir un nombre qui sera haché pour être utilisé comme clé secrète dans les algorithmes de chiffrage comme AES.<br/><br/>
+            Maintenant que le principe est connu, allons couvrir les maths. Dans le domaine public il y a g et n. g est un nombre premier, souvent petit. n est un grand nombre premier. Souvent autour de 2000bits, mais de plus en plus autour de 4000bits. Alors grand oui mais il ne peut pas être trop grand, sinon on perd en rapidité de calcul ce quel l'on a gagné en sécurité, il faut un juste milieu, d'ou l'importance du choix de n, même si techniquement, on peut trouver la valeur, ça prendrait tellement de temps qu'on a aucun intérêt ne serait-ce que d'essayer.<br/>
+        </p>
+        <p>
+            Alice choisi une valeur A entre 1 et n, souvent un grand nombre aléatoire, que l'on ne partage pas. Bob choisi une valeur B de la même manière.<br/><br/>
+            Alice calcule \(Ak = g^A mod n\). modulo c'est le restant de la division. Si on devait le rendre visuel, modulo est un cercle de valeur et nous allons faire autant de tours que possible avant d'arriver à la valeur désirée. Donc on va élever une valeur à la puissance d'une seconde valeur monstrueusement grande, mais au final avec modulo on va restreindre le résultat dans l'espace qu'autorise n. Ce qu'il faut noter c'est que selon les facteurs initiaux il y a plusieurs possibilités d'obtenir le même résultat, ce qui rends très difficile la possibilité de retrouver la valeur de A. Le seul moyen ce serait de brute-forcer les résultats et vous n'êtes pas couchés.<br/><br/>
+            Bob va calculer \(Bk = g^B mod n\) <br/><br/>
+            Ces 2 valeurs sont partagées publiquement.<br/><br/>
+            Alice va exécuter à nouveau le calcul mais avec la clé de bob <br/><br/>
+            \(Bk^A mod n\)<br/><br/>
+            et Bob exécutera \(Ak^B mod n\)<br/><br/>
+            Ce qui donnera le même résultat. Ils ont donc la même clé privée en leur possession, pour chiffrer leurs échanges.<br/>
+        </p>
+
+        <h2>La limite de l'échange</h2>
+
+        <p>
+            La problématique de l'échange de clés c'est qu'il faut avoir confiance dans votre réseau internet.<br/><br/>
+            Si quelqu'un a la maitrise du réseau, il se positionne en tant qu'intermédiaire. Lorsque votre navigateur soumet les requêtes d'échanges de clés, l'attaquant peut intercepter le message, générer une clé privée et soumettre la clé publique à votre navigateur. D'un point de vue réseau aucune raison de douter qu'il ne puisse pas s'agir du serveur visé initialement. Il va ensuite demander au serveur visé d'établir un échange de clés à la place de votre navigateur. Il est maintenant capable de décoder vos messages et en faire ce qu'il veux avant de les envoyer au serveur et de vous renvoyer la réponse (en prenant soin soit d'enregistrer la réponse voire même de la modifier à votre insu).<br/><br/>
+            C'est un gros problème parce que Diffie-Hellmann ne permet pas de prévenir ce genre d'attaque et que votre téléphone essaie systématiquement de se connecter à un réseau public connu ou un réseau privé déjà enregistré. il est assez facile via des outils comme shodan.io de détecter le matériel utilisé et de tenter les accès par défaut du-dit router… Méfiez-vous des réseaux publics.<br/><br/>
+            C'est là que RSA entre en jeu.<br/><br/>
+            Puisque qu'il n'est possible de décoder un message chiffré avec la clé privée uniquement avec la clé publique associée, le serveur va utiliser la clé privée pour chiffrer le résultat du nombre premier passé dans le générateur. Si je suis capable de déchiffrer, je suis donc certain que le message provient bien du serveur visé. Si on considère bien sûr que la clé privée n'ait pas été rendue publique par erreur.<br/><br/>
+            Il y a toujours un risque bien, sûr alors il existe plusieurs variations de cet algorithme. Dans certains les clés sont renouvelées de manière régulière.<br/><br/>
+            Pour y ajouter encore en complexité, il est possible de retrouver également des mécanismes ou l'on signe le message, pour cela on va générer un hash.<br/><br/>
+        </p>
+
+        <h3>Hashing</h3>
+
+        <p>
+            Tout le monde connais SHA 1 - secure hashing algorithm<br/><br/>
+            Ce qui est amusant puisqu'il n'est plus assez "secure". <br/><br/>
+            Des recherches ont démontré des failles dans l'algorithme, dès 2005.<br/><br/>
+            Mais pas de souci, car avec les technologies de l'époque, il fallait injecter l'équivalent de 2,7milliard€ en matériel. C'était donc une attaque théorique.<br/><br/>
+            En 2015 les cartes graphiques progressent et on rentre dans le domaine du possible. avec 64GPU en cluster on arrive à provoquer des collisions et commencer à décoder tout ou parties d'un message. Il faut donc estimer autour de 120k € pour une attaque. Autant dire que pour un état ou des criminels bien établis c'est de la petite monnaie.<br/><br/>
+            En 2017 c'est fini. Une technique particulière met un K.O. a SHA1, il faut se tourner vers SHA2 ou AES.<br/><br/>
+            Pour comprendre la technique, il faut d'abord comprendre SHA. C'est un algorithme qui transforme n'importe quelle chaine en une chaine de 160bits. Pour fonctionner SHA à besoin en entrée d'une chaine de 512bits et utilise une fonction de compression qui prendra des groupes de bits pour n'en rendre qu'un seul. Si la chaine est supérieure à 512bits on découpera en blocks de 512. Et puisqu'une chaine ne fait jamais 512bits, il faut un moyen de la rallonger. on va ajouter un bit positif, puis des 0 et terminer par la longueur du message. s'il fait 7 de long on rajoute 111 à la fin donc 1010111 100000…000111. la fonction de compression va effectuer des décalage de bits à partir d'une matrice définie dans l'implémentation. L'algorithme exécutera 80 fois la fonction de compression. Pour obtenir une chaine de 160bits.<br/><br/>
+            Puisque la matrice est définie, on obtiendra toujours les mêmes résultats pour la même chaine. Problème il y a donc une faible possibilité que différents inputs puissent produire le même hash. <br/><br/>
+            La technique utilisée pour l'attaque permet de réduire le nombre de variations à tester pour y arriver.<br/><br/>
+            Cette technique c'est le paradox des bébés ! Ou birthday paradox ou Birthday-near-collision attack. Avec cette approche, on va beaucoup, beaucoup plus vite qu'avec les précédentes techniques. Je vous explique le principe.<br/><br/>
+            <br/>
+            Parmi 23 bébés né en 2019 dans le monde.<br/>
+            Quelle est la probabilité pour ces bébés d'avoir la même date de naissance? \(23\over365\) soit 6%, pas du tout. <b>C'est 50%</b>. Et si on pousse jusqu'a 50 bébés on arrive à <b>97% de chance</b>. À 75 on touche les 99.97%. C'est un paradox, il semble absurde mais on a les maths pour le prouver. Comment est-ce possible qu'un si petit nombre ai autant de chance d'avoir le même anniversaire ? Comment prouver parmi les 365 possibilités, qu'un sixième suffise ? En fait, on va plutôt prouver le contraire, on va prouver qu'ils n'ont <b>pas</b>, le même anniversaire. C'est plus facile.<br/><br/>
+            Le bébé 1 est né. il a donc la totalité des choix possible \(365\over365\).<br/><br/>
+            Le bébé 2 est né. la probabilité qu'il n'ai pas le même anniversaire est \({365\over365} \times {364\over365}\). Un jour de moins que le nombre de bébés déjà nés.<br/><br/>
+            Le bébé 3 est né \({365 \over 365} \times {364\over365} \times {363\over365}\)<br/><br/>
+            Le bébé 4 est né \({365 \over 365} \times {364\over365} \times {363\over365} \times {362\over365}\)<br/><br/>
+            Etc...<br/><br/>
+            Ce calcul a une expression plus simple, on dit que c'est factoriel de 364 divisé par factoriel de 365 -le nombre de bébés * 365 (le nombre de jours dans l'année) à la puissance du nombre de bébé -1<br/><br/>
+            Pour 23 bébés, nous attendons donc le résultat de \(364!\over(342!\times365^{22})\)<br/><br/>
+            Ce qui nous donne, 0.492703 soit approximativement 49.3% de chance que ces bébés n'aient pas la même date de naissance.<br/><br/>
+            Le truc ici c'est qu'on évalue la probabilité de chacun des bébés entre-eux.<br/><br/>
+            On ne vérifie pas qu'un des bébés de 2 à 23 possède le même anniversaire que bébé 1 parmi les 365 possibilités, mais plutôt que 2 bébés parmi les 23 puisse posséder le même anniversaire au sein des 365 possibilités. C'est surprenant mais les Maths le prouvent. Et très logiquement, plus on ajoute de bébés, plus on augmente ce risque d'interpolation.<br/><br/>
+            C'est la même idée qui va être appliquée pour provoquer des collisions, ce qu'essaient de faire les chercheurs.<br/><br/>
+            En admettant que j'ai un fichier en ma possession produisant le hash : \(99024280cab824efca53a5d1341b9210\)<br/>
+            Je vais tenter de produire une autre chaine qui possède le meme hash.<br/>
+            Pour le faire je vais créer une multitude de caractères, espaces, virgules, nouvelles lignes, apostrophes, etc. En créer un nombre conséquent de variations je vais finir éventuellement par tomber sur le même hash (c'est une collision). Ainsi, lorsque je vais demander à mon client de signer de manière électronique mon "vrai" document, je vais ensuite en profiter pour attacher la signature au "faux" document. Ce qui sera valide puisqu'ils produisent le même hash. (pour se protéger créer une copie chez vous du document juste après avoir signé).<br/><br/>
+            Plutôt que de tenter de trouver la possibilité qu'une valeur soit une autre, ce qui représente \(3.4\times10^{38}\) possibilités à vérifier et donc de variation à produire, on a pris le problème à l'envers en utilisant un algorithme basé sur le birthday paradox afin de réduire les possibilités et provoquer des collisions avec moins d'essais possibles. <br/><br/>
+            MD5 et SHA1 sont cassés.<br/><br/>
+            Alors attention prenons des pincettes tous de même, il n'y a aucune urgence.<br/><br/>
+            SHA1 produit un résultat de 160bits, ayant une probabilité de collision de \(1^{280}\), soit environ 12millions d'années de calcul GPU, tellement long que même la NSA, n'essaiera même pas. Avec la méthode ci-dessus, on abaisse cette probabilité à \(2^{60}\) ce qui devient possible, avec beaucoup d'argent et une grande puissance de calcul. Malgré tous il n'y a aucune raison de ne pas passer à SHA2 puisqu'on passe de 160 à 256 et 512 bits. On arrive donc à une probabilité de \(2^{128}\), ce qui est considérablement plus grand. Mais le fait que ce soit possible, reste un risque.<br/><br/>
+            Alors on imagine d'autres moyen de hasher nos données et de rendre encore plus "aléatoire" le résultat. Les algorithmes modernes utilisent un SPNetwork.<br/><br/>
+        </p>
+
+        <h2>SP Network</h2>
+
+        <p>A suivre...</p>
+
+        <div class="PageNavigation">
+            <a class="prev" href="/blog/work-for-you">&laquo; You work for you</a>
+        </div>
+    </div>
+    <div id="footer_blog">
+        <a href="https://github.com/imfunniee" target="_blank">made on earth by a human</a>
+    </div>
+    <script type="text/javascript">
+    setTimeout(function(){
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function(){
+        document.getElementById("loading").classList.remove("animated");
+        document.getElementById("loading").classList.remove("fadeOut");
+        document.getElementById("loading").style.display = "none";
+        },50);
+    },1500);
+    $.getJSON("../../config.json", function(user){
+        var icon = document.createElement("link");
+        icon.setAttribute("rel", "icon");
+        icon.setAttribute("href", user[0].userimg);
+        icon.setAttribute("type", "image/png");
+        document.getElementsByTagName("head")[0].appendChild(icon);
+    });
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45648310-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</body></html>
