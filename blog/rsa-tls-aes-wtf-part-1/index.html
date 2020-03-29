@@ -112,20 +112,20 @@
         <p><img alt="RSA" src="/../../assets/rsa/rsa6.jpeg" /></p>
 
         <p>
-        RSA consiste à créer une paire de clés, l'une sert a chiffrer, l'autre générée à partir de la première, est la seule capable de déchiffrer le message chiffré par la première clé. Pour générer les clés on sélectionne 2 nombre premiers (p et q) de très grande taille. Suffisamment pour qu'il soit impossible de les retrouver avec multiplication entre eux. on notera le résultat du produit n. ce produit est publique. Et c'est un énorme nombre. L'étape suivante consiste à calculer le totien, ce truc sans rentrer dans le détail c'est le nombre d'élément dont le plus grand diviseur commun au sein de n est 1 mod n. Bref,  Si vous êtes à fond dans les maths on en reparlera, toujours est-il que on peux simplifier l'équation par (p-1).(q-1) on le notera ϕ(n).<br/><br/>
-        Pour calculer la clé publique on cherche un nombre premier situé entre 3 et ϕ(n) possédant un plus grand diviseur commun égal à 1 de ϕ(n), c'est à dire que l'on cherche une valeur n'ayant aucun diviseur commun avec ϕ(n) .<br/><br/>
-        On a donc notre clé publique.<br/>
-        <br/>
-        Pour calculer la clé privée il faut trouver le multiplicateur inverse. c'est une valeur dont le produit avec la clé publique résulte en un nombre qui vérifie 1 mod ϕ(n) égal à 1<br/><br/>
-        Choisissons deux nombres premiers : p=11 et q=13. Le multiple n est donc n=p×q=143. Le totient de n est ϕ(n)=(p-1)⋅(q-1)=120.<br/><br/>
-        Pour la clé publique, on choisit un nombre premier aléatoire qui a le plus grand diviseur commun (gcd) de 1 avec ϕ(n) et qui est inférieur à ϕ(n). Choisissons 7 (note : 3 et 5 n'ont pas un gcd de 1 avec ϕ(n). Donc e=7, et pour déterminer d, la clé secrète, il faut trouver l'inverse de 7 avec ϕ(n). Ceci peut être fait avec l'Algorithme d'Euclide Etendu, et donc d=103. Ceci peut être vérifié avec : e⋅d = 1 mod ϕ(n) et 7⋅103 = 721 = 1 mod 120.<br/><br/>
-        Choisissons notre message en clair, m = 9.<br/><br/>
-        le chiffrage :<br/><br/>
-        m^e mod n = 9^7 mod 143 = 48 = c<br/><br/>
-        le déchiffrage :<br/>
-        c^d mod n = 48^103 mod 143 = 9 = m<br/><br/>
-        Pour que tout ceci fonctionne, il faut manuellement communiquer la clé publique. L'avantage du system, c'est qu'il fonctionne dans les 2 sens. Un message chiffré avec la clé publique ne peux être déchiffré qu'avec la clé privée et vice versa.<br/><br/>
-        Et si on avait une procédure qui permette d'échanger sans intervention humaine les clés?<br/>
+            RSA consiste à créer une paire de clés, l'une sert a chiffrer, l'autre générée à partir de la première, est la seule capable de déchiffrer le message chiffré par la première clé. Pour générer les clés on sélectionne 2 nombre premiers (p et q) de très grande taille. Suffisamment pour qu'il soit impossible de les retrouver avec multiplication entre eux. on notera le résultat du produit n. ce produit est publique. Et c'est un énorme nombre. L'étape suivante consiste à calculer le totien, ce truc sans rentrer dans le détail c'est le nombre d'élément dont le plus grand diviseur commun au sein de n est 1. Bref,  Si vous êtes à fond dans les maths on en reparlera, toujours est-il que on peux simplifier l'équation par \((p-1).(q-1)\) on le notera ϕ(n).<br/><br/>
+            Pour calculer la clé publique on cherche un nombre premier situé entre 3 et ϕ(n) possédant un plus grand diviseur commun égal à 1 de ϕ(n), c'est à dire que l'on cherche une valeur n'ayant aucun diviseur commun avec ϕ(n) .<br/><br/>
+            On a donc notre clé publique.<br/>
+            <br/>
+            Pour calculer la clé privée il faut trouver le multiplicateur inverse. c'est une valeur dont le produit avec la clé publique résulte en un nombre qui vérifie \(mod ϕ(n)\) égal à 1<br/><br/>
+            Choisissons deux nombres premiers : \(p=11\) et \(q=13\). Le multiple n est donc n=p×q=143. Le totient de n est \(ϕ(n)=(p-1)⋅(q-1)=120\).<br/><br/>
+            Pour la clé publique, on choisit un nombre premier aléatoire qui a le plus grand diviseur commun (gcd) de 1 avec ϕ(n) et qui est inférieur à ϕ(n). Choisissons 7 (note : 3 et 5 n'ont pas un gcd de 1 avec ϕ(n). Donc \(e=7\), et pour déterminer d, la clé secrète, il faut trouver l'inverse de 7 avec ϕ(n). Ceci peut être fait avec l'Algorithme d'Euclide Etendu, et donc d=103. Ceci peut être vérifié avec : \(e⋅d mod ϕ(n) = 1\) or \(7⋅103 = 721\) et \(721 mod 120 = 1\).<br/><br/>
+            Choisissons notre message en clair, \(m = 9\).<br/><br/>
+            le chiffrage :<br/><br/>
+            \(m^e mod n = 9^7 mod 143 = 48 = c\)<br/><br/>
+            le déchiffrage :<br/>
+            \(c^d mod n = 48^103 mod 143 = 9 = m\)<br/><br/>
+            Pour que tout ceci fonctionne, il faut manuellement communiquer la clé publique. L'avantage du system, c'est qu'il fonctionne dans les 2 sens. Un message chiffré avec la clé publique ne peux être déchiffré qu'avec la clé privée et vice versa.<br/><br/>
+            Et si on avait une procédure qui permette d'échanger sans intervention humaine les clés?<br/>
         </p>
 
         <h2>Key exchange Diffie-Hellmann</h2>
@@ -159,6 +159,8 @@
         document.getElementsByTagName("head")[0].appendChild(icon);
     });
     </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script type="text/javascript">
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
