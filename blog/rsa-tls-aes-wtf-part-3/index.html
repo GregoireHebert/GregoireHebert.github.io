@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>RSA TLS AES WTF - partie 3 | Grégoire Hébert - blog</title>
+    <meta property="og:title" content="RSA TLS AES WTF - partie 3" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="description" content="Entrée en matière, dans la sécurité des échanges sur le web." />
+    <meta property="og:description" content="Entrée en matière, dans la sécurité des échanges sur le web." />
+    <link rel="canonical" href="https://knot.gheb.dev/blog/rsa-tls-aes-wtf-part-3" />
+    <meta property="og:url" content="https://knot.gheb.dev/blog/rsa-tls-aes-wtf-part-3" />
+    <meta property="og:site_name" content="Grégoire Hébert - blog" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2020-03-29T15:45:00+01:00" />
+    <script type="application/ld+json">
+        {"image": "https://knot.gheb.dev/assets/blog/rsa-part3.gif", "author":"Grégoire Hébert", "publisher":"Grégoire Hébert", "description":"Entrée en matière, dans la sécurité des échanges sur le web.","@type":"BlogPosting","headline":"RSA TLS AES WTF - partie 3","dateModified":"2020-03-29T15:45:00+01:00","datePublished":"2020-03-29T15:45:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://knot.gheb.dev/blog/rsa-tls-aes-wtf-part-3"},"url":"https://knot.gheb.dev/blog/rsa-tls-aes-wtf-part-3","@context":"http://schema.org"}</script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<link href="../../index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="loading">
+        <div id="spinner"></div>
+    </div>
+    <div id="profile">
+        <div id="profile_img" style="background: url(https://avatars1.githubusercontent.com/u/878701?v=4) center;"></div>
+        <div id="username"><span style="display:block;">Grégoire Hébert</span><a href="https://github.com/GregoireHebert">@GregoireHebert</a></div>
+        <div id="userbio" style="display: block;">
+            Senior developer and trainer.<br/>
+            CEO of <a href="https://masterclass.les-tilleuls.coop">MasterClass</a><br/>
+            GA enthusiast.<br/>
+            Foods and drinks lover.<br/>
+            <br/>
+            <a href="/hire-me" class="hire">You want to work with me ?</a>
+        </div>
+        <div id="about">
+            <span style="display:block;"><i class="fas fa-users"></i> &nbsp; La Coopérative des Tilleuls</span>
+            <span style="display:block;"><i class="fab fa-twitter"></i> &nbsp; <a href="https://www.twitter.com/gheb_dev">@gheb_dev</a></span>
+            <span style="display:block;"><i class="fas fa-envelope"></i> &nbsp; <a href="mailto:contact@gheb.dev">contact@gheb.dev</a></span>
+            <span style="display:block;"><i class="fas fa-link"></i> &nbsp; <a href="https://les-tilleuls.coop">https://les-tilleuls.coop</a></span>
+            <span style="display:block;"><i class="fas fa-map-marker-alt"></i> &nbsp;&nbsp; Lille (59), France</span>
+        </div>
+    </div>
+    <div id="display" class="display-blog">
+        <h1><a class="go_back" href="/"><i class="fas fa-arrow-left"></i></a>RSA TLS AES WTF ?? Partie 3</h1>
+
+        <div class="PageNavigation">
+            <a class="prev" href="/blog/rsa-tls-aes-wtf-part-1">&laquo; Lire la partie 1</a>
+        </div>
+        <div class="PageNavigation">
+            <a class="prev" href="/blog/rsa-tls-aes-wtf-part-2">&laquo; Lire la partie 2</a>
+        </div>
+
+        <h2>SP Network</h2>
+
+        <p>
+            SP c'est pour Substitution / Permutation<br/>
+            Enigma fait de la substitution. Elle a un niveau de substitution de 1 pour 1. A chaque rotation de rouage dans la machine, une lettre = une autre lettre.<br/><br/>
+            Ce qui signifie que si je souhaites décoder un caractère, je n'ai qu'à me concentrer sur la paire, c'est à dire à quel caractère est il associé.Une fois décodé, il est éliminé des possibilités pour les caractères suivants.<br/><br/>
+            MD4, MD5, SHA0 et SHA1 vont utiliser ce processus mais, aussi y ajouter d'autres opérations mathématiques pour complexifier le résultat. On va y retrouver du décalage de bits de modulo \(2^32\), XOR, AND, OR et NOT. Malgré toute, avec cette méthode il reste possible de créer des fichiers différents mais avec la même signature.<br/><br/>
+            Alors on va encore ajouter de la confusion.<br/>
+        </p>
+        <p>
+            On va exécuter une permutation. Plutôt que de remplacer les valeurs, on va mélanger les positions. Attention, comme pour l'étape précédente, ce n'est pas aléatoire, ce sont des valeurs prédéfinies. Il faut pouvoir revenir déchiffrer.<br/><br/>
+            La manière dont ça fonctionne est la suivante:<br/><br/>
+            Dans un premier temps nous allons découper la chaine à encoder en bloc d'une certaine taille. Si le dernier ou seul bloc est plus petit, on va l'étendre.<br/><br/>
+            Chaque bloc est passé dans une s-box, ou substitution box. Son but est de d'inter-changer une valeur par une autre à partir d'une matrice pré-définie.<br/><br/>
+            On rassemble les blocs de valeurs à nouveau. ça veux déjà dire moins de choses. Puis la valeur va être soumise au sein d'une p-box, ou permutation box. On ne remplace pas les valeurs, on les déplace dans la chaine.<br/><br/>
+        </p>
+
+        <p class="center">
+            [101101][110011]<br/>
+            [sbox][sbox]<br/>
+            [110011][101011]<br/>
+            [---pbox---]<br/>
+            [101011][110011]<br/>
+        </p>
+
+        <p>
+            Si on s'arrête là, on ne fait un peu mieux mais pas beaucoup mieux que Enigma, alors on va utiliser une clé, un hash, que l'on va diviser en 3 blocs, 1 pour chaque étape, puis mixer ce bloc avec le message grâce à un XOR entre chaque étape, et répéter toutes les étapes un certain nombre de fois, 10x, 80x. Le nombre de tours à faire va dépendre de l'efficacité d'un tour. Donc des substitutions et permutations. AES par exemple lui fait entre 10 et 14 tours. En deçà on perds en sécurité et au delà on perds en rapidité. Pour encoder un mot de passe on préfèrera la sécurité à la rapidité. Pour encoder des échanges on favorisera la rapidité sans qu'elle soit on dépit de la sécurité.<br/><br/>
+            Et quand on parle de SP Network impossible de ne pas citer celui qui protège probablement +70% du web. Rijndael.<br/>
+        </p>
+
+        <h2>AES - Rijndael</h2>
+
+        <p>
+            Suite à l'insuffisance du prédécesseur DES, et DES3, le NIST (National Institute of Standards and Technology) à ouvert une compétition afin de proposer un algorithme capable de surpasser l'existant et de l'utiliser en tant que Advanced Encryption Standard.<br/><br/>
+            Il y a eu plusieurs compétiteurs. Certains étaient plus robustes, mais plus lents. D'autres étaient plus rapide, mais moins robuste. Sachant qu'il s'agissait d'établir un moyen de communiquer sur internet, il faut que ça aille vite mais pas au détriment de la sécurité.<br/><br/>
+            Parmi les critères on retrouvera également, la consommation de mémoire, l'adaptabilité dans le temps, simplicité etc…<br/>
+        </p>
+
+        <p><img alt="RSA" src="../../assets/rsa/rsa9.png" /></p>
+
+        <p>Le gagnant est l'algorithme Rijndael, créé par 2 belges Vincent Rijmen et Joan Daemen.</p>
+         
+        <p>
+            Voyons pourquoi Rijndael a été sélectionné.<br/><br/>
+            Il reçoit un texte d'une longueur de 128 bits, il retournera une chaîne chiffrée de 128bits. Une clé sera utilisée pour le chiffrement, cette clé sera de 128, 192 ou 256 bits. On a donc une clé très longue, voir même extrêmement longue…<br/><br/>
+            <b>128 :</b><br/>
+             <pre>2a0a5f2e922599e0192508b03b97799479d26012ae1d8b1ad84023a8ac1f4fa740492d9fb91c3f29071c959a4914ce55e1dca06209e7fc90e21a45205a51240b00a8cc74351b0b9a028667e64d358cfc876c5708252929183d21120c16684af75020350cd018c8bda5520213bb4a72090cf000dedfc2f40a4dc99352ad0ed63b</pre><br/><br/>
+            <b>256:</b><br/>
+         <pre>94e5c820930640f96349e7bad731b4e6023d150513c28adf86addef93a8f3e760b6c1ff3e406d4583d7e70d99dbcc66f6b37b1fbd4c3807781a693519f5b998c056b123f955f15b671d14c4094452a98f191a064917c36940a6fd255e4ed4caab3290dee3971aa0b7d01ba6362af5310fd354d94ef66bbfe7452d72e81fd270a8064ac5e0a0d3e36f76bacb8bcbb87685bb35a8b2792f8f00fdb13aa7cb87464db03f7b45cfdc1b85230d9c8caa4a9dac8dfd8de47c02758eb3559a80994e1d861b5d2da4abcdbe47e65e55f612e003b1adbb3fea03f4bebde169715fbe786b0c6a5eb8aecc83833ac8863e54d4483a2dea67aabea00ad0eeccdc7139cb78feb</pre><br/><br/>
+            Bref, même si vos sites utilisent une clé de 128bits, c'est déjà bien assez long. Pour ceux qui aiment se représenter dans le temps, il faudrait des milliers d'années pour déchiffrer.<br/>
+        </p>
+        <p>
+            Rijndael est conçu comme un sp-network.<br/><br/>
+            Il va donc réaliser des substitutions pour amener de la confusion et des permutations pour amener de la diffusion.<br/><br/>
+            Partons de 128 bits. Plutôt que de travailler sur une longue chaîne de caractère, AES manipule les données sous forme d'une matrice. une grille de 4x4. Il va donc découper par blocs de 16bytes.<br/>
+        </p>
+        <p class="center">
+            [b01,b05,b09,b13]<br/>
+            [b02,b06,b10,b14]<br/>
+            [b03,b07,b11,b15]<br/>
+            [b04,b08,b12,b16]<br/>
+        </p>
+        <p>
+            Nous avons en premier l'ajout d'une partie de notre clé via une opération binaire, XOR. Ce découpage de notre clé et cet ajout entre chaque opération, est ce qui nous permet de rendre le tout secret. Puisque tout le reste de l'algorithme est publique.<br/><br/>
+            Ensuite nous exécutons les opérations suivantes substitution de bits, [décalage de bit, mélange de colonne](permutation), et ajout de la clé via XOR. Cette suite d'opérations est un "round", un tour si vous voulez.<br/><br/>
+            Avec une clé de 128bits, il faut effectuer 10 rounds pour tout chiffrer.<br/>
+            Avec une clé de 192bits, il faut effectuer 12 rounds.<br/>
+            Avec une clé de 256bits, il faut effectuer 14 rounds.<br/>
+        </p>
+        <p>
+            La clé va être divisée en autant de morceaux qu'il est nécessaire.<br/><br/>
+            AES utilise un "key schedule". C'est un algorithme qui calcule chaque round key à partir de la clé.<br/><br/>
+            La première étape, La substitution, est une opération qui résultera en une valeur située dans un champs de Galois de \(2^8\), c'est à dire qu'elle sera située entre \(00000000\) et \(11111111\).<br/><br/>
+            Cette valeur est calculée dans une lookup table définie dans l'implémentation de l'algorithme.<br/><br/>
+            Cette lookup table est un ensemble de fonctions mathématiques s'assurant qu'un élément via le biais du hasard ne retombe jamais sur lui même ainsi que 2 éléments n'échangent pas leur place entre eux, et qu'il soit possible (via des fonctions inverses) de revenir à l'état initial. Puisque c'est une lookup Table, c'est rapide.<br/>
+        </p>
+
+        <p><img alt="RSA" src="../../assets/rsa/rsa10.png" /></p>
+
+        <p>
+            La seconde étape, le décalage de bytes. Dans notre matrice chaque ligne est décalée d'un rang vers la gauche (sauf la première ligne). Cette étape permet de garantir que les ensembles de valeurs ne soient pas encodées de manière indépendante, et ne pas former des sous ensemble de chaines courtes, et donc plus facile à décoder.
+        </p>
+
+        <p><img alt="RSA" src="../../assets/rsa/rsa11.png" /></p>
+
+        <p>
+            La dernière étape d'un round est le mélange des colonnes.<br/><br/>
+            Puisqu'on va répéter les 3 opérations, elle permet d'ajouter encore plus de confusion lors des prochaine exécutions. Cependant cette étape n'est pas réalisée au dernier round, puisque de toute manière elle n'ajoute aucune variation des données. Le mélange est en réalité une multiplication matricielle qui résultera là aussi dans une valeur située dans un champs de Galois de \(2^8\).<br/><br/>
+            (pour les matheux qui se demandent comment une multiplication de 2 grandes valeurs pourraient ne pas sortir du champs imposé, c'est parce que la valeur est multipliée modulo un polynomial)<br/><br/>
+            Et ici aussi, on utilisera des fonctions qui possèdent leur inverse.<br/>
+        </p>
+        <p><img alt="RSA" src="../../assets/rsa/rsa12.png" /></p>
+
+        <p>
+            Avec cette construction on ne sort jamais du champs des possible sur 128bits, et chaque opération est réversible.<br/><br/>
+            Alors bien sûr ces étapes son cruciales et si l'implémentation n'est pas rigoureuse, des morceaux de clés pourraient fuiter. Mais, heureusement pour nous, puisque c'est un standard, c'est a présent directement encodé dans les CPU, et de manière précautionneuse.<br/><br/>
+            C'est presque impossible a pirater, et extrêmement rapide.<br/><br/>
+            C'est d'ailleurs pour ça qu'on a eu des virus qui verrouillent votre système, grâce a AES, il est capable d'encoder 10Gb/s. Le temps de s'en rendre compte, c'est trop tard.<br/>
+        </p>
+        <p>
+            <em>En résumé</em><br/>
+            Pour sécuriser vos échanges TLS combine les capacités de <b>RSA, Diffie-Hellmann et AES</b>.
+        </p>
+        <p>
+            Merci de m'avoir lu :)<br/>
+            Greg.
+        </p>
+
+        <h2>Sources</h2>
+
+        <ul>
+            <li><a target="_blank" href="https://chiffrer.info/ ">https://chiffrer.info/</a> </li>
+            <li><a target="_blank" href="https://www.youtube.com/channel/UC9-y-6csu5WGm29I7JiwpnA ">https://www.youtube.com/channel/UC9-y-6csu5WGm29I7JiwpnA</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Transport_Layer_Security ">https://en.wikipedia.org/wiki/Transport_Layer_Security</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Substitution%E2%80%93permutation_network ">https://en.wikipedia.org/wiki/Substitution%E2%80%93permutation_network</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard ">https://en.wikipedia.org/wiki/Advanced_Encryption_Standard</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/RSA_(cryptosystem) ">https://en.wikipedia.org/wiki/RSA_(cryptosystem)</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/MD5 ">https://en.wikipedia.org/wiki/MD5</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/SHA-1 ">https://en.wikipedia.org/wiki/SHA-1</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange ">https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Elliptic-curve_Diffie%E2%80%93Hellman ">https://en.wikipedia.org/wiki/Elliptic-curve_Diffie%E2%80%93Hellman</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Triple_DES ">https://en.wikipedia.org/wiki/Triple_DES</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Data_Encryption_Standard ">https://en.wikipedia.org/wiki/Data_Encryption_Standard</a> </li>
+            <li><a target="_blank" href="http://competitions.cr.yp.to/aes.html ">http://competitions.cr.yp.to/aes.html</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Public-key_cryptography ">https://en.wikipedia.org/wiki/Public-key_cryptography</a> </li>
+            <li><a target="_blank" href="https://sha-mbles.github.io/ ">https://sha-mbles.github.io/</a> </li>
+            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Password-authenticated_key_agreement">https://en.wikipedia.org/wiki/Password-authenticated_key_agreemen</t</li>
+        </ul>
+
+        <div class="PageNavigation">
+            <a class="prev" href="/blog/work-for-you">&laquo; You work for you</a>
+        </div>
+    </div>
+    <div id="footer_blog">
+        <a href="https://github.com/imfunniee" target="_blank">made on earth by a human</a>
+    </div>
+    <script type="text/javascript">
+    setTimeout(function(){
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function(){
+        document.getElementById("loading").classList.remove("animated");
+        document.getElementById("loading").classList.remove("fadeOut");
+        document.getElementById("loading").style.display = "none";
+        },50);
+    },1500);
+    $.getJSON("../../config.json", function(user){
+        var icon = document.createElement("link");
+        icon.setAttribute("rel", "icon");
+        icon.setAttribute("href", user[0].userimg);
+        icon.setAttribute("type", "image/png");
+        document.getElementsByTagName("head")[0].appendChild(icon);
+    });
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45648310-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</body></html>

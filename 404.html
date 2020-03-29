@@ -1,24 +1,100 @@
----
-layout: default
----
-
-<style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
-
-<div class="container">
-  <h1>404</h1>
-
-  <p><h3>Page not found :(</h3></p>
-  <p>Nothing here.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Grégoire Hébert</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/index.css">
+    <link rel="icon" href="https://avatars1.githubusercontent.com/u/878701?v=4" type="image/png">
+</head>
+<body>
+<div id="loading">
+    <div id="spinner"></div>
 </div>
+<div id="profile">
+    <div id="profile_img" style="background: url(https://avatars1.githubusercontent.com/u/878701?v=4) center;"></div>
+    <div id="username"><span style="display:block;">Grégoire Hébert</span><i class="fab fa-github"></i><a
+            href="https://github.com/GregoireHebert">@GregoireHebert</a></div>
+    <div id="userbio" style="display: block;">
+        Senior developer, trainer, lecturer.<br/>
+        CEO of <a href="https://masterclass.les-tilleuls.coop">MasterClass</a> by Les-Tilleuls<br/>
+        GA enthusiast.<br/>
+        Foods and drinks lover.<br/>
+        <br/>
+        <a href="/hire-me" class="hire">You want to work with me ?</a>
+    </div>
+    <div id="about">
+        <span style="display:block;"><i class="fas fa-users"></i> &nbsp; La Coopérative des Tilleuls</span>
+        <span style="display:block;"><i class="fas fa-phone"></i> &nbsp; <a
+                href="tel:+33618864288">+33 618864288</a></span>
+        <span style="display:block;"><i class="fab fa-twitter"></i> &nbsp; <a href="https://www.twitter.com/gheb_dev">@gheb_dev</a></span>
+        <span style="display:block;"><i class="fas fa-envelope"></i> &nbsp; <a href="mailto:contact@gheb.dev">contact@gheb.dev</a></span>
+        <span style="display:block;"><i class="fas fa-link"></i> &nbsp; <a href="https://les-tilleuls.coop">https://les-tilleuls.coop</a></span>
+        <span style="display:block;"><i class="fas fa-map-marker-alt"></i> &nbsp;&nbsp; Lille (59), France</span>
+    </div>
+</div>
+<div id="display">
+  <h1>404</h1>
+  <h2>mamaaaan? Je suis perdu!</h2>
+</div>
+<div id="footer_blog">
+  <a href="https://github.com/imfunniee" target="_blank">made on earth by a human</a>
+</div>
+<script type="text/javascript">
+    setTimeout(function () {
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function () {
+            document.getElementById("loading").classList.remove("animated");
+            document.getElementById("loading").classList.remove("fadeOut");
+            document.getElementById("loading").style.display = "none";
+        }, 800);
+    }, 1500);
+    $.getJSON("blog.json", function (blog) {
+        blog = blog || [];
+        if (blog.length == 0) {
+            return document.getElementById("blog_section").style.display = "none";
+        }
+        for (var i = 0; i < blog.length; i++) {
+            $("#blogs").append(`
+            <a href="./blog/${blog[i].url_title}/">
+                <section>
+                    <img src="${blog[i].top_image}">
+                    <div class="blog_container">
+                        <div class="section_title">${blog[i].title}</div>
+                        <div class="about_section">
+                            ${blog[i].sub_title}
+                        </div>
+                    </div>
+                </section>
+            </a>
+            `);
+        }
+    }).fail(function () {
+        return document.getElementById("blog_section").style.display = "none";
+    });
+</script>
+<script type="text/javascript">
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-45648310-1', 'auto');
+    ga('send', 'pageview');
+</script>
+</body>
+</html>
