@@ -119,11 +119,11 @@
         Pour calculer la clé privée il faut trouver le multiplicateur inverse. c'est une valeur dont le produit avec la clé publique résulte en un nombre qui vérifie 1 mod ϕ(n) égal à 1<br/><br/>
         Choisissons deux nombres premiers : p=11 et q=13. Le multiple n est donc n=p×q=143. Le totient de n est ϕ(n)=(p-1)⋅(q-1)=120.<br/><br/>
         Pour la clé publique, on choisit un nombre premier aléatoire qui a le plus grand diviseur commun (gcd) de 1 avec ϕ(n) et qui est inférieur à ϕ(n). Choisissons 7 (note : 3 et 5 n'ont pas un gcd de 1 avec ϕ(n). Donc e=7, et pour déterminer d, la clé secrète, il faut trouver l'inverse de 7 avec ϕ(n). Ceci peut être fait avec l'Algorithme d'Euclide Etendu, et donc d=103. Ceci peut être vérifié avec : e⋅d = 1 mod ϕ(n) et 7⋅103 = 721 = 1 mod 120.<br/><br/>
-        Choisissons notre message en clair, `m = 9`.<br/><br/>
+        Choisissons notre message en clair, m = 9.<br/><br/>
         le chiffrage :<br/><br/>
-        `m^e mod n = 9^7 mod 143 = 48 = c`<br/><br/>
+        m^e mod n = 9^7 mod 143 = 48 = c<br/><br/>
         le déchiffrage :<br/>
-        `c^d mod n = 48^103 mod 143 = 9 = m`<br/><br/>
+        c^d mod n = 48^103 mod 143 = 9 = m<br/><br/>
         Pour que tout ceci fonctionne, il faut manuellement communiquer la clé publique. L'avantage du system, c'est qu'il fonctionne dans les 2 sens. Un message chiffré avec la clé publique ne peux être déchiffré qu'avec la clé privée et vice versa.<br/><br/>
         Et si on avait une procédure qui permette d'échanger sans intervention humaine les clés?<br/>
         </p>
