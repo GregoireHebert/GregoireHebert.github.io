@@ -155,9 +155,7 @@ img {
 
     .header__headline {
         grid-column: -2 / -1;
-        margin-top: 30%;
-        margin-right: 2em;
-        margin-bottom: -2.5em;
+        margin: 2em auto -2em auto;
     }
 
     .header__headline span {
@@ -167,12 +165,13 @@ img {
     .header__subtitle {
         font-size: 3vmin;
         text-align: center;
-        margin-right: 4em;
+        margin: 0 auto;
         color: var(--clr-title-image);
         grid-column: -2 / -1;
     }
 
     .header__cta {
+        margin: 0 auto;
         grid-column: -2 / -1;
     }
 
@@ -183,7 +182,7 @@ img {
     .header__cta a, .content__cta a {
         display: inline-block;
         float: right;
-        margin-right: 2em;
+        margin-left: 2em;
     }
 
     .button--secondary {
