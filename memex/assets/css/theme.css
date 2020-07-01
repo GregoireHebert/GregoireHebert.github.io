@@ -1,0 +1,238 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --clr-title: #2995A0;
+    --clr-title-image: #FFF;
+    --clr-text: #333333;
+    --clr-text-dark: #EEEEEE;
+    --clr-bg-primary: #2995A0;
+    --clr-bg-secondary: #26AFA5;
+    --fw-light: 300;
+    --fw-normal: 400;
+    --fw-bold: 700;
+    --fw-black: 900;
+}
+
+html {
+    color: var(--clr-text);
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: var(--fw-normal);
+    font-size: 1.125rem;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: var(--fw-black);
+    color: var(--clr-title);
+    margin-top: .5em;
+    margin-bottom: .25em;
+}
+
+.button {
+    cursor: pointer;
+    padding: .5em 1.5em;
+    font-size: 4vmin;
+    font-weight: var(--fw-black);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: .75em;
+}
+
+.button--primary {
+    background-color: var(--clr-bg-primary);
+    color: var(--clr-text-dark);
+}
+
+.button--primary:hover {
+    background-color: var(--clr-bg-secondary);
+}
+
+p {
+    font-size: .8em;
+    margin: 1em;
+}
+
+.button--secondary {
+    outline: 3px solid var(--clr-bg-primary);
+    outline-offset: -3px;
+    color: var(--clr-bg-primary);
+}
+
+.button--secondary:hover {
+    background-color: var(--clr-bg-secondary);
+    outline-color: var(--clr-bg-secondary);
+    color: var(--clr-text-dark);
+}
+
+ul {
+    padding-left: 1.5em;
+    list-style: none;
+    font-size: .9em;
+}
+
+ul > ul {
+    padding-left: 1.5em;
+}
+
+img {
+    width: 100%;
+    height: 70vh;
+    object-fit: cover;
+    object-position: 15% 50%;
+}
+
+.content {
+    padding: 0 1em;
+}
+
+.header__headline {
+    font-size: 7vmin;
+    text-align: center;
+}
+
+.header__subtitle {
+    font-size: 4vmin;
+    margin: 0;
+    text-align: center;
+}
+
+.header__cta--buy, .header__cta--more {
+    margin: .25em auto;
+    display: table;
+}
+
+.header__cta, .content__cta {
+    padding: 1em;
+}
+
+.header__cta a, .content__cta a {
+    display: flex;
+    justify-content: space-around;
+}
+
+.content h2 {
+    font-size: 1em;
+}
+
+
+@media (min-width: 780px) {
+    header {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+    }
+
+    .content h2 {
+        font-size: 1.75em;
+    }
+
+    p {
+        font-size: 1.25em;
+    }
+
+    .header__image {
+        display: none;
+    }
+
+    .header__content {
+        background-image: url(../images/scene_wood.jpg);
+        background-size: cover;
+        background-position: 50% 50%;
+        grid-column: 1 / -1;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr;
+    }
+
+    .header__headline {
+        grid-column: -2 / -1;
+        margin-top: 30%;
+        margin-right: 2em;
+        margin-bottom: -2.5em;
+    }
+
+    .header__headline span {
+        display: block;
+    }
+
+    .header__subtitle {
+        font-size: 3vmin;
+        text-align: center;
+        margin-right: 4em;
+        color: var(--clr-title-image);
+        grid-column: -2 / -1;
+    }
+
+    .header__cta {
+        grid-column: -2 / -1;
+    }
+
+    .header__cta, .content__cta {
+        padding: .5em;
+    }
+
+    .header__cta a, .content__cta a {
+        display: inline-block;
+        float: right;
+        margin-right: 2em;
+    }
+
+    .button--secondary {
+        outline: 3px solid var(--clr-title-image);
+        outline-offset: -3px;
+        color: var(--clr-title-image);
+    }
+
+    .button--secondary:hover {
+        background-color: var(--clr-title-image);
+        outline-color: var(--clr-title-image);
+        color: var(--clr-title);
+    }
+
+    .button {
+        font-size: 2vmin;
+    }
+
+    .header h1, .header h2, .header h3 {
+        color: var(--clr-title-image);
+    }
+
+    .content > ul {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 2em;
+        font-size: 1.25em;
+    }
+
+    .content > ul > li {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 2em;
+        margin-right: 1em;
+        width: 10vw;
+    }
+
+    .content ul > ul {
+        border-left: 1px solid var(--clr-bg-secondary);
+    }
+
+    .content ul > ul > li {
+        list-style: square;
+        width: 20vw;
+    }
+}
+
+@media (min-width: 1070px) {
+    .content {
+        margin: 0 10%;
+    }
+}
