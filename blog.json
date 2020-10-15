@@ -1,5 +1,12 @@
 [
  {
+  "url_title": "memex",
+  "title": "Memex - La route du REST",
+  "sub_title": "Découvrez les origines du Web et du REST",
+  "top_image": "/blog/memex/assets/images/scene_wood.jpg",
+  "visible": true
+ },
+ {
   "url_title": "rsa-tls-aes-wtf-part-3",
   "title": "RSA TLS AES WTF - partie 3",
   "sub_title": "Entrée en matière, dans la sécurité des échanges sur le web.",
