@@ -1,5 +1,12 @@
 [
  {
+  "url_title": "api-platform-card",
+  "title": "Grab a collector card !",
+  "sub_title": "Can you collect them all? Here is one to begin with :)",
+  "top_image": "/assets/api-platform-card/card.png",
+  "visible": true
+ },
+ {
   "url_title": "memex",
   "title": "Memex - La route du REST",
   "sub_title": "Découvrez les origines du Web et du REST",
