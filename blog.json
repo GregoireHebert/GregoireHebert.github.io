@@ -1,5 +1,12 @@
 [
  {
+  "url_title": "a-prime-constant",
+  "title": "A prime constant",
+  "sub_title": "A prime constant has been calculated to generate a suite of prime numbers.",
+  "top_image": "/assets/blog/a-prime-constant.png",
+  "visible": true
+ },
+ {
   "url_title": "api-platform-card",
   "title": "Grab a collector card !",
   "sub_title": "Can you collect them all? Here is one to begin with :)",

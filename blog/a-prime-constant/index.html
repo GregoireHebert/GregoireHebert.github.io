@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>A prime constant | Grégoire Hébert - blog</title>
+    <meta property="og:title" content="A prime number" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="description" content="A prime constant has been calculated to generate a suite of prime numbers." />
+    <meta property="og:description" content="A prime constant has been calculated to generate a suite of prime numbers." />
+    <link rel="canonical" href="https://knot.gheb.dev/blog/a-prime-constant" />
+    <meta property="og:url" content="https://knot.gheb.dev/blog/a-prime-constant" />
+    <meta property="og:site_name" content="Grégoire Hébert - blog" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2020-11-28T09:30:00+01:00" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="application/ld+json">
+        {"image": "https://knot.gheb.dev/assets/blog/a-prime-constant.jpg", "author":"Grégoire Hébert", "publisher":"Grégoire Hébert", "description":"A prime constant has been calculated to generate a suite of prime numbers.","@type":"BlogPosting","headline":"A prime constant","dateModified":"2020-11-28T09:30:00+01:00","datePublished":"2020-11-28T09:30:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://knot.gheb.dev/blog/a-prime-constant"},"url":"https://knot.gheb.dev/blog/a-prime-constant","@context":"http://schema.org"}
+    </script>
+<link href="../../index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="loading">
+        <div id="spinner"></div>
+    </div>
+    <div id="profile">
+        <div id="profile_img" style="background: url(https://avatars1.githubusercontent.com/u/878701?v=4) center;"></div>
+        <div id="username"><span style="display:block;">Grégoire Hébert</span><i class="fab fa-github"></i><a href="https://github.com/GregoireHebert">@GregoireHebert</a></div>
+        <div id="userbio" style="display: block;">
+            Senior developer, trainer, lecturer.<br/>
+            CTO at <a href="https://les-tilleuls.coop">Les-Tilleuls.coop</a><br/>
+            CEO of <a href="https://masterclass.les-tilleuls.coop">MasterClass</a> by Les-Tilleuls.coop<br/>
+            GA enthusiast.<br/>
+            Foods and drinks lover.<br/>
+            <br/>
+            <a href="/hire-me" class="hire">You want to work with me ?</a>
+        </div>
+        <div id="about">
+            <span style="display:block;"><i class="fas fa-users"></i> &nbsp; La Coopérative des Tilleuls</span>
+            <span style="display:block;"><i class="fas fa-phone"></i> &nbsp; <a href="tel:+33618864288">+33 618864288</a></span>
+            <span style="display:block;"><i class="fab fa-twitter"></i> &nbsp; <a href="https://www.twitter.com/gheb_dev">@gheb_dev</a></span>
+            <span style="display:block;"><i class="fas fa-envelope"></i> &nbsp; <a href="mailto:contact@gheb.dev">contact@gheb.dev</a></span>
+            <span style="display:block;"><i class="fas fa-link"></i> &nbsp; <a href="https://les-tilleuls.coop">https://les-tilleuls.coop</a></span>
+            <span style="display:block;"><i class="fas fa-map-marker-alt"></i> &nbsp;&nbsp; Lille (59), France</span>
+        </div>
+    </div>
+    <div id="display">
+        <h1><a class="go_back" href="/"><i class="fas fa-arrow-left"></i></a>A prime constant</h1>
+
+        <p>
+        A new constant `2.920050977316...` has been calculated to find the exact serie that represent the known prime numbers.
+        <a target="_blank" href="https://www.tandfonline.com/doi/abs/10.1080/00029890.2019.1530554">https://www.tandfonline.com/doi/abs/10.1080/00029890.2019.1530554</a>
+        Before this constant in a language such as PHP here, you would have to execute a pair of loops.
+        </p>
+
+        <pre><code class="language-php">
+        $number = 2 ; // first prime.
+        while ($number < 100 )
+        {
+            $count=0;
+            for ($i=1;$i<=$number;$i++) {
+                if (($number%$i)==0) {
+                    $count++;
+                }
+            }
+
+            if ($count<3) {
+                echo "$number, ";
+            }
+
+            $number=$number+1;
+        }
+        </code></pre>
+
+        <pre><code class="language-text">2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97</code></pre>
+
+        <p>Or with a mathematical extension</p>
+
+        <pre><code class="language-php">
+        $prime = 2;
+        do {
+            echo "$prime, ";
+            $prime = gmp_nextprime($prime);
+        } while ($prime<100);
+        </code></pre>
+
+        <pre><code class="language-text">2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97</code></pre>
+
+        <p>
+        This time, PHP uses the Miller-Rabin method. This method is capable to determine if a number is composite, probably prime, or is a prime.
+        They discovered that a composite number is linked to a certain number of "witness numbers" https://en.wikipedia.org/wiki/Witness_(mathematics)
+        If the comparison shows a high number of them, the our number is not a prime.
+        And again, here, the complexity of the algorithm is  \(O(k log3n)\), where `n` is the number of iterations.
+        Add this to our do_while loop, and in the long run, it's not that efficient either to print a suite.
+        The quickest being of course, picking the numbers of a table.
+        </p>
+
+        <p>For a defined space, you would also use the `sieve of Eratosthenes` method, to eliminate the non prime numbers.</p>
+
+        <p>
+        As for the constants.
+        There is the Mill's constant A = `1.30637788386...` in the formula \({A^3}^n\) it gives you prime numbers, but with gaps. Big gaps.
+        2, 11, 1 361, 2 521 008 887, etc.
+        </p>
+
+        <p>
+        This new constant on the other hand, does not miss any of our known primes, in ascending order.
+        It has been calculated from our known primes so obviously, it won't cover primes we don't know about yet.
+        You can learn of the mathematics behind on numberphile Youtube channel : https://www.youtube.com/watch?v=_gCKX6VMvmU
+        </p>
+        <p>
+        In the meantime, the constant works with this simple formula. Take the first prime number (which is 2)
+            or the previous found number, then round it down (the floor function), multiplied by the previous number, subtracting the integer part to keep only the decimal part plus 1.<br/>
+        \(fn+1 = \lfloor fn \rfloor \times (fn- \lfloor fn \rfloor + 1)\)
+        </p>
+
+        <pre><code class="language-php">
+        const BUENOS_AIRES_CONSTANT = 2.920050977316134712092562917112019;
+        $prime = BUENOS_AIRES_CONSTANT;
+        do {
+            $prime = floor($prime)*(($prime-floor($prime))+1);
+            echo sprintf('%d, ', floor($prime));
+        } while ($prime<100);
+        </code></pre>
+
+        <p>
+        But it's too good to be true, at least in PHP
+        where you can't store even a 33 decimal part of an infinite constant, without losing data.
+        </p>
+
+        <pre><code class="language-php">
+        const BUENOS_AIRES_CONSTANT = 2.920050977316134712092562917112019;
+        echo number_format(BUENOS_AIRES_CONSTANT, 33)."\n\n";
+        </code></pre>
+
+        <pre><code class="language-text">2.920050977316134499517374933930114</code></pre>
+
+        <p>
+        You'll probably need to create a pull request in PHP source code to use this new constant :)
+        Or by using FFI.
+        </p>
+
+        <p>Thanks for reading !</p>
+
+    </div>
+    <div id="footer_blog">
+        <a href="https://github.com/imfunniee" target="_blank">made on earth by a human</a>
+    </div>
+    <script type="text/javascript">
+    setTimeout(function(){
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function(){
+        document.getElementById("loading").classList.remove("animated");
+        document.getElementById("loading").classList.remove("fadeOut");
+        document.getElementById("loading").style.display = "none";
+        },50);
+    },1500);
+    $.getJSON("../../config.json", function(user){
+        var icon = document.createElement("link");
+        icon.setAttribute("rel", "icon");
+        icon.setAttribute("href", user[0].userimg);
+        icon.setAttribute("type", "image/png");
+        document.getElementsByTagName("head")[0].appendChild(icon);
+    });
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45648310-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</body></html>
