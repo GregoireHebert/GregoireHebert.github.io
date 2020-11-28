@@ -20,7 +20,8 @@
     <script type="application/ld+json">
         {"image": "https://knot.gheb.dev/assets/blog/a-prime-constant.jpg", "author":"Grégoire Hébert", "publisher":"Grégoire Hébert", "description":"A prime constant has been calculated to generate a suite of prime numbers.","@type":"BlogPosting","headline":"A prime constant","dateModified":"2020-11-28T09:30:00+01:00","datePublished":"2020-11-28T09:30:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://knot.gheb.dev/blog/a-prime-constant"},"url":"https://knot.gheb.dev/blog/a-prime-constant","@context":"http://schema.org"}
     </script>
-<link href="../../index.css" rel="stylesheet">
+    <link href="../../index.css" rel="stylesheet">
+    <link href="../../prism.css" rel="stylesheet">
 </head>
 <body>
     <div id="loading">
@@ -51,12 +52,12 @@
         <h1><a class="go_back" href="/"><i class="fas fa-arrow-left"></i></a>A prime constant</h1>
 
         <p>
-        A new constant `2.920050977316...` has been calculated to find the exact serie that represent the known prime numbers.
-        <a target="_blank" href="https://www.tandfonline.com/doi/abs/10.1080/00029890.2019.1530554">https://www.tandfonline.com/doi/abs/10.1080/00029890.2019.1530554</a>
+        A new constant `2.920050977316...` has been calculated to find the exact serie that represent the known prime numbers.<br/>
+        <a target="_blank" href="https://www.tandfonline.com/doi/abs/10.1080/00029890.2019.1530554">https://www.tandfonline.com/doi/abs/10.1080/00029890.2019.1530554</a><br/>
         Before this constant in a language such as PHP here, you would have to execute a pair of loops.
         </p>
 
-        <pre><code class="language-php">
+        <pre class="line-numbers"><code class="language-php">
         $number = 2 ; // first prime.
         while ($number < 100 )
         {
@@ -79,7 +80,7 @@
 
         <p>Or with a mathematical extension</p>
 
-        <pre><code class="language-php">
+        <pre class="line-numbers"><code class="language-php">
         $prime = 2;
         do {
             echo "$prime, ";
@@ -90,29 +91,29 @@
         <pre><code class="language-text">2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97</code></pre>
 
         <p>
-        This time, PHP uses the Miller-Rabin method. This method is capable to determine if a number is composite, probably prime, or is a prime.
-        They discovered that a composite number is linked to a certain number of "witness numbers" https://en.wikipedia.org/wiki/Witness_(mathematics)
-        If the comparison shows a high number of them, the our number is not a prime.
-        And again, here, the complexity of the algorithm is  \(O(k log3n)\), where `n` is the number of iterations.
-        Add this to our do_while loop, and in the long run, it's not that efficient either to print a suite.
+        This time, PHP uses the Miller-Rabin method. This method is capable to determine if a number is composite, probably prime, or is a prime.<br/>
+        They discovered that a composite number is linked to a certain number of "witness numbers" https://en.wikipedia.org/wiki/Witness_(mathematics)<br/>
+        If the comparison shows a high number of them, the our number is not a prime.<br/>
+        And again, here, the complexity of the algorithm is  \(O(k log3n)\), where `n` is the number of iterations.<br/>
+        Add this to our do_while loop, and in the long run, it's not that efficient either to print a suite.<br/>
         The quickest being of course, picking the numbers of a table.
         </p>
 
         <p>For a defined space, you would also use the `sieve of Eratosthenes` method, to eliminate the non prime numbers.</p>
 
         <p>
-        As for the constants.
-        There is the Mill's constant A = `1.30637788386...` in the formula \({A^3}^n\) it gives you prime numbers, but with gaps. Big gaps.
+        As for the constants.<br/>
+        There is the Mill's constant A = `1.30637788386...` in the formula \({A^3}^n\) it gives you prime numbers, but with gaps. Big gaps.<br/>
         2, 11, 1 361, 2 521 008 887, etc.
         </p>
 
         <p>
-        This new constant on the other hand, does not miss any of our known primes, in ascending order.
-        It has been calculated from our known primes so obviously, it won't cover primes we don't know about yet.
-        You can learn of the mathematics behind on numberphile Youtube channel : https://www.youtube.com/watch?v=_gCKX6VMvmU
+        This new constant on the other hand, does not miss any of our known primes, in ascending order.<br/>
+        It has been calculated from our known primes so obviously, it won't cover primes we don't know about yet.<br/>
+        You can learn of the mathematics behind on numberphile Youtube channel <a href="https://www.youtube.com/watch?v=_gCKX6VMvmU"></a>
         </p>
         <p>
-        In the meantime, the constant works with this simple formula. Take the first prime number (which is 2)
+        In the meantime, the constant works with this simple formula. Take the first prime number (which is 2)<br/>
             or the previous found number, then round it down (the floor function), multiplied by the previous number, subtracting the integer part to keep only the decimal part plus 1.<br/>
         \(fn+1 = \lfloor fn \rfloor \times (fn- \lfloor fn \rfloor + 1)\)
         </p>
@@ -127,11 +128,11 @@
         </code></pre>
 
         <p>
-        But it's too good to be true, at least in PHP
+        But it's too good to be true, at least in PHP<br/>
         where you can't store even a 33 decimal part of an infinite constant, without losing data.
         </p>
 
-        <pre><code class="language-php">
+        <pre class="line-numbers"><code class="language-php">
         const BUENOS_AIRES_CONSTANT = 2.920050977316134712092562917112019;
         echo number_format(BUENOS_AIRES_CONSTANT, 33)."\n\n";
         </code></pre>
@@ -139,7 +140,7 @@
         <pre><code class="language-text">2.920050977316134499517374933930114</code></pre>
 
         <p>
-        You'll probably need to create a pull request in PHP source code to use this new constant :)
+        You'll probably need to create a pull request in PHP source code to use this new constant :)<br/>
         Or by using FFI.
         </p>
 
@@ -167,8 +168,9 @@
         document.getElementsByTagName("head")[0].appendChild(icon);
     });
     </script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async src="../../prism.js"></script>
     <script type="text/javascript">
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
