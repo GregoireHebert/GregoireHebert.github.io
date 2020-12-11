@@ -99,6 +99,16 @@ body{
     box-shadow: 0 15px 15px -5px rgba(0, 0, 0, 0.2);
 }
 
+#display .date {
+    padding: 3px;
+    font-weight: bold;
+    background-color: #5ABA9A;
+}
+
+#display .date:before {
+    content: '> ';
+}
+
 .emoji {
     width:18px;
     height:18px;
