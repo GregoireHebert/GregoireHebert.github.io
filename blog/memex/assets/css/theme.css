@@ -235,3 +235,8 @@ img {
         margin: 0 10%;
     }
 }
+
+a.centered {
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
