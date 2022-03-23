@@ -1,4 +1,11 @@
 [
+  { 
+    "url_title": "bike-shelf",
+    "title": "DIY - Meuble vélo",
+    "sub_title": "Construire un meuble vélo soi-même",
+    "top_image": "/assets/bike-shelf/schematics.png",
+    "visible": true
+  },
  {
   "url_title": "as-we-used-to-think",
   "title": "As we used to think",
