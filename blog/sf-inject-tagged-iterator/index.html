@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Je prouve que 1000 = 1 ? | Grégoire Hébert - blog</title>
+    <meta property="og:title" content="Je prouve que 1000 = 1 ?" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="description" content="Je prouve que 1000 = 1 ?" />
+    <meta property="og:description" content="Je prouve que 1000 = 1 ?" />
+    <link rel="canonical" href="https://knot.gheb.dev/blog/1000-vaut-1" />
+    <meta property="og:url" content="https://knot.gheb.dev/blog/1000-vaut-1" />
+    <meta property="og:site_name" content="Grégoire Hébert - blog" />
+    <meta property="og:type" content="article" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@gheb_dev" />
+    <meta name="twitter:title" content="Je prouve que 1000 = 1 ?" />
+    <meta name="twitter:description" content="Je prouve que 1000 = 1 ?" />
+    <meta name="twitter:image" content="https://knot.gheb.dev/assets/ieee-754/1000-vaut-1.jpg" />
+
+    <meta property="article:published_time" content="2022-03-24T22:30:00+01:00" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="application/ld+json">
+        {"image": "https://knot.gheb.dev/assets/ieee-754/1000-vaut-1.jpg", "author":"Grégoire Hébert", "publisher":"Grégoire Hébert", "description":"Je prouve que 1000 = 1 ?","@type":"BlogPosting","headline":"Je prouve que 1000 = 1 ?","dateModified":"2022-03-24T22:30:00+01:00","datePublished":"2022-03-24T22:30:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://knot.gheb.dev/blog/1000-vaut-1"},"url":"https://knot.gheb.dev/blog/1000-vaut-1","@context":"http://schema.org"}
+    </script>
+    <link href="../../index.css" rel="stylesheet">
+    <link href="../../prism.css" rel="stylesheet">
+</head>
+<body>
+    <div id="loading">
+        <div id="spinner"></div>
+    </div>
+    <div id="profile">
+        <div id="profile_img" style="background: url(https://avatars1.githubusercontent.com/u/878701?v=4) center;"></div>
+        <div id="username"><span style="display:block;">Grégoire Hébert</span><i class="fab fa-github"></i><a href="https://github.com/GregoireHebert">@GregoireHebert</a></div>
+        <div id="userbio" style="display: block;">
+            Senior developer, trainer, lecturer.<br/>
+            CTO at <a href="https://les-tilleuls.coop">Les-Tilleuls.coop</a><br/>
+            GA enthusiast.<br/>
+            Foods and drinks lover.<br/>
+            <br/>
+            <a href="/hire-me" class="hire">You want to work with me ?</a>
+        </div>
+        <div id="about">
+            <span style="display:block;"><i class="fas fa-users"></i> &nbsp; La Coopérative des Tilleuls</span>
+            <span style="display:block;"><i class="fas fa-phone"></i> &nbsp; <a href="tel:+33618864288">+33 618864288</a></span>
+            <span style="display:block;"><i class="fab fa-twitter"></i> &nbsp; <a href="https://www.twitter.com/gheb_dev">@gheb_dev</a></span>
+            <span style="display:block;"><i class="fas fa-envelope"></i> &nbsp; <a href="mailto:contact@gheb.dev">contact@gheb.dev</a></span>
+            <span style="display:block;"><i class="fas fa-link"></i> &nbsp; <a href="https://les-tilleuls.coop">https://les-tilleuls.coop</a></span>
+            <span style="display:block;"><i class="fas fa-map-marker-alt"></i> &nbsp;&nbsp; Lille (59), France</span>
+        </div>
+    </div>
+    <div id="display">
+        <h1><a class="go_back" href="/"><i class="fas fa-arrow-left"></i></a>Je prouve que 1000 = 1 ?</h1>
+
+        <span class="date">24 Nov 2022</span>
+        
+        <p>Derrière ce titre racoleur, prêt à déchainer les passions !! Se trouve une histoire bien plus logique, faite de raison.</p>
+        
+        <p>Récemment, deux questions ont été posées autours de moi, chacune dans un contexte différent, mais les réponses avaient deux points communs.</p>
+        <p>API Platform et les maths.</p>
+        
+        <p>La première était : Pourquoi ai-je stocké des prix dans des colonnes typées par des entiers ?</p>
+        <p>La seconde : Pourquoi le paginator retourne-t'il un `float` pour le nombre de résultats ?</p>
+        
+        <p>La réponse au sujet des prix est la suivante. </p>
+        
+        <p>PHP (comme beaucoup d'autres langages) est mauvais lorsqu'il s'agit d'effectuer des divisions.
+        D'abord c'est une opération coûteuse en temps CPU, mais surtout lorsque l'on manipule des prix à virgules (des flottants), la pluspart du temps
+        c'est pour les multipliers (pour les quantités) puis appliquer des divisions et multiplications pour appliquer les taxes, ou des réductions par exemple.</p>
+        
+        <p>Et malheureusement dès lors que nous manipulons des flottants, nous manipulons des approximations.</p>
+        
+        <pre><code class="language-shell">
+        gregoirehebert@gheb blog % php -a
+        Interactive shell
+        
+        php > $a = 0.1; $b = 0.2;
+        php > var_dump($a + $b);
+        float(0.30000000000000004)
+        </code></pre>
+        
+        <p>Pour en apprendre plus sur cette approximation n'hésitez pas à aller voir la conférence de Benoit Jacquemont : <a href="https://www.youtube.com/watch?v=0iEKP4tsWe0" target="_blank">https://www.youtube.com/watch?v=0iEKP4tsWe0</a></p>
+        <p>TL;DR : Les calculs sont bons kévin ! Mais comme ils sont fait à partir d'approximations, kévin, le résultat n'est pas bon lui, enfin, il l'est, mais ce n'est pas celui que l'on attendais.</p>
+        
+        <p>Alors plutôt que de manipuler des flottants, et de les stocker sous cette forme, nous allons plutôt les stocker et les manipuler avec des entiers.</p>
+        
+        <p>Reste à justifier la valeur que j'ai stocké. Effectivement la seconde surprise ça a été de voir la valeur 1000 pour 1€.
+        Là ou il aurait été courant de voir la valeur 100 de stockée. Je divise par 100, j'ai le prix en centimes. 
+        Cependant il existe 7 pays, utilisant le Dinar et le Rial comme monnaie, et celles-ci comportent 3 décimales !</p>
+        
+        <p>Par ailleurs, si vous manipulez de la monétique liée à des mouvements boursiers, vous pourriez monter jusque 5 décimales, et dans certains cas de calculs liés à des usages CPU, ou consommation en téléphonie par exemple, vous pourriez avoir à manipuler 7, voire 9 décimales.</p>
+        
+        
+        <p>Si leur usage est si peu recommandé alors pourquoi le retrouve-t'on dans le paginator ?
+        Admettons que des entiers suffisent, en dehors de la justification technique que je vais exposer... En quoi est-ce un mal d'utiliser des flottants ?
+        Au pire sur un arrondi j'ai une page de plus ou de moins dans quelques cas rares. Rien d'alarmant. Bon d'accord mais du coup pourquoi ce choix ?</p>
+        
+        <p>Dans sa conférence Benoit fait brièvement état d'une norme. IEEE 754. Vous avez déjà probablement déjà croisé ce terme.
+        Cette norme régie le mécanisme derrière les flottants. Et cette mécanique est très maligne, et à d'abord été pensée dans un souci d'économie ! Laissez moi vous l'expliquer (c'est le but secret de cet article)
+        Puis d'exposer la réponse à la seconde question qui sera devenu évidente alors.</p>
+        
+        
+        <p>Dans un système 32 bits par exemple, lorsque l'on demande à PHP de créer un entier, il va octroyer 32 bits mémoire.</p>
+        
+        <pre><code class="language-text">00000000 00000000 00000000 00000000</code></pre>
+        
+        <p>Nous sommes assez bas dans le système, alors la représentation que nous voyons là est binaire.
+        Rien de méchant je pense que vous savez tous les manipuler : </p>
+        
+        <pre><code class="language-text">
+        1 : 00000000 00000000 00000000 00000001
+        2 : 00000000 00000000 00000000 00000010
+        3 : 00000000 00000000 00000000 00000011
+        4 : 00000000 00000000 00000000 00000100
+        </code></pre>
+        
+        <p>Ceci jusqu'à 2 milliards : 2 147 483 647
+        Pour un système 64 bits, jusqu'à 9 223 372 036 854 775 807. Notre cerveau ne peut pas concevoir ce chiffre décement.
+        Restons dans un système 32 bits pour l'exemple.</p>
+        
+        <p>Que se passe-t'il si j'assigne la valeur max dans mon entier, puis j'ajoute 1 ?
+        Dans majorité de langage fortement typé, je crash sévère. Mais la souplesse de PHP nous sauve la mise en basculant le type de integer vers float.
+        Un float de 32 bits.</p>
+        
+        <p>Rien ne vous choque ?</p>
+        <p>Ok, comment est-ce qu'on pourrait arbitrairement représenter un flottant, sur 32 bits ?</p>
+        
+        <pre><code class="language-text">00000000 00000000 00000000 00000000</code></pre>
+        
+        <p>en y ajoutant une virgule... au milieu par exemple ?</p>
+        
+        <pre><code class="language-text">00000000 00000000 . 00000000 00000000</code></pre>
+        
+        <p>On aurait par exemple</p>
+        
+        <pre><code class="language-text">
+        4.000 : 00000000 00000100 . 00000000 00000000
+        4.500 : 00000000 00000100 . 10000000 00000000
+        4.250 : 00000000 00000100 . 01000000 00000000
+        4.125 : 00000000 00000100 . 00100000 00000000
+        </code></pre>
+        
+        <p>Oui parce qu'en binaire, la partie "décimale" n'est pas composée de dixième, centième, millième... mais de demi, quart, huitième...
+        Mais cette idée n'est pas terrible puisque la portée de nos valeur à été considérablement réduite. Et puisque nous sommes en binaire,
+        ce n'est pas divisé par deux, qu'est notre perte. Nous sommes réduit à environ 32 000 en valeur max au lieu des 2 milliards.</p>
+        
+        <p>Non, pour stocker les flottants, une autre approche a été utilisée. Celle de l'écriture scientifique.
+        Mais si ! Celle avec un E dans votre casio à l'école !</p>
+        
+        <p>Cette écriture est ainsi : </p>
+        
+        16 000 : \({1.6 \times }10^4\)<br/>
+
+        0.0016 : \({1.6 \times }10^-3\)<br/>
+        
+        <p>Ici la valeur 1.6 de l'écriture scientifique, fait toujours référence à un nombre en base 10.</p>
+        <p>Et si ? Nous écrivions aussi les nombres binaires à l'aide de la notation scientifique ?</p>
+        
+        00000000 00000000 000000 00011000 : \({1.1 \times }2^4\)<br/>
+        
+        <p>C'est là qu'entre en jeu le IEEE 754, pour représenter cette écriture scientifique.</p>
+        
+        <p>Nous sommes toujours sur 32 bits, en binaire, mais la représentation de chaque bit change un peu.</p>
+        
+        <pre><code class="language-text">0</code></pre>
+        
+        <p>Si le premier bit est 0, la valeur est positive, si c'est 1, la valeur est négative.</p>
+        <p>C'est le "sign bit"</p>
+        
+        <pre><code class="language-text">0 00000000</code></pre>
+        
+        <p>Les 8 bits suivants sont là pour définir l'exposant.</p>
+        
+        0 00000001 : \({x \times }2^1\)<br/>
+
+        0 00000100 : \({x \times }2^4\)<br/>
+        
+        <p>Théoriquement avec 8 bits il est possible d'exprimer jusqu'à la puissance 255.
+        Mais là aussi nous avons besoin de savoir si l'exposant est positif ou négatif.
+        Le second bit est aussi un "bit sign". Mais il ne se comporte pas comme le premier.</p>
+        
+        <p>les derniers exemples ne sont pas bons, pour obtenir x \times 2^4, en sachant que nous alors utiliser le bit le plus élevé pour signer la valeur, 
+        Le basculer à 1 reviens à ajouter 128 à notre valeur. La technique utilisée ici est de retrancher 127 à la valeur pour obtenir le résultat</p>
+        
+        <pre><code class="language-text">
+        0 00000100 : 4 - 127 = - 123 (pas vraiment ce que l'on veut)
+        0 10000100 : 132 - 127 = 5 (toujours pas)
+        0 10000011 : 131 - 127 = 4 (voilà)
+        </code></pre>
+        
+        <p>Il faut donc exprimer 131 en binaire pour la valeur d'exposant 4.</p>
+        
+        <p>Il reste encore 23 bits. C'est ce que l'on appelle la mantisse.</p>
+        
+        <pre><code class="language-text">0 100000011 00000000000000000000000</code></pre>
+        
+        <p>Dans la notation scientifique, souvent on écrit \({0.00 \times }2^4\)</p>
+        <p>La partie de gauche est composé n'un chiffre, d'un séparateur (.), puis de la partie "décimale".</p>
+        
+        <p>Avec 23 bits on peut représenter pour cette partie de gauche une valeur aussi grande que \(2^23\).
+        Enfin c'est bien mais on a pas besoin que ça aille si haut puisque que l'on a besoin uniquement que ça aille de 1 à 10.
+        Et si on veux représenter des binaires en notation scientifique, c'est encore plus petit, puisque l'on veux couvrir uniquement les valeurs entre 1 et 2.
+        Alors on peux faire ce qui a déjà été proposé plus haut. Ajouter une virgule dans notre représentation binaire.</p>
+        
+        <pre><code class="language-text">0 100000011 0.0000000000000000000000</code></pre>
+        
+        <p>Dès lors que nous avons ceci, nous pouvons couvrir les valeurs entre 1 et 2.</p>
+        
+        0 11111111 1.1111111111111111111111 : \({1.999 \times }2^127\)<br/>
+        
+        <p>Vous voyez qu'à travers cette notation, il est possible de représenter des nombres monstrueusement plus grand qu'avec les 32 bits d'unentier.</p>
+        
+        <p>Mais il y a encore mieux !</p>
+        
+        <p>Dans la notation scientifique, le première caratère est toujours (par définition) non nulle ! Or, en binaire il n'y a qu'une seule valeur qui peut être considéré non nulle. c'est 1 (et oui il n'y pas d'autres valeurs en binaire ^^). Alors si on sais que le premier caractère est systématiquement 1, autant ne pas le stocker. On peut donc réutiliser ce bit et décaller la virgule à gauche.</p>
+        
+        <pre><code class="language-text">0 000000000 .00000000000000000000000</code></pre>
+        
+        <p>On vient d'augmenter énormément la précision de notre mantisse.</p>
+        
+        <p>Nous avons majoritairement des processeurs 64bits à présent, alors je vous laisse imaginer la portée que l'on a obtenu !</p>
+        <p>Malin non ?</p>
+        
+        <p>En PHP, les nombres flottants ont une précision limitée. Même s'ils dépendent du système, PHP utilise le format de précision des décimaux IEEE 754, qui donnera une erreur maximale relative de l'ordre de 1.11e-16 (dûe aux arrondis).</p>
+        
+        <p>Les nombres rationnels exactement représentables sous forme de nombre à virgule flottante en base 10, comme 0.1 ou 0.7, n'ont pas de représentation exacte comme nombres à virgule flottante en base 2, utilisée en interne, et ce quelle que soit la taille de la mantisse. De ce fait, ils ne peuvent être convertis sans une petite perte de précision. Ceci peut mener à des résultats confus: par exemple, floor((0.1+0.7)*10) retournera normalement 7 au lieu de 8 attendu, car la représentation interne sera quelque chose comme 7.9999999999999991118....</p>
+        
+        <p>La réponse est donc : Pour manipuler les très grandes valeurs. (Ayez faussement l'air surpris..... merci ^^)</p>
+        
+        <p>Voilà pourquoi j'ai stocké des prix dans des colonnes typées par des entiers, pourquoi le paginator retourne un `float` pour le nombre de résultats, et pourquoi 1000 = 1.</p>
+        
+        <p>Merci de m'avoir lu :)</p>
+        
+        <div class="PageNavigation">
+
+            <a class="prev" href="/blog/bike-shelf">&laquo; DIY - Meuble vélo</a>
+
+            <!-- <a class="next" href="/"></a> -->
+
+        </div>
+    </div>
+    <div id="footer_blog">
+        <a href="https://github.com/imfunniee" target="_blank">made on earth by a human</a>
+    </div>
+    <script type="text/javascript">
+    setTimeout(function(){
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function(){
+        document.getElementById("loading").classList.remove("animated");
+        document.getElementById("loading").classList.remove("fadeOut");
+        document.getElementById("loading").style.display = "none";
+        },50);
+    },1500);
+    $.getJSON("../../config.json", function(user){
+        var icon = document.createElement("link");
+        icon.setAttribute("rel", "icon");
+        icon.setAttribute("href", user[0].userimg);
+        icon.setAttribute("type", "image/png");
+        document.getElementsByTagName("head")[0].appendChild(icon);
+    });
+    </script>
+    <script async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async src="../../prism.js"></script>
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45648310-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</body></html>
