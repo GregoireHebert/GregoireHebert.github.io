@@ -1,5 +1,12 @@
 [
   { 
+    "url_title": "sf-inject-tagged-iterator",
+    "title": "[Symfony] Inject a tagged iterator",
+    "sub_title": "in a more natural way",
+    "top_image": "/assets/sf-tagged-iterator/tags.jpg",
+    "visible": true
+  },
+  {
     "url_title": "1000-vaut-1",
     "title": "Je prouve que 1000 vaut 1 ?",
     "sub_title": "ou pas.",
