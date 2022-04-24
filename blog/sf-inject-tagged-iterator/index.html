@@ -65,10 +65,10 @@
         <p>Service tags are a way to tell Symfony or other third-party bundles that your service should be registered in some special way. Take the following example:</p>
 
         <pre><code class="language-yaml">
-        # config/services.yaml
-        services:
-            App\Twig\AppExtension:
-                tags: ['twig.extension']
+# config/services.yaml
+services:
+    App\Twig\AppExtension:
+        tags: ['twig.extension']
         </code></pre>
 
         <p>Services tagged with the <code>twig.extension</code> tag are collected during the initialization of TwigBundle and added to Twig as extensions.</p>
@@ -79,14 +79,14 @@
         <p>If you want to apply tags automatically for your own services, use the <code>_instanceof</code> option:</p>
 
         <pre><code class="language-yaml">
-        # config/services.yaml
-        services:
-            # this config only applies to the services created by this file
-            _instanceof:
-                # services whose classes are instances of CustomInterface will be tagged automatically
-                App\Security\CustomInterface:
-                    tags: ['app.custom_tag']
-            # ...
+# config/services.yaml
+services:
+    # this config only applies to the services created by this file
+    _instanceof:
+        # services whose classes are instances of CustomInterface will be tagged automatically
+        App\Security\CustomInterface:
+            tags: ['app.custom_tag']
+    # ...
         </code></pre>
 
         <p>And for more advanced needs, you can define the automatic tags using the <code>registerForAutoconfiguration()</code> method.</p>
@@ -96,47 +96,47 @@
         <p>Usually it goes by a compiler pass, to ask the container for any service ids related to the tag. Then we iterate over each one to inject them as a future service thanks to the <code>Reference</code> class.</p>
 
         <pre><code class="language-php">
-        // example from the documentation
-        // src/DependencyInjection/Compiler/MailTransportPass.php
-        namespace App\DependencyInjection\Compiler;
+// example from the documentation
+// src/DependencyInjection/Compiler/MailTransportPass.php
+namespace App\DependencyInjection\Compiler;
 
-        use App\Mail\TransportChain;
-        use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-        use Symfony\Component\DependencyInjection\ContainerBuilder;
-        use Symfony\Component\DependencyInjection\Reference;
+use App\Mail\TransportChain;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
-        class MailTransportPass implements CompilerPassInterface
-        {
-            public function process(ContainerBuilder $container): void
-            {
-                // always first check if the primary service is defined
-                if (!$container->has(TransportChain::class)) {
-                    return;
-                }
-
-                $definition = $container->findDefinition(TransportChain::class);
-
-                // find all service IDs with the app.mail_transport tag
-                $taggedServices = $container->findTaggedServiceIds('app.mail_transport');
-
-                foreach ($taggedServices as $id => $tags) {
-                    // add the transport service to the TransportChain service
-                    $definition->addMethodCall('addTransport', [new Reference($id)]);
-                }
-            }
+class MailTransportPass implements CompilerPassInterface
+{
+    public function process(ContainerBuilder $container): void
+    {
+        // always first check if the primary service is defined
+        if (!$container->has(TransportChain::class)) {
+            return;
         }
+
+        $definition = $container->findDefinition(TransportChain::class);
+
+        // find all service IDs with the app.mail_transport tag
+        $taggedServices = $container->findTaggedServiceIds('app.mail_transport');
+
+        foreach ($taggedServices as $id => $tags) {
+            // add the transport service to the TransportChain service
+            $definition->addMethodCall('addTransport', [new Reference($id)]);
+        }
+    }
+}
         </code></pre>
 
         <p>So far, so good. Later Symfony introduced a simpler way to inject theses tagged services, so you don't have to write a compiler pass just for that.</p>
         <p>In the following example, all services tagged with <code>app.handler</code> are passed as first constructor argument to the <code>App\HandlerCollection</code> service:</p>
 
         <pre><code class="language-yaml">
-        # example from the documentation
-        # config/services.yaml
-            App\HandlerCollection:
-                # inject all services tagged with app.handler as first argument
-                arguments:
-                - !tagged_iterator app.handler
+# example from the documentation
+# config/services.yaml
+    App\HandlerCollection:
+        # inject all services tagged with app.handler as first argument
+        arguments:
+        - !tagged_iterator app.handler
         </code></pre>
 
         <p>Which is nice, but necessitate to add few lines of configuration.</p>
@@ -145,22 +145,22 @@
         <p>In Symfony 5.3, thanks to this PHP feature, a more explicit way to express this injection (<a href="https://symfony.com/blog/new-in-symfony-5-3-service-autowiring-with-attributes" target="_blank">read the article</a>) is born by using an attribute inside your constructor, right before the iterable type:</p>
 
         <pre><code class="language-php">
-        // example from the documentation
-        // src/Handler/HandlerCollection.php
-        namespace App\Handler;
+// example from the documentation
+// src/Handler/HandlerCollection.php
+namespace App\Handler;
 
-        use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
-        class HandlerCollection
-        {
-            private $handlers;
+class HandlerCollection
+{
+    private $handlers;
 
-            public function __construct(
-                #[TaggedIterator('app.handler')] iterable $handlers
-            ) {
-                $this->handlers = $handlers;
-            }
-        }
+    public function __construct(
+        #[TaggedIterator('app.handler')] iterable $handlers
+    ) {
+        $this->handlers = $handlers;
+    }
+}
         </code></pre>
 
         <p>In the same blog article, Nicolas Grekas introduced a way of selecting autowired aliases with the attributes, using named arguments.</p>
@@ -168,34 +168,34 @@
         <p>For example, consider the following scoped HTTP client created to work with GitHub API:</p>
 
         <pre><code class="language-yaml">
-        # example from the documentation
-        # config/packages/framework.yaml
-        framework:
-            http_client:
-                scoped_clients:
-                    githubApi:
-                        scope: 'https://api\.github\.com'
-                        headers:
-                            Accept: 'application/vnd.github.v3+json'
-                            # ...
+# example from the documentation
+# config/packages/framework.yaml
+framework:
+    http_client:
+        scoped_clients:
+            githubApi:
+                scope: 'https://api\.github\.com'
+                headers:
+                    Accept: 'application/vnd.github.v3+json'
+                    # ...
         </code></pre>
 
         <p>If you want to inject this scoped HTTP client in a service, it's not enough to type-hint the constructor argument with HttpClientInterface. You must use the interface as the type-hint and the autowiring alias (githubApi) as the variable name.</p>
 
         <pre><code class="language-php">
-        use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-        class GitHubDownloader
-        {
-            private $githubApi;
+class GitHubDownloader
+{
+    private $githubApi;
 
-            public function __construct(HttpClientInterface $githubApi)
-            {
-                $this->githubApi = $githubApi;
-            }
+    public function __construct(HttpClientInterface $githubApi)
+    {
+        $this->githubApi = $githubApi;
+    }
 
-            // ...
-        }
+    // ...
+}
         </code></pre>
 
         <p>Then the blog continues with the <code>Target</code> attribute to change the variable name, but it's not important for this blog post.</p>
@@ -205,194 +205,191 @@
         <p>The thing is, I've never been that much of a fan, having an attribute within my constructor argument declaration. (Taste and colours...)</p>
         <p>And recently during a coaching session, while explaining this very mechanism, a question pops as an evidence:</p>
         <p>Why can't we have an iterable class containing the tagged services, and inject it with an alias for argument?</p>
-        <p>I... love the idea! Why didn't I think of it before!? I find it elegant and simple.</p>
+        <p>I... love the idea! I find it elegant and simple.</p>
 
-        <p>Ready?</p>
+        <p>Let's try to implement it!</p>
 
         <h2>A solution</h2>
 
         <p>I create the class I'll receive in my chain service. The class will contain every services related to the tag I ask for.</p>
 
         <pre><code class="language-php">
-        // App\DependencyInjection\TaggedServicesInterface.php
+// App\DependencyInjection\TaggedServicesInterface.php
 
-        namespace App\DependencyInjection;
+namespace App\DependencyInjection;
 
-        interface TaggedServicesInterface
-        {
-        }
+interface TaggedServicesInterface
+{
+}
         </code></pre>
 
         <pre><code class="language-php">
-        // App\DependencyInjection\InjectableTaggedServices.php
+// App\DependencyInjection\InjectableTaggedServices.php
 
-        namespace App\DependencyInjection;
+namespace App\DependencyInjection;
 
-        class InjectableTaggedServices extends \ArrayIterator implements TaggedServicesInterface
-        {
-        }
+class InjectableTaggedServices extends \ArrayIterator implements TaggedServicesInterface
+{
+}
         </code></pre>
 
         <p>Now the logic to make things happen.</p>
 
         <pre><code class="language-php">
-        // App\DependencyInjection\TaggedServiceInjectorPass.php
+// App\DependencyInjection\TaggedServiceInjectorPass.php
 
-        namespace App\DependencyInjection;
+namespace App\DependencyInjection;
 
-        use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-        use Symfony\Component\DependencyInjection\ContainerBuilder;
-        use Symfony\Component\DependencyInjection\Reference;
-        use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
-        class TaggedServiceInjectorPass implements CompilerPassInterface
-        {
-            public function process(ContainerBuilder $container)
-            {
-                $tags = $container->findTags();
-                $converter = new CamelCaseToSnakeCaseNameConverter();
+class TaggedServiceInjectorPass implements CompilerPassInterface
+{
+    public function process(ContainerBuilder $container)
+    {
+        $tags = $container->findTags();
+        $converter = new CamelCaseToSnakeCaseNameConverter();
 
-                // loop over every declared tags,
-                foreach ($tags as $tag) {
-                    // for the example I chose as convention to store every tagged services, whose tag starts with app.
-                    if (!str_starts_with($tag, 'app.')) {
-                        continue;
-                    }
-
-                    // The app.my.tag tag would expect the argument in the constructor to be named $appMyTagServices
-                    $name = $converter->denormalize(str_replace('.', '_', $tag)).'Services';
-
-                    // Prepare the services references
-                    $taggedServices = array_map(fn($serviceId) => new Reference($serviceId), array_keys($container->findTaggedServiceIds($tag)));
-
-                    // Creating a new service and injects the tagged services references
-                    $container->register($name, InjectableTaggedServices::class)->setArguments([$taggedServices]);
-
-                    // Signal symfony to inject the previously created service when encountering an argument with the TaggedServicesInterface and the computed name.
-                    $container->registerAliasForArgument($name, TaggedServicesInterface::class);
-                }
+        // loop over every declared tags,
+        foreach ($tags as $tag) {
+            // for the example I chose as convention to store every tagged services, whose tag starts with app.
+            if (!str_starts_with($tag, 'app.')) {
+                continue;
             }
+
+            // The app.my.tag tag would expect the argument in the constructor to be named $appMyTagServices
+            $name = $converter->denormalize(str_replace('.', '_', $tag)).'Services';
+
+            // Prepare the services references
+            $taggedServices = array_map(fn($serviceId) => new Reference($serviceId), array_keys($container->findTaggedServiceIds($tag)));
+
+            // Creating a new service and injects the tagged services references
+            $container->register($name, InjectableTaggedServices::class)->setArguments([$taggedServices]);
+
+            // Signal symfony to inject the previously created service when encountering an argument with the TaggedServicesInterface and the computed name.
+            $container->registerAliasForArgument($name, TaggedServicesInterface::class);
         }
+    }
+}
         </code></pre>
 
         <p>We need to register this compiler pass:</p>
 
         <pre><code class="language-php">
-        // App\Kernel.php
+// App\Kernel.php
 
-        namespace App;
+namespace App;
 
-        use App\DependencyInjection\TaggedServiceInjectorPass;
-        use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
-        use Symfony\Component\DependencyInjection\ContainerBuilder;
-        use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+use App\DependencyInjection\TaggedServiceInjectorPass;
+use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
-        class Kernel extends BaseKernel
-        {
-            use MicroKernelTrait;
+class Kernel extends BaseKernel
+{
+    use MicroKernelTrait;
 
-            protected function build(ContainerBuilder $container)
-            {
-                parent::build($container);
+    protected function build(ContainerBuilder $container)
+    {
+        parent::build($container);
 
-                $container->addCompilerPass(new TaggedServiceInjectorPass());
-            }
-        }
+        $container->addCompilerPass(new TaggedServiceInjectorPass());
+    }
+}
         </code></pre>
 
         <p>Let's imagine a set of services to inject into a chain service:</p>
 
         <pre><code class="language-php">
-        // App\MyTaggedServices\FutureTaggedInterface.php
+// App\MyTaggedServices\FutureTaggedInterface.php
 
-        namespace App\MyTaggedServices;
+namespace App\MyTaggedServices;
 
-        interface FutureTaggedInterface
-        {
-        }
+interface FutureTaggedInterface
+{
+}
         </code></pre>
 
         <pre><code class="language-php">
-        // App\MyTaggedServices\FutureTaggedServiceA.php
+// App\MyTaggedServices\FutureTaggedServiceA.php
 
-        namespace App\MyTaggedServices;
+namespace App\MyTaggedServices;
 
-        class FutureTaggedServiceA implements FutureTaggedInterface
-        {
-        }
+class FutureTaggedServiceA implements FutureTaggedInterface
+{
+}
         </code></pre>
 
         <pre><code class="language-php">
-        // App\MyTaggedServices\FutureTaggedServiceB.php
+// App\MyTaggedServices\FutureTaggedServiceB.php
 
-        namespace App\MyTaggedServices;
+namespace App\MyTaggedServices;
 
-        class FutureTaggedServiceB implements FutureTaggedInterface
-        {
-        }
+class FutureTaggedServiceB implements FutureTaggedInterface
+{
+}
         </code></pre>
 
         <pre><code class="language-php">
-        // App\MyTaggedServices\ChainService.php
+// App\MyTaggedServices\ChainService.php
 
-        namespace App\MyTaggedServices;
+namespace App\MyTaggedServices;
 
-        use App\DependencyInjection\TaggedServicesInterface;
+use App\DependencyInjection\TaggedServicesInterface;
 
-        class ChainService
-        {
-            // Instead of using the attribute, now just this interface plus the named argument does the same job.
-            public function __construct(private TaggedServicesInterface $appMyTagServices)
-            {
-            }
+class ChainService
+{
+    // Instead of using the attribute, now just this interface plus the named argument does the same job.
+    public function __construct(private TaggedServicesInterface $appMyTagServices)
+    {
+    }
 
-            public function doStuff()
-            {
-                foreach ($this->appMyTagServices as $service) {
-                    var_dump($service::class);
-                }
-            }
+    public function doStuff()
+    {
+        foreach ($this->appMyTagServices as $service) {
+            var_dump($service::class);
         }
+    }
+}
         </code></pre>
 
-        <p>Let's add the tagg configuration:</p>
+        <p>Let's add the tag configuration:</p>
 
         <pre><code class="language-yaml">
-        # config/services.yaml
-        _instanceof:
-            App\MyTaggedServices\FutureTaggedInterface:
-                tags: ['app.my.tag']
+# config/services.yaml
+_instanceof:
+    App\MyTaggedServices\FutureTaggedInterface:
+        tags: ['app.my.tag']
         </code></pre>
 
         <p>And maybe use it in a controller, why not.</p>
 
         <pre><code class="language-php">
-        // App\Controller\AnyController.php
-        namespace App\Controller;
+// App\Controller\AnyController.php
+namespace App\Controller;
 
-        use App\MyTaggedServices\ChainService;
-        use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-        use Symfony\Component\HttpFoundation\Response;
-        use Symfony\Component\Routing\Annotation\Route;
+use App\MyTaggedServices\ChainService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-        class AnyController extends AbstractController
-        {
-            public function __construct(private ChainService $chainService)
-            {
-            }
+class AnyController extends AbstractController
+{
+    public function __construct(private ChainService $chainService)
+    {
+    }
 
-            #[Route(path: '/', name: 'home')]
-            public function index(): Response
-            {
-                $this->chainService->doStuff();
+    #[Route(path: '/', name: 'home')]
+    public function index(): Response
+    {
+        $this->chainService->doStuff();
 
-                return new Response('ok');
-            }
-        }
+        return new Response('ok');
+    }
+}
         </code></pre>
-
-        <p>Convinced? Or pass?</p>
-        <p>Would you like to see this in Symfony?</p>
 
         <h2>Bonus</h2>
 
@@ -400,31 +397,57 @@
         <p>This mechanism works well, but having to use some specific variable names is too rigid for some developers. In Symfony 5.3 you can use any variable name because they introduced a <code>#[Target]</code> attribute to select the autowiring alias.</p>
 
         <pre><code class="language-php">
-        // App\MyTaggedServices\ChainService.php
+// App\MyTaggedServices\ChainService.php
 
-        namespace App\MyTaggedServices;
+namespace App\MyTaggedServices;
 
-        use App\DependencyInjection\TaggedServicesInterface;
-        use Symfony\Component\DependencyInjection\Attribute\Target;
+use App\DependencyInjection\TaggedServicesInterface;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 
-        class ChainService
-        {
-            public function __construct(#[Target('appMyTagServices')] private TaggedServicesInterface $services)
-            {
-            }
+class ChainService
+{
+    public function __construct(#[Target('appMyTagServices')] private TaggedServicesInterface $services)
+    {
+    }
 
-            public function doStuff()
-            {
-                foreach ($this->services as $service) {
-                    var_dump($service::class);
-                }
-            }
+    public function doStuff()
+    {
+        foreach ($this->services as $service) {
+            var_dump($service::class); // here are your services :)
         }
+    }
+}
         </code></pre>
 
         <p>And now, I like you a bit less, since you've reintroduced an attribute 😭</p>
 
         <p>You can find the code <a href="https://github.com/GregoireHebert/sf-tagged-iteraror-injection/commit/12ca3a763ec71640eb319e63317662c883925733" target="_blank">here</a>.</p>
+
+        <p>Convinced? Or pass?</p>
+        <p>Would you like to see this in Symfony? Well you won't.</p>
+
+        <h2>Because there is a catch.</h2>
+
+        <p>
+            If you stop there, like I could have, you could have made a mistake.<br/>
+            See, this approach is only good within a Symfony Bundle, and nowhere else. Why?<br/>
+            Because the notion of Tagged Iterator is tied with the symfony framework.</br>
+            In your business code, you always want to avoid any coupling with any framework at all! And with this solution, you find yourself with a code expecting an interface coming from a framework specific feature.<br/>
+            It won't work on Laravel, because there is no such thing as Tagged Iterator there.<br/>
+            <br/>
+            Another downside to consider, is that a Tagged Iterator, when injected through the attribute, is a <code>\Generator</code>.<br/>
+            Which means, that the services injected are loaded lazily.<br/>
+            It has a non-negligible impact on performance according to what your services are doing.
+        </p>
+
+        <p>
+            And I know all this thanks to <a href="https://github.com/chalasr" target="_blank">Robin Chalas</a>'s perspective.<br/>
+            If there is something to take from this, is that, no matter how experienced you are, an idea is never good on its own before you've battle tested it with other people.<br/>
+            An idea, might be a good idea, but not in every situation. Every week there is a moment where I learn, and get better at my work by sharing ideas and thought with my colleagues :) Even bad ones (especially bad ones)<br/>
+            By others, I mean coworkers, fresh years, old timers in the field, well known OSS community fellows, pick any.<br/>
+            Anyway, let's have more ideas, try them, fail, and do it again until a great idea comes up ^^.
+        </p>
+
 
         <p>Thanks for reading me 😃</p>
 
