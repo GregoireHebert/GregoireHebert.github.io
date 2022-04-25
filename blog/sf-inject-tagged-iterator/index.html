@@ -73,12 +73,10 @@ services:
         tags: ['twig.extension']
         </code></pre>
 
-        <p>Services tagged with the <code>twig.extension</code> tag are collected during the initialization of TwigBundle and added to Twig as extensions.</p>
-        <p>For most users, this is all you need to know. But you might need to create your own custom tags.</p>
-
-        <p>If you enable autoconfigure, then some tags are automatically applied for you. That's true for the <code>twig.extension</code> tag: the container sees that your class extends AbstractExtension (or more accurately, that it implements <code>ExtensionInterface</code>) and adds the tag for you.</p>
-
-        <p>If you want to apply tags automatically for your own services, use the <code>_instanceof</code> option:</p>
+        <p>Services tagged with the <code>twig.extension</code> tag are collected during the initialization of TwigBundle and added to Twig as extensions.<br/>
+        For most users, this is all you need to know. But you might need to create your own custom tags.<br/>
+        If you enable autoconfigure, then some tags are automatically applied for you. That's true for the <code>twig.extension</code> tag: the container sees that your class extends AbstractExtension (or more accurately, that it implements <code>ExtensionInterface</code>) and adds the tag for you.<br/>
+        If you want to apply tags automatically for your own services, use the <code>_instanceof</code> option:</p>
 
         <pre><code class="language-yaml">
 # config/services.yaml
@@ -91,11 +89,10 @@ services:
     # ...
         </code></pre>
 
-        <p>And for more advanced needs, you can define the automatic tags using the <code>registerForAutoconfiguration()</code> method.</p>
-        <p>I'll let those of you that are discovering this feature the time to read the <a href="https://symfony.com/doc/current/service_container/tags.html" target="_blank">documentation</a>.</p>
-
-        <p>Now, once a set of services are targeted with the said tag, how does one tend to use it?</p>
-        <p>Usually it goes by a compiler pass, to ask the container for any service ids related to the tag. Then we iterate over each one to inject them as a future service thanks to the <code>Reference</code> class.</p>
+        <p>And for more advanced needs, you can define the automatic tags using the <code>registerForAutoconfiguration()</code> method.<br/>
+        I'll let those of you that are discovering this feature the time to read the <a href="https://symfony.com/doc/current/service_container/tags.html" target="_blank">documentation</a>.<br/>
+        Now, once a set of services are targeted with the said tag, how does one tend to use it?<br/>
+        Usually it goes by a compiler pass, to ask the container for any service ids related to the tag. Then we iterate over each one to inject them as a future service thanks to the <code>Reference</code> class.</p>
 
         <pre><code class="language-php">
 // example from the documentation
@@ -165,9 +162,9 @@ class HandlerCollection
 }
         </code></pre>
 
-        <p>In the same blog article, Nicolas Grekas introduced a way of selecting autowired aliases with the attributes, using named arguments.</p>
-        <p>In the documentation, the example uses the http/client component.</p>
-        <p>For example, consider the following scoped HTTP client created to work with GitHub API:</p>
+        <p>In the same blog article, Nicolas Grekas introduced a way of selecting autowired aliases with the attributes, using named arguments.<br/>
+        In the documentation, the example uses the http/client component.<br/>
+        For example, consider the following scoped HTTP client created to work with GitHub API:</p>
 
         <pre><code class="language-yaml">
 # example from the documentation
@@ -204,10 +201,10 @@ class GitHubDownloader
 
         <h2>It bothers me...</h2>
 
-        <p>The thing is, I've never been that much of a fan, having an attribute within my constructor argument declaration. (Taste and colours...)</p>
-        <p>And recently during a coaching session, while explaining this very mechanism, a question pops as an evidence:</p>
-        <p>Why can't we have an iterable class containing the tagged services, and inject it with an alias for argument?</p>
-        <p>I... love the idea! I find it elegant and simple.</p>
+        <p>The thing is, I've never been that much of a fan, having an attribute within my constructor argument declaration. (Taste and colours...)<br/>
+        And recently during a coaching session, while explaining this very mechanism, a question pops as an evidence:<br/>
+        Why can't we have an iterable class containing the tagged services, and inject it with an alias for argument?<br/>
+        I... love the idea! I find it elegant and simple.</p>
 
         <p>Let's try to implement it!</p>
 
@@ -443,13 +440,17 @@ class ChainService
         </p>
 
         <p>
+            So, as much as I not a fan of having attributes in the middle of a constructor arguments,
+            I'll admit that it's technically a better solution over the one appearing more natural to me.
+        </p>
+
+        <p>
             And I know all this thanks to <a href="https://github.com/chalasr" target="_blank">Robin Chalas</a>'s perspective.<br/>
             If there is something to take from this, is that, no matter how experienced you are, an idea is never good on its own before you've battle tested it with other people.<br/>
             An idea, might be a good idea, but not in every situation. Every week there is a moment where I learn, and get better at my work by sharing ideas and thought with my colleagues :) Even bad ones (especially bad ones)<br/>
             By others, I mean coworkers, fresh years, old timers in the field, well known OSS community fellows, pick any.<br/>
             Anyway, let's have more ideas, try them, fail, and do it again until a great idea comes up ^^.
         </p>
-
 
         <p>Thanks for reading me 😃</p>
 
