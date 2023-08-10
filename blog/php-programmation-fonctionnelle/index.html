@@ -164,8 +164,8 @@ function produitMoinsUn($x, $y) {
 }
 		</code></pre>
 
-		<p>Cependant il reste un problème pour vraiment respecter la notion de fonction au sens des maths. C'est la présence des mots clés <code>return</code> partout. En particulier celui de <code>produitMoinsUn</code>.<br/>
-		<code>return</code> est une commande. Pour afficher le résultat ou l'obtenir, cela revient à concaténer 2 commandes. Deux pas en avant... et un pas en arrière.</p>
+		<p>Cependant il reste un problème pour vraiment respecter la notion de fonction. C'est la présence des mots clés <code>return</code> partout. En particulier celui de <code>produitMoinsUn</code>.<br/>
+		<code>return</code> est une commande. Pour afficher le résultat ou l'obtenir, cela revient à concaténer 2 commandes.</p>
 
 		<p>Pour corriger ceci, les langages offrent la possibilité de stocker des procédures et fonctions dans des variables. Si on applique ceci à notre dernière fonction elle s'écrit alors comme cela : 
 
@@ -218,7 +218,7 @@ $produitMoinsX = fn($a, $b, $x) => $moinsX($a, $x) * $moinsX($b, $x);
 echo $produitMoinsX(4, 4, 1); // 9
 		</code></pre>
 
-		<p>Mais, que se passe-t'il si (peu importe la raison), je n'ai pas encore la valeur 1 en ma possession.<br/>
+		<p>Mais, que se passe-t'il si (peu importe la raison), je n'ai pas encore la valeur 1 en ma possession ?<br/>
 		Alors au lieu de retourner le résultat, je vais, dans ma fonction anonyme, retourner une fonction anonyme, pour réclamer le résultat plus tard. Une fois que j'aurais la valeur à soustraire.</p>
 
 		<pre><code class="language-php">
@@ -253,10 +253,10 @@ function afficheEtAjouteJusque($target, $start = 0) {
 afficheEtAjouteJusque(3);
 		</code></pre>
 
-		<p>Bon mathématiquement c'est pas encore tout à fait juste...<br/>
+		<p>C'est techniquement une boucle, et s'il vous plait ne parlons pas des goto. Bon mathématiquement c'est pas encore tout à fait juste...<br/>
 		Une fonction ne doit prendre qu'un seul paramètre en entrée.</p>
 
-		<p>Il faudrait donc pousser le vice d'inclure des fonctions anonyme encore plus loin, et passer de ceci</p>
+		<p>Pour respecter ce critère, il faut pousser les inclusions de fonctions anonymes encore plus loin, et passer de ceci :</p>
 
 		<pre><code class="language-php">
 &lt;?php
@@ -268,7 +268,7 @@ $produitMoinsX = fn($a, $b) =>
 echo ($produitMoinsX(4, 4))(1); // 9
 		</code></pre>
 
-		<p>à cela.</p>
+		<p>à cela :</p>
 
 		<pre><code class="language-php">
 &lt;?php
@@ -284,14 +284,16 @@ echo (($produitMoinsX(4))(4))(1); // 9
 		</code></pre>
 
 		<p>C'est une approche de la programmation fonctionnelle nommée <b>currying</b>.<br/>
-		Alors c'est très peu lisible ici mais on pourrais améliorer le tout en séparant chaque fonction anonyme dans des variables.</p>
+		Alors c'est très peu lisible ici mais on pourrait améliorer le tout en séparant chaque fonction anonyme dans des variables.</p>
 
 		<p>Et... j'ai une chose à ajouter.<br/>
-		Dans nos lambda, j'ai pris les valeurs, les ai manipulés et renvoyés.<br/>
+		Dans nos lambdas, j'ai pris les valeurs, les ai manipulés et renvoyés.<br/>
 		Il n'y a pas de place pour les effets secondaires comme afficher des choses, gérer des cas d'erreur, aller lire des valeurs qui proviennent d'ailleurs.</p>
 
 		<p>Pour répondre à ces besoins, il faut introduire les Monads.<br/>
-		Ce que je n'ai pas du tout l'intention de faire parce qu'on parlait de PHP au départ et que ça pas beaucoup de sens, sauf si vous voulez faire du C pour améliorer PHP lui-même.</p>
+		Ce que je n'ai pas du tout l'intention de faire parce qu'on parlait de PHP au départ et que ça pas beaucoup de sens ici, sauf si vous voulez faire du C pour améliorer PHP lui-même.</p>
+
+		<p>C'est ça de la programmation fonctionnelle.</p>
 
 		<p>En conclusion.</p>
 
