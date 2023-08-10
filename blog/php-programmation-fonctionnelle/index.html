@@ -233,30 +233,7 @@ echo ($produitMoinsX(4, 4))(1); // 9
 
 		<p>Ceci nous permet de séparer les responsabilités et le travail de logique ou de préparations à plusieurs "moment" de l'exécution de notre programme. Cool non ?
 
-		<p>Nous en PHP, nous n'avons pas le souci, mais si vous aviez un langage vraiment fonctionnel, vous ne pourriez pas utiliser de boucles, et vous seriez obligé de faire de la récursivité.</p>
-
-		<pre><code class="language-php">
-&lt;?php
-
-function AjouteJusque($target, $start) {
-    if ($start > $target) {
-        return;
-    }
-    afficheEtAjouteJusque($target, $start);
-}
-
-function afficheEtAjouteJusque($target, $start = 0) {
-    echo $start++ . PHP_EOL;
-    AjouteJusque($target, $start);
-}
-
-afficheEtAjouteJusque(3);
-		</code></pre>
-
-		<p>C'est techniquement une boucle, et s'il vous plait ne parlons pas des goto. Bon mathématiquement c'est pas encore tout à fait juste...<br/>
-		Une fonction ne doit prendre qu'un seul paramètre en entrée.</p>
-
-		<p>Pour respecter ce critère, il faut pousser les inclusions de fonctions anonymes encore plus loin, et passer de ceci :</p>
+		<p>Bon d'après la définition c'est pas encore tout à fait juste... Une fonction ne doit prendre qu'un seul paramètre en entrée. Pour respecter ce critère, il faut pousser les inclusions de fonctions anonymes encore plus loin, et passer de ceci :</p>
 
 		<pre><code class="language-php">
 &lt;?php
@@ -286,9 +263,9 @@ echo (($produitMoinsX(4))(4))(1); // 9
 		<p>C'est une approche de la programmation fonctionnelle nommée <b>currying</b>.<br/>
 		Alors c'est très peu lisible ici mais on pourrait améliorer le tout en séparant chaque fonction anonyme dans des variables.</p>
 
-		<p>Et... j'ai une chose à ajouter.<br/>
-		Dans nos lambdas, j'ai pris les valeurs, les ai manipulés et renvoyés.<br/>
-		Il n'y a pas de place pour les effets secondaires comme afficher des choses, gérer des cas d'erreur, aller lire des valeurs qui proviennent d'ailleurs.</p>
+		<p>Et... j'ai deux, trois choses à ajouter.<br/>
+		Dans un langage fonctionnel, vous ne pourriez pas utiliser de boucles, et vous seriez obligé de faire de la récursivité.
+		Dans mes exemples, j'ai pris les valeurs, les ai manipulés et renvoyés. Et c'est tout, parce que dans un langage fonctionnel, au sein d'une fonction, il n'y a pas de place pour les effets secondaires comme afficher des choses, gérer des cas d'erreur, aller lire des valeurs qui proviennent d'ailleurs.</p>
 
 		<p>Pour répondre à ces besoins, il faut introduire les Monads.<br/>
 		Ce que je n'ai pas du tout l'intention de faire parce qu'on parlait de PHP au départ et que ça pas beaucoup de sens ici, sauf si vous voulez faire du C pour améliorer PHP lui-même.</p>
