@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>PHP et programmation fonctionnelle | Grégoire Hébert - blog</title>
+    <meta property="og:title" content="PHP et programmation fonctionnelle" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="description" content="PHP et programmation fonctionnelle" />
+    <meta property="og:description" content="PHP et programmation fonctionnelle" />
+    <link rel="canonical" href="https://knot.gheb.dev/blog/php-programmation-fonctionnelle" />
+    <meta property="og:url" content="https://knot.gheb.dev/blog/php-programmation-fonctionnelle" />
+    <meta property="og:site_name" content="Grégoire Hébert - blog" />
+    <meta property="og:type" content="article" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@gheb_dev" />
+    <meta name="twitter:title" content="PHP et programmation fonctionnelle" />
+    <meta name="twitter:description" content="PHP et programmation fonctionnelle" />
+    <meta name="twitter:image" content="https://knot.gheb.dev/assets/programmation-fonctionnelle/header.jpg" />
+
+    <meta property="article:published_time" content="2023-08-09T18:00:00+01:00" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="application/ld+json">
+        {"image": "https://knot.gheb.dev/assets/programmation-fonctionnelle/header.jpg", "author":"Grégoire Hébert", "publisher":"Grégoire Hébert", "description":"PHP et programmation fonctionnelle","@type":"BlogPosting","headline":"PHP et programmation fonctionnelle","dateModified":"2023-08-09T18:00:00+01:00","datePublished":"2023-08-09T18:00:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://knot.gheb.dev/blog/php-programmation-fonctionnelle"},"url":"https://knot.gheb.dev/blog/php-programmation-fonctionnelle","@context":"http://schema.org"}
+    </script>
+    <link href="../../index.css" rel="stylesheet">
+    <link href="../../prism.css" rel="stylesheet">
+</head>
+<body>
+    <div id="loading">
+        <div id="spinner"></div>
+    </div>
+    <div id="profile">
+        <div id="profile_img" style="background: url(https://avatars1.githubusercontent.com/u/878701?v=4) center;"></div>
+        <div id="username"><span style="display:block;">Grégoire Hébert</span><i class="fab fa-github"></i><a href="https://github.com/GregoireHebert">@GregoireHebert</a></div>
+        <div id="userbio" style="display: block;">
+            Senior developer, trainer, lecturer.<br/>
+            CTO at <a href="https://les-tilleuls.coop">Les-Tilleuls.coop</a><br/>
+            GA enthusiast.<br/>
+            Foods and drinks lover.<br/>
+            <br/>
+            <a href="/hire-me" class="hire">You want to work with me ?</a>
+        </div>
+        <div id="about">
+            <span style="display:block;"><i class="fas fa-users"></i> &nbsp; La Coopérative des Tilleuls</span>
+            <span style="display:block;"><i class="fas fa-phone"></i> &nbsp; <a href="tel:+33618864288">+33 618864288</a></span>
+            <span style="display:block;"><i class="fab fa-twitter"></i> &nbsp; <a href="https://www.twitter.com/gheb_dev">@gheb_dev</a></span>
+            <span style="display:block;"><i class="fas fa-envelope"></i> &nbsp; <a href="mailto:contact@gheb.dev">contact@gheb.dev</a></span>
+            <span style="display:block;"><i class="fas fa-link"></i> &nbsp; <a href="https://les-tilleuls.coop">https://les-tilleuls.coop</a></span>
+            <span style="display:block;"><i class="fas fa-map-marker-alt"></i> &nbsp;&nbsp; Lille (59), France</span>
+        </div>
+    </div>
+    <div id="display">
+        <h1><a class="go_back" href="/"><i class="fas fa-arrow-left"></i></a>PHP et programmation fonctionnelle</h1>
+
+        <span class="date">10 Août 2023</span>
+        
+        <p>L'autre jour, au détour d'un café, j'entends à la table d'à côté ceci.</p>
+
+		<p>Si j'écris du PHP dans un long fichier de script, sans classes, sans objets.<br/>
+		Est-ce que je fais de la programmation fonctionnelle, de la programmation procédurale, ou c'est pareil ?</p>
+
+		<p>Je me serais bien retourné pour répondre, mais je me suis ravisé.</p>
+
+		<p>TL;DR: Eh bah, ça dépends. Mais en général ce que je vois c'est plutôt du procédural.</p>
+
+		<p>Lorsqu'un langage de programmation ne possède pas de classes ou d'objets, ses fonctions sont des ordres, des commandes. C'est pourquoi on dit que c'est un langage impératif. Si ses ordres effectuent une liste d'actions dans un ordre précis et invariant. Cette succession, est appelée une procédure. C'est donc un langage Impératif et procédural.</p>
+
+		<p>Une procédure qui retourne un résultat est une fonction.</p>
+
+		<p>PHP, permet d'écrire des procédures.<br/>
+		PHP, permet d'écrire des fonctions.</p>
+
+		<p>C'est dont un langage impératif, et procédural.</p>
+
+		<p>PHP permet également d'implémenter des classes et des objets.<br/>
+		C'est donc un langage Orienté Objet.</p>
+
+		<p>Il est multi-paradigmes.</p>
+
+		<p>Mais alors, un langage orienté objet, peut-il <b>ne pas</b> être impératif, ou procédural ?
+		Pas vraiment, puisque dans nos classes nous allons déclarer des procédures et des fonctions.</p>
+
+		<p>Comme moi, vous avez surement déjà entendu les termes : programmation procédurale et programmation fonctionnelle. On pourrait en déduire que c'est la même chose selon si la procédure retourne une valeur ou non. Il y a une part de vérité, mais c'est insuffisant. Dans une approche procédurale les appels se chaînent.</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+recupererDonnees('./donnees.csv');
+preparerDonnees('./donnees.csv');
+afficherDonnees('./donnees.csv' );
+		</code></pre>
+
+		<p>Et il y a de grandes chances que ce soit ce que vous faites dans vos projets.<br/>
+		L'approche fonctionnelle, s'exprime plutôt en expressions et en composition.</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+afficher(preparer(recuperer('./donnees.csv')));
+		</code></pre>
+
+		<p>Il y a un autre domaine pour lequel on parle de fonction. Les maths. Et dans celui-ci, une fonction prend un certains nombre de paramètres en entrée, et offre un résultat en sortie. Tel que plusieurs appels à une fonction avec les mêmes paramètres en entrées produira toujours le même résultat.</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+function moinsUn($x) {
+	return $x - 1;
+}
+		</code></pre>
+
+		<p>Creusons l'idée de fonction.<br/>
+		Imaginons ceci : Une fonction qui retourne le produit de 2 valeurs auxquelles on a retranché 1.</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+function produitMoinsUn($x, $y) {
+	return ($x - 1) * ($y - 1);
+}
+		</code></pre>
+
+		<p>On pourrait simplifier la lecture et la maintenance avec une séparation des responsabilités .</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+function moinsUn($x) {
+	return $x - 1;
+}
+
+function produit($x, $y) {
+	return $x * $y;
+}
+
+function produitMoinsUn($x, $y) {
+	$a = moinsUn($x);
+	$b = moinsUn($y);
+	
+	return produit($a, $b);
+}
+		</code></pre>
+
+		<p>Mais puisqu'en programmation fonctionnelle, on compose les appels. Il faudrait plutôt écrire ceci :
+
+		<pre><code class="language-php">
+&lt;?php
+
+function moinsUn($x) {
+	return $x - 1;
+}
+
+function produit($x, $y) {
+	return $x * $y;
+}
+
+function produitMoinsUn($x, $y) {
+	return produit(moinsUn($x), moinsUn($y));
+}
+		</code></pre>
+
+		<p>Cependant il reste un problème pour vraiment respecter la notion de fonction au sens des maths. C'est la présence des mots clés <code>return</code> partout. En particulier celui de <code>produitMoinsUn</code>.<br/>
+		<code>return</code> est une commande. Pour afficher le résultat ou l'obtenir, cela revient à concaténer 2 commandes. Deux pas en avant... et un pas en arrière.</p>
+
+		<p>Pour corriger ceci, les langages offrent la possibilité de stocker des procédures et fonctions dans des variables. Si on applique ceci à notre dernière fonction elle s'écrit alors comme cela : 
+
+		<pre><code class="language-php">
+&lt;?php
+
+function moinsUn($x) {
+	return $x - 1;
+}
+
+function produit($x, $y) {
+	return $x * $y;
+}
+
+$produitMoinsUn = fn($x, $y) => produit(moinsUn($x), moinsUn($y));
+echo $produitMoinsUn(4, 4); // 9
+		</code></pre>
+
+		<p>Commençons à nous faire des noeuds au cerveaux.<br/>
+		Ces fonctions assignées à des variables sont des fonctions dites, anonyme, ou lambda.</p>
+
+		<p>Si je peux assigner des fonctions anonymes à des variables, tout comme des nombres.<br/>
+		Si je peux passer des nombres comme valeurs d'entrée et de sortie de fonction, qui plus est par l'intermédiaires de variables.<br/>
+		Alors je peux avoir des fonctions anonymes en entrées et sorties de fonction.</p>
+
+		<p>Un exemple peut aider.<br/>
+		Si au lieu de <code>moinsUn</code> je dis <code>MoinsX</code> et je permet de préciser la valeur à retrancher.</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+function moinsUn($x) {
+	return $x - 1;
+}
+
+// devient
+function moinsX($a, $x) {
+	return $a - $x;
+}
+		</code></pre>
+
+		<p>Je transforme mes fonctions en fonctions anonymes.</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+$moinsX = fn($a, $x) => $a - $x;
+$produitMoinsX = fn($a, $b, $x) => $moinsX($a, $x) * $moinsX($b, $x);
+
+echo $produitMoinsX(4, 4, 1); // 9
+		</code></pre>
+
+		<p>Mais, que se passe-t'il si (peu importe la raison), je n'ai pas encore la valeur 1 en ma possession.<br/>
+		Alors au lieu de retourner le résultat, je vais, dans ma fonction anonyme, retourner une fonction anonyme, pour réclamer le résultat plus tard. Une fois que j'aurais la valeur à soustraire.</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+$moinsX = fn($a, $x) => $a - $x;
+$produitMoinsX = fn($a, $b) => 
+					fn($x) => $moinsX($a, $x) * $moinsX($b, $x);
+
+echo ($produitMoinsX(4, 4))(1); // 9
+		</code></pre>
+
+		<p>Ceci nous permet de séparer les responsabilités et le travail de logique ou de préparations à plusieurs "moment" de l'exécution de notre programme. Cool non ?
+
+		<p>Nous en PHP, nous n'avons pas le souci, mais si vous aviez un langage vraiment fonctionnel, vous ne pourriez pas utiliser de boucles, et vous seriez obligé de faire de la récursivité.</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+function AjouteJusque($target, $start) {
+    if ($start > $target) {
+        return;
+    }
+    afficheEtAjouteJusque($target, $start);
+}
+
+function afficheEtAjouteJusque($target, $start = 0) {
+    echo $start++ . PHP_EOL;
+    AjouteJusque($target, $start);
+}
+
+afficheEtAjouteJusque(3);
+		</code></pre>
+
+		<p>Bon mathématiquement c'est pas encore tout à fait juste...<br/>
+		Une fonction ne doit prendre qu'un seul paramètre en entrée.</p>
+
+		<p>Il faudrait donc pousser le vice d'inclure des fonctions anonyme encore plus loin, et passer de ceci</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+$moinsX = fn($a, $x) => $a - $x;
+$produitMoinsX = fn($a, $b) => 
+					fn($x) => $moinsX($a, $x) * $moinsX($b, $x);
+
+echo ($produitMoinsX(4, 4))(1); // 9
+		</code></pre>
+
+		<p>à cela.</p>
+
+		<pre><code class="language-php">
+&lt;?php
+
+$moinsX = fn($a) => 
+            fn($x) => $a - $x;
+            
+$produitMoinsX = fn($a) => 
+                    fn($b) => 
+					    fn($x) => ($moinsX($a))($x) * ($moinsX($b))($x);
+
+echo (($produitMoinsX(4))(4))(1); // 9
+		</code></pre>
+
+		<p>C'est une approche de la programmation fonctionnelle nommée <b>currying</b>.<br/>
+		Alors c'est très peu lisible ici mais on pourrais améliorer le tout en séparant chaque fonction anonyme dans des variables.</p>
+
+		<p>Et... j'ai une chose à ajouter.<br/>
+		Dans nos lambda, j'ai pris les valeurs, les ai manipulés et renvoyés.<br/>
+		Il n'y a pas de place pour les effets secondaires comme afficher des choses, gérer des cas d'erreur, aller lire des valeurs qui proviennent d'ailleurs.</p>
+
+		<p>Pour répondre à ces besoins, il faut introduire les Monads.<br/>
+		Ce que je n'ai pas du tout l'intention de faire parce qu'on parlait de PHP au départ et que ça pas beaucoup de sens, sauf si vous voulez faire du C pour améliorer PHP lui-même.</p>
+
+		<p>En conclusion.</p>
+
+		<p>Si j'écris du PHP dans un long fichier de script, sans classes, sans objets, je fais de la programmation procédurale, et ce même en considérant dans le terme procédure la notion de fonction au sens d'une procédure retournant une valeur.</p>
+        
+        <p>Merci de m'avoir lu :)</p>
+        
+    </div>
+    <div id="footer_blog">
+        <a href="https://github.com/imfunniee" target="_blank">made on earth by a human</a>
+    </div>
+    <script type="text/javascript">
+    setTimeout(function(){
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function(){
+        document.getElementById("loading").classList.remove("animated");
+        document.getElementById("loading").classList.remove("fadeOut");
+        document.getElementById("loading").style.display = "none";
+        },50);
+    },1500);
+    $.getJSON("../../config.json", function(user){
+        var icon = document.createElement("link");
+        icon.setAttribute("rel", "icon");
+        icon.setAttribute("href", user[0].userimg);
+        icon.setAttribute("type", "image/png");
+        document.getElementsByTagName("head")[0].appendChild(icon);
+    });
+    </script>
+    <script async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async src="../../prism.js"></script>
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45648310-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</body></html>
