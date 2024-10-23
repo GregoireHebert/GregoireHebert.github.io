@@ -1,12 +1,12 @@
 [
-  { 
+  {
     "url_title": "php-programmation-fonctionnelle",
     "title": "PHP et programmation fonctionnelle",
     "sub_title": "ou procédurale ?",
     "top_image": "/assets/programmation-fonctionnelle/header.jpg",
     "visible": true
   },
-  { 
+  {
     "url_title": "sf-inject-tagged-iterator",
     "title": "[Symfony] Inject a tagged iterator",
     "sub_title": "in a more natural way",
@@ -20,7 +20,7 @@
     "top_image": "/assets/ieee-754/1000-vaut-1.jpg",
     "visible": true
   },
-  { 
+  {
     "url_title": "bike-shelf",
     "title": "DIY - Meuble vélo",
     "sub_title": "Construire un meuble vélo soi-même",
