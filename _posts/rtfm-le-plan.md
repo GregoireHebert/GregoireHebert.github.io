@@ -5,7 +5,8 @@ top_image: /assets/rtfm/header.jpg
 layout: default
 ---
 
-Cet article est le premier d'une série que je vais tenir jusqu'en avril.
+Objectif: 78kg pour octobre 2024, mon poids de forme d'après les calculateurs en ligne.  
+SPOILER: objectif atteint !
 
 ## Le plan
 
