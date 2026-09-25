@@ -384,7 +384,7 @@ Would you like to see this in Symfony? Well you won't.
 If you stop there, like I could have, you could have made a mistake.\
 See, this approach is only good within a Symfony Bundle, and nowhere else. Why?\
 Because the notion of Tagged Iterator is tied with the symfony framework. In your business code, you always want to avoid any coupling with any framework at all! And with this solution, you find yourself with a code expecting an interface coming from a framework specific feature.\
-It won't work on Laravel, because there is no such thing as Tagged Iterator there.\
+It won't work on Laravel, because there is no such thing as Tagged Iterator there.
 
 Another downside to consider, is that a Tagged Iterator, when injected through the attribute, is a `\Generator`.\
 Which means, that the services injected are loaded lazily.\

@@ -1,7 +1,9 @@
 ---
 import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { Image } from "astro:assets";
 import IconRss from "@/assets/icons/IconRss.svg";
+import portrait from "@/assets/images/gregoire-hebert.jpg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -52,29 +54,41 @@ const homePath = getRelativeLocaleUrl(locale, "");
         <span class="sr-only">RSS Feed</span>
       </a>
 
-      <p>
-        Principal Engineer à <a
-          class="hover:text-accent underline decoration-dashed underline-offset-4"
-          href="https://les-tilleuls.coop"
-          target="_blank"
-          rel="noopener">Les-Tilleuls.coop</a
-        >, à Lille. J'écris ici sur PHP, Symfony, API&nbsp;Platform,
-        l'architecture logicielle et la conception d'API — avec, de temps en
-        temps, un détour par les maths, le web d'avant ou un meuble en bois.
-      </p>
-      <p class="mt-2">
-        Je suis aussi l'auteur de <LinkButton
-          class="hover:text-accent underline decoration-dashed underline-offset-4"
-          href={getRelativeLocaleUrl(locale, "blog/memex")}
-        >
-          Memex — La route du REST
-        </LinkButton>, et je suis disponible pour du <LinkButton
-          class="hover:text-accent underline decoration-dashed underline-offset-4"
-          href={getRelativeLocaleUrl(locale, "hire-me")}
-        >
-          conseil, de l'audit et de la formation
-        </LinkButton>.
-      </p>
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-7">
+        <Image
+          src={portrait}
+          alt="Grégoire Hébert sur scène, micro à la main"
+          widths={[128, 256, 384]}
+          sizes="(max-width: 640px) 7rem, 9rem"
+          loading="eager"
+          class="border-border size-28 shrink-0 rounded-full border object-cover sm:size-36"
+        />
+        <div>
+          <p>
+            Principal Engineer à <a
+              class="hover:text-accent underline decoration-dashed underline-offset-4"
+              href="https://les-tilleuls.coop"
+              target="_blank"
+              rel="noopener">Les-Tilleuls.coop</a
+            >, à Lille. J'écris ici sur PHP, Symfony, API&nbsp;Platform,
+            l'architecture logicielle et la conception d'API — avec, de temps en
+            temps, un détour par les maths, le web d'avant ou un meuble en bois.
+          </p>
+          <p class="mt-2">
+            Je suis aussi l'auteur de <LinkButton
+              class="hover:text-accent underline decoration-dashed underline-offset-4"
+              href={getRelativeLocaleUrl(locale, "blog/memex")}
+            >
+              Memex — La route du REST
+            </LinkButton>, et je suis disponible pour du <LinkButton
+              class="hover:text-accent underline decoration-dashed underline-offset-4"
+              href={getRelativeLocaleUrl(locale, "hire-me")}
+            >
+              conseil, de l'audit et de la formation
+            </LinkButton>.
+          </p>
+        </div>
+      </div>
       {
         socials.length > 0 && (
           <div class="mt-4 flex max-sm:flex-col sm:items-center">
