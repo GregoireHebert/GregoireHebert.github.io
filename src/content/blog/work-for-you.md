@@ -13,9 +13,9 @@ J’ai souvent l’impression que ce qu’il m’est arrivé, c’est que le sys
 
 Je ne suis pas un psychologue, ni un spécialiste du fonctionnement du cerveau. Je suis un collègue. Et en tant que collègues nous passons plus de temps ensemble qu’avec nos amis, nos compagnes et compagnons, nos enfants.
 
-Cela fait 10 ans que j’exerce mon métier. J’ai eu l’occasion de travailler et de collaborer avec un certain nombre de personnes. Et s’il y a quelque chose qui ma beaucoup touché, c’est que certains souhaitent tout arrêter face à l’adversité alors que je chérie ce métier. C’est un des plus beau métier de notre époque !
+Cela fait 15 ans que j’exerce mon métier. J’ai eu l’occasion de travailler et de collaborer avec un certain nombre de personnes. Et s’il y a quelque chose qui ma beaucoup touché, c’est que certains souhaitent tout arrêter face à l’adversité alors que je chérie ce métier. C’est un des plus beau métier de notre époque !
 
-Je m’appelle Grégoire Hébert, j’ai 30 ans, Je suis développeur d’applications à forte charge et sécurité accrue orientée API et formateur dans les principaux langages et outils que j’utilise chaque jour pour “Les-Tilleuls.coop”.
+Je m’appelle Grégoire Hébert, j’ai 38 ans, Je suis développeur d’applications à forte charge et sécurité accrue orientée API et formateur dans les principaux langages et outils que j’utilise chaque jour pour “Les-Tilleuls.coop”.
 
 Pour reprendre les propos de Jean-François Lépine lors du PHP Tour 2017 à Paris :
 

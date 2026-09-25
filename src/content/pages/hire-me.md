@@ -24,6 +24,7 @@ Here is a non-exhaustive list of clients with whom I have worked to audit or des
 
 Recently, I assisted in migrating a pure player (Sweeek) from bare-metal to Kubernetes, and I provided consulting as an architect for the Fédération Française de Ski, the Fédération Française de Natation and Fédération Française de Vélo. Although I cannot disclose some projects, If I were to list my most allowed representative interventions, they would be as follows:
 
+- **Ardennes Etape** - Architect and Lead Developer for the redesign of the system to create the catalog, with DDD and CQS and a Hexagonal / CLEAN approach.
 - **Nuclear Safety Authority** - Architect for the redesign of the filing and tracking tools for declarations. This tool allows managers of nuclear activities, those in the field of proximity nuclear activities, and operators of Basic Nuclear Installations to carry out their administrative procedures in a dematerialized manner. My role was to ensure the system's flexibility while guaranteeing maximum information security.
 - **Sweeek** - Lead Developer for a pure player for the migration of Symfony and API Platform versions. I participated in the implementation of a multi-region Kubernetes setup on AWS by writing Dockerfiles and Helm charts, with the goal of cost reduction and high availability.
 - **SINDUP** - Auditor for the valuation of software as part of a transformation into a SCIC, at the request of the Regional Union of SCOPs.
