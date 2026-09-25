@@ -2,6 +2,7 @@
 title: "Control your migrations"
 description: "Do you really think you handle Doctrine migrations properly? A look at what the documentation gets wrong."
 pubDatetime: 2018-06-12T12:00:00+02:00
+lang: "en"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/migration.jpg"
 tags:

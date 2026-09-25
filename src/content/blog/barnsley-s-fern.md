@@ -2,6 +2,7 @@
 title: "Barnsley's fern"
 description: "Once you enter the world of fractals you always want more. Drawing Barnsley's fern on a canvas."
 pubDatetime: 2019-04-25T11:00:00+02:00
+lang: "en"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/fern.jpg"
 tags:

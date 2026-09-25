@@ -2,6 +2,7 @@
 title: "RSA TLS AES WTF — partie 1"
 description: "Entrée en matière dans la sécurité des échanges sur le web : chiffrement symétrique, asymétrique et RSA."
 pubDatetime: 2020-03-28T22:22:00+01:00
+lang: "fr"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/rsa-part1.gif"
 tags:

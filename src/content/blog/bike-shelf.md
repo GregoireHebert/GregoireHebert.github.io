@@ -2,6 +2,7 @@
 title: "DIY — Meuble vélo"
 description: "Construire un meuble range-vélo soi-même : le concept, les problèmes, les plans et cinq journées de travail."
 pubDatetime: 2022-03-22T20:20:00+02:00
+lang: "fr"
 author: "Grégoire Hébert"
 ogImage: "/assets/bike-shelf/schematics.png"
 tags:

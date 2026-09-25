@@ -2,6 +2,7 @@
 title: "RSA TLS AES WTF — partie 2"
 description: "Échange de clés Diffie-Hellman, fonctions de hachage et paradoxe des anniversaires."
 pubDatetime: 2020-03-29T10:45:00+01:00
+lang: "fr"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/rsa-part2.gif"
 tags:

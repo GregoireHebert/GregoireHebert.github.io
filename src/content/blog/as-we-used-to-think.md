@@ -2,6 +2,7 @@
 title: "As we used to think"
 description: "Vous sous-estimez la puissance du web. Serait-il l'extension de votre cerveau ?"
 pubDatetime: 2020-11-28T09:30:00+01:00
+lang: "fr"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/as-we-used-to-think.jpeg"
 tags:

@@ -21,6 +21,8 @@ export default {
     backToTop: "Haut de page",
     goBack: "Retour",
     editPage: "Modifier la page",
+    writtenInFrench: "Article en français",
+    writtenInEnglish: "Article en anglais",
     previousPost: "Article précédent",
     nextPost: "Article suivant",
   },

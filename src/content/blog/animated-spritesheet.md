@@ -2,6 +2,7 @@
 title: "SpriteSheet Animation"
 description: "Animating a spritesheet is easy with a software — but what if I want to do it using CSS only?"
 pubDatetime: 2018-02-16T21:30:00+01:00
+lang: "en"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/htmljscss.jpg"
 tags:

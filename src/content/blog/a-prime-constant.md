@@ -2,6 +2,7 @@
 title: "A prime constant"
 description: "A prime constant has been calculated to generate a suite of prime numbers. Does it hold up?"
 pubDatetime: 2020-11-28T09:30:00+01:00
+lang: "en"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/a-prime-constant.png"
 tags:

@@ -1,0 +1,29 @@
+---
+import FlagFr from "@/assets/icons/flags/fr.svg";
+import FlagEn from "@/assets/icons/flags/en.svg";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+type Props = {
+  lang: "fr" | "en";
+  class?: string;
+};
+
+const { lang, class: className } = Astro.props;
+const t = useTranslations(Astro.currentLocale ?? config.site.lang);
+
+const flags = { fr: FlagFr, en: FlagEn };
+const Flag = flags[lang] ?? FlagFr;
+const label = lang === "en" ? t.post.writtenInEnglish : t.post.writtenInFrench;
+---
+
+<span
+  class:list={[
+    "border-border inline-block h-3 w-[1.125rem] shrink-0 overflow-hidden rounded-xs border align-[0.05em]",
+    className,
+  ]}
+  title={label}
+>
+  <Flag class="block h-full w-full" aria-hidden="true" />
+  <span class="sr-only">{label}</span>
+</span>

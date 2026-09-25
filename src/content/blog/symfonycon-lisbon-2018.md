@@ -2,6 +2,7 @@
 title: "SymfonyCon Lisbon 2018"
 description: "If you missed the SymfonyCon this year and are waiting for the video replays, here are my impressions."
 pubDatetime: 2018-12-12T13:00:00+01:00
+lang: "en"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/lisbon.jpg"
 tags:

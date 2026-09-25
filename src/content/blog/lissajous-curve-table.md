@@ -2,6 +2,7 @@
 title: "Lissajous curve table"
 description: "Drawing a Lissajous curve table on a canvas: combining speed, rotation and angle, step by step."
 pubDatetime: 2019-04-26T11:00:00+02:00
+lang: "en"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/oscilloscope.jpg"
 tags:

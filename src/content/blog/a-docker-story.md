@@ -2,6 +2,7 @@
 title: "A Docker story"
 description: "Docker can be greedy with your host memory over time. Is there a radical way to free some space?"
 pubDatetime: 2018-06-06T19:20:00+02:00
+lang: "en"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/container.jpg"
 tags:

@@ -2,6 +2,7 @@
 title: "PHP et programmation fonctionnelle"
 description: "Procédural, impératif, fonctionnel : PHP est multi-paradigmes, mais ce que l'on écrit au quotidien relève rarement du fonctionnel."
 pubDatetime: 2023-08-09T18:00:00+01:00
+lang: "fr"
 author: "Grégoire Hébert"
 ogImage: "/assets/programmation-fonctionnelle/header.jpg"
 tags:

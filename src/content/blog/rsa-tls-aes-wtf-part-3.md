@@ -2,6 +2,7 @@
 title: "RSA TLS AES WTF — partie 3"
 description: "SHA, AES et le fonctionnement interne des algorithmes de chiffrement par blocs."
 pubDatetime: 2020-03-29T15:45:00+01:00
+lang: "fr"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/rsa-part3.gif"
 tags:

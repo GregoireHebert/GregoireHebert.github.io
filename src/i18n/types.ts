@@ -19,6 +19,8 @@ export interface UIStrings {
     backToTop: string;
     goBack: string;
     editPage: string;
+    writtenInFrench: string;
+    writtenInEnglish: string;
     previousPost: string;
     nextPost: string;
   };

@@ -11,6 +11,9 @@ const posts = defineCollection({
     z.object({
       author: z.string().default(config.site.author),
       pubDatetime: z.date(),
+      // Posts are written in either language and are not translations of one
+      // another, so each carries its own.
+      lang: z.enum(["fr", "en"]).default("fr"),
       modDatetime: z.date().optional().nullable(),
       title: z.string(),
       featured: z.boolean().optional(),

@@ -2,6 +2,7 @@
 title: "[Symfony] Inject a tagged iterator"
 description: "Injecting a tagged iterator in a more natural way, without repeating the service definition in your configuration."
 pubDatetime: 2022-03-24T22:30:00+01:00
+lang: "en"
 author: "Grégoire Hébert"
 ogImage: "/assets/sf-tagged-iterator/tags.jpg"
 tags:

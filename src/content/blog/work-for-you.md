@@ -2,6 +2,7 @@
 title: "Vous travaillez d'abord pour vous !"
 description: "Bore out, burn out, brown out : pourquoi on s'épuise au travail, et quelques clés pour reprendre la main."
 pubDatetime: 2019-10-09T13:44:00+01:00
+lang: "fr"
 author: "Grégoire Hébert"
 ogImage: "/assets/blog/work-for-you.jpg"
 tags:

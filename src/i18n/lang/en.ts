@@ -21,6 +21,8 @@ export default {
     backToTop: "Back to top",
     goBack: "Go back",
     editPage: "Edit page",
+    writtenInFrench: "Written in French",
+    writtenInEnglish: "Written in English",
     previousPost: "Previous Post",
     nextPost: "Next Post",
   },
