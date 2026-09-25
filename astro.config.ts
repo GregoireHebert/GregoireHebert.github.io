@@ -20,11 +20,19 @@ import {
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import config from "./astro-paper.config";
+import trailingSlashRedirects from "./integrations/trailing-slash-redirects";
 
 export default defineConfig({
   site: config.site.url,
+  // Canonical URLs carry no trailing slash, matching what the Jekyll site
+  // advertised. "file" output means GitHub Pages serves /blog/<slug> as a
+  // plain 200 instead of redirecting it to /blog/<slug>/; the integration
+  // below keeps the trailing-slash form working by redirecting it here.
+  trailingSlash: "never",
+  build: { format: "file" },
   integrations: [
     mdx(),
+    trailingSlashRedirects(),
     sitemap({
       filter: page =>
         config.features?.showArchives !== false || !page.endsWith("/archives/"),

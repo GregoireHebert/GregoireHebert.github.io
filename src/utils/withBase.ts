@@ -44,3 +44,16 @@ export function getAssetPath(path: string): string {
   }
   return baseRoot + normalizedPath;
 }
+
+/**
+ * Drop the ".html" that `build.format: "file"` puts in the URL.
+ * Canonicals, share links, breadcrumbs and active-nav checks all work from
+ * the extensionless path the site actually advertises.
+ */
+export function stripPageExtension(pathname: string): string {
+  if (pathname === "/index.html") return "/";
+  if (pathname.endsWith("/index.html")) {
+    return pathname.slice(0, -"index.html".length);
+  }
+  return pathname.replace(/\.html$/, "");
+}

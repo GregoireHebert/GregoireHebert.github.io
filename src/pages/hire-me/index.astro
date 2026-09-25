@@ -19,7 +19,8 @@ if (!page) {
 
 const { Content } = await render(page);
 const locale = Astro.currentLocale ?? config.site.lang;
-const base = getRelativeLocaleUrl(locale, "hire-me");
+const offerUrl = (name: string) =>
+  getRelativeLocaleUrl(locale, `hire-me/${name}`);
 ---
 
 <Layout
@@ -37,18 +38,18 @@ const base = getRelativeLocaleUrl(locale, "hire-me");
       </h2>
       <ul class="mt-4 grid gap-4 sm:grid-cols-2">
         <OfferCard
-          href={`${base}/custom`}
+          href={offerUrl("custom")}
           title="Custom Training"
           description="Tailored to your team and your codebase. Drop me an email."
         />
         <OfferCard
-          href={`${base}/consulting`}
+          href={offerUrl("consulting")}
           title="Consulting"
           price="1200 €"
           description="Team leader, technical direction and software architecture."
         />
         <OfferCard
-          href={`${base}/audit`}
+          href={offerUrl("audit")}
           title="Code Audit"
           price="Starts at 5000 €"
           description="Code quality and security review, with a written report."

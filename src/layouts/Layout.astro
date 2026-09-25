@@ -3,7 +3,7 @@ import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
-import { getAssetPath } from "@/utils/withBase";
+import { getAssetPath, stripPageExtension } from "@/utils/withBase";
 import config from "@/config";
 import "@/styles/global.css";
 
@@ -20,15 +20,15 @@ const {
   title = site.title,
   description = site.description,
   ogImage = resolveDefaultOgImagePath(config),
-  canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
+  canonicalURL = new URL(stripPageExtension(Astro.url.pathname), Astro.site)
+    .href,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.site ?? Astro.url);
-// getRelativeLocaleUrl appends a trailing slash, which /rss.xml must not have
 const rssHref = getRelativeLocaleUrl(
   Astro.currentLocale ?? config.site.lang,
   "rss.xml"
-).replace(/\/$/, "");
+);
 ---
 
 <!doctype html>

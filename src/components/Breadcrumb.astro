@@ -1,6 +1,6 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { stripBase, stripLocale } from "@/utils/withBase";
+import { stripBase, stripLocale, stripPageExtension } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -9,7 +9,9 @@ const t = useTranslations(locale);
 
 // Strip base prefix and trailing slash, then locale prefix so segments
 // reflect the logical page path only.
-const pathWithoutBase = stripBase(Astro.url.pathname).replace(/\/+$/, "");
+const pathWithoutBase = stripBase(
+  stripPageExtension(Astro.url.pathname)
+).replace(/\/+$/, "");
 const currentUrlPath = stripLocale(pathWithoutBase, locale);
 
 // Get url array from path
