@@ -2,7 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    # master is the default branch today; main is here so a rename
+    # does not silently stop deployments
+    branches: [master, main]
   workflow_dispatch:
 
 permissions:
@@ -31,7 +33,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      # enablement also switches an existing site from branch builds to
+      # Actions, so the first run on master does not need a settings change
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
