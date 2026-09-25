@@ -21,27 +21,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      # The official Astro action: installs, runs `npm run build`, and uploads
+      # dist/ as the Pages artifact. It pins its own upload-pages-artifact,
+      # so the artifact and deploy halves cannot drift out of step.
+      - uses: withastro/action@v6
         with:
-          node-version: 22
-          cache: npm
-
-      - run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      # enablement also switches an existing site from branch builds to
-      # Actions, so the first run on master does not need a settings change
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
+          # Pinned rather than left to the action's default, so a new default
+          # cannot change the build under us. Satisfies engines: >=22.12.0.
+          node-version: 24
 
   deploy:
     needs: build
@@ -51,4 +40,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
