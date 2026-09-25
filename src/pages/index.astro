@@ -63,32 +63,99 @@ const homePath = getRelativeLocaleUrl(locale, "");
           loading="eager"
           class="border-border size-28 shrink-0 rounded-full border object-cover sm:size-36"
         />
+        {
+          /*
+          Both versions ship in the HTML and a script below picks one from
+          navigator.languages. There is no server to negotiate with on Pages,
+          and French stays the rendered default for crawlers and for no-JS.
+        */
+        }
         <div>
-          <p>
-            Principal Engineer à <a
-              class="hover:text-accent underline decoration-dashed underline-offset-4"
-              href="https://les-tilleuls.coop"
-              target="_blank"
-              rel="noopener">Les-Tilleuls.coop</a
-            >, à Lille. J'écris ici sur PHP, Symfony, API&nbsp;Platform,
-            l'architecture logicielle et la conception d'API — avec, de temps en
-            temps, un détour par les maths, le web d'avant ou un meuble en bois.
-          </p>
-          <p class="mt-2">
-            Je suis aussi l'auteur de <LinkButton
-              class="hover:text-accent underline decoration-dashed underline-offset-4"
-              href={getRelativeLocaleUrl(locale, "blog/memex")}
-            >
-              Memex — La route du REST
-            </LinkButton>, et je suis disponible pour du <LinkButton
-              class="hover:text-accent underline decoration-dashed underline-offset-4"
-              href={getRelativeLocaleUrl(locale, "hire-me")}
-            >
-              conseil, de l'audit et de la formation
-            </LinkButton>.
-          </p>
+          <div lang="fr" data-intro="fr">
+            <p>
+              Principal Engineer à <a
+                class="hover:text-accent underline decoration-dashed underline-offset-4"
+                href="https://les-tilleuls.coop"
+                target="_blank"
+                rel="noopener">Les-Tilleuls.coop</a
+              >, à Lille. J'écris ici sur PHP, Symfony, API&nbsp;Platform,
+              l'architecture logicielle et la conception d'API — avec, de temps
+              en temps, un détour par les maths, le web d'avant ou un meuble en
+              bois.
+            </p>
+            <p class="mt-2">
+              Je suis aussi l'auteur de <LinkButton
+                class="hover:text-accent underline decoration-dashed underline-offset-4"
+                href={getRelativeLocaleUrl(locale, "blog/memex")}
+              >
+                Memex — La route du REST
+              </LinkButton>, et je suis disponible pour du <LinkButton
+                class="hover:text-accent underline decoration-dashed underline-offset-4"
+                href={getRelativeLocaleUrl(locale, "hire-me")}
+              >
+                conseil, de l'audit et de la formation
+              </LinkButton>.
+            </p>
+          </div>
+          <div lang="en" data-intro="en" hidden>
+            <p>
+              Principal Engineer at <a
+                class="hover:text-accent underline decoration-dashed underline-offset-4"
+                href="https://les-tilleuls.coop"
+                target="_blank"
+                rel="noopener">Les-Tilleuls.coop</a
+              >, in Lille, France. I write here about PHP, Symfony,
+              API&nbsp;Platform, software architecture and API design — with the
+              occasional detour through maths, the early web, or a piece of
+              furniture.
+            </p>
+            <p class="mt-2">
+              I am also the author of <LinkButton
+                class="hover:text-accent underline decoration-dashed underline-offset-4"
+                href={getRelativeLocaleUrl(locale, "blog/memex")}
+              >
+                Memex — La route du REST
+              </LinkButton>, and I am available for <LinkButton
+                class="hover:text-accent underline decoration-dashed underline-offset-4"
+                href={getRelativeLocaleUrl(locale, "hire-me")}
+              >
+                consulting, audits and training
+              </LinkButton>.
+            </p>
+          </div>
         </div>
       </div>
+      <script is:inline data-astro-rerun>
+        (function () {
+          var intros = document.querySelectorAll("[data-intro]");
+          if (!intros.length) return;
+
+          var list =
+            navigator.languages && navigator.languages.length
+              ? navigator.languages
+              : [navigator.language || "fr"];
+
+          // First stated preference wins. Anyone who does not ask for French
+          // gets English, which is likelier to be readable than French.
+          var picked = "en";
+          for (var i = 0; i < list.length; i++) {
+            var tag = String(list[i]).toLowerCase();
+            if (tag.indexOf("fr") === 0) {
+              picked = "fr";
+              break;
+            }
+            if (tag.indexOf("en") === 0) {
+              picked = "en";
+              break;
+            }
+          }
+
+          for (var j = 0; j < intros.length; j++) {
+            intros[j].hidden = intros[j].dataset.intro !== picked;
+          }
+        })();
+      </script>
+
       {
         socials.length > 0 && (
           <div class="mt-4 flex max-sm:flex-col sm:items-center">
