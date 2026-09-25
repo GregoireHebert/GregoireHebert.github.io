@@ -4,15 +4,14 @@ import type { CollectionEntry } from "astro:content";
 import IconArrowLeft from "@/assets/icons/IconArrowLeft.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import LinkButton from "./LinkButton.astro";
-import { useTranslations } from "@/i18n";
+import T from "./T.astro";
+import { i18nAttrs } from "@/i18n/dual";
 
 type Props = {
   page: Page<CollectionEntry<"posts">>;
 };
 
 const { page } = Astro.props;
-
-const t = useTranslations(Astro.currentLocale);
 ---
 
 {
@@ -26,19 +25,19 @@ const t = useTranslations(Astro.currentLocale);
         disabled={!page.url.prev}
         href={page.url.prev as string}
         class:list={["select-none", { "opacity-50": !page.url.prev }]}
-        aria-label={t.a11y.goToPreviousPage}
+        {...i18nAttrs({ "aria-label": "a11y.goToPreviousPage" })}
       >
         <IconArrowLeft class="inline-block rtl:rotate-180" />
-        {t.pagination.prev}
+        <T k="pagination.prev" />
       </LinkButton>
       {page.currentPage} / {page.lastPage}
       <LinkButton
         disabled={!page.url.next}
         href={page.url.next as string}
         class:list={["select-none", { "opacity-50": !page.url.next }]}
-        aria-label={t.a11y.goToNextPage}
+        {...i18nAttrs({ "aria-label": "a11y.goToNextPage" })}
       >
-        {t.pagination.next}
+        <T k="pagination.next" />
         <IconArrowRight class="inline-block rtl:rotate-180" />
       </LinkButton>
     </nav>

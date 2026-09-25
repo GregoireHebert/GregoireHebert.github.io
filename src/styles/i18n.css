@@ -1,0 +1,22 @@
+/*
+ * Dual-rendered UI strings. French is what the HTML ships, so crawlers and
+ * readers without JavaScript get a coherent page; a script in <head> sets
+ * data-ui-lang before the body is parsed, so the swap never flashes.
+ */
+@layer base {
+  [data-l="en"] {
+    display: none;
+  }
+
+  html[data-ui-lang="en"] [data-l="fr"] {
+    display: none;
+  }
+
+  html[data-ui-lang="en"] [data-l="en"] {
+    display: inline;
+  }
+
+  html[data-ui-lang="en"] [data-l="en"][data-l-block] {
+    display: block;
+  }
+}

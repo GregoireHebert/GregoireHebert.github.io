@@ -1,11 +1,12 @@
 ---
 import LinkButton from "@/components/LinkButton.astro";
-import { tplStr, useTranslations } from "@/i18n";
+import T from "@/components/T.astro";
+import { i18nAttrs, tr } from "@/i18n/dual";
+import { tplStr } from "@/i18n";
 import { stripPageExtension } from "@/utils/withBase";
 import config from "@/config";
 
 const { shareLinks } = config;
-const t = useTranslations(Astro.currentLocale);
 
 const icons = import.meta.glob<{
   default: (_props: Record<string, unknown>) => unknown;
@@ -21,12 +22,14 @@ const items = await Promise.all(
   shareLinks.map(async ({ name, url, linkTitle }) => {
     const mod = await icons[`/src/assets/icons/socials/${name}.svg`]?.();
     const Icon = mod?.default;
-    const title =
+    const label = (lang: "fr" | "en") =>
       linkTitle ??
       (name === "mail"
-        ? t.post.sharePostViaEmail
-        : tplStr(t.post.sharePostOn, { platform: platformLabel(name) }));
-    return { url, title, Icon };
+        ? tr(lang, "post.sharePostViaEmail")
+        : tplStr(tr(lang, "post.sharePostOn"), {
+            platform: platformLabel(name),
+          }));
+    return { url, titleFr: label("fr"), titleEn: label("en"), Icon };
   })
 );
 ---
@@ -34,19 +37,24 @@ const items = await Promise.all(
 {
   items.some(({ Icon }) => Icon) && (
     <div class="flex flex-none flex-col items-center justify-center gap-1 md:items-start">
-      <span class="italic">{t.post.sharePostIntro}</span>
+      <span class="italic">
+        <T k="post.sharePostIntro" />
+      </span>
       <div class="text-center">
-        {items.map(({ url, title, Icon }) =>
+        {items.map(({ url, titleFr, titleEn, Icon }) =>
           Icon ? (
             <LinkButton
               href={`${url}${pageUrl}`}
               class="scale-90 p-2 hover:rotate-6 sm:p-1"
-              title={title}
+              {...i18nAttrs({ title: [titleFr, titleEn] })}
               target="_blank"
               rel="noopener noreferrer"
             >
               <Icon class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />
-              <span class="sr-only">{title}</span>
+              <span class="sr-only">
+                <span data-l="fr">{titleFr}</span>
+                <span data-l="en">{titleEn}</span>
+              </span>
             </LinkButton>
           ) : null
         )}

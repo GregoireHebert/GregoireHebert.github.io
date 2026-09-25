@@ -12,13 +12,12 @@ import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { useTranslations } from "@/i18n";
+import T from "@/components/T.astro";
 import config from "@/config";
 
 const { socials, posts: postsConfig } = config;
 
 const locale = Astro.currentLocale ?? config.site.lang;
-const t = useTranslations(locale);
 
 const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
@@ -63,15 +62,8 @@ const homePath = getRelativeLocaleUrl(locale, "");
           loading="eager"
           class="border-border size-28 shrink-0 rounded-full border object-cover sm:size-36"
         />
-        {
-          /*
-          Both versions ship in the HTML and a script below picks one from
-          navigator.languages. There is no server to negotiate with on Pages,
-          and French stays the rendered default for crawlers and for no-JS.
-        */
-        }
         <div>
-          <div lang="fr" data-intro="fr">
+          <div lang="fr" data-l="fr" data-l-block>
             <p>
               Principal Engineer à <a
                 class="hover:text-accent underline decoration-dashed underline-offset-4"
@@ -97,7 +89,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
               </LinkButton>.
             </p>
           </div>
-          <div lang="en" data-intro="en" hidden>
+          <div lang="en" data-l="en" data-l-block>
             <p>
               Principal Engineer at <a
                 class="hover:text-accent underline decoration-dashed underline-offset-4"
@@ -125,42 +117,11 @@ const homePath = getRelativeLocaleUrl(locale, "");
           </div>
         </div>
       </div>
-      <script is:inline data-astro-rerun>
-        (function () {
-          var intros = document.querySelectorAll("[data-intro]");
-          if (!intros.length) return;
-
-          var list =
-            navigator.languages && navigator.languages.length
-              ? navigator.languages
-              : [navigator.language || "fr"];
-
-          // First stated preference wins. Anyone who does not ask for French
-          // gets English, which is likelier to be readable than French.
-          var picked = "en";
-          for (var i = 0; i < list.length; i++) {
-            var tag = String(list[i]).toLowerCase();
-            if (tag.indexOf("fr") === 0) {
-              picked = "fr";
-              break;
-            }
-            if (tag.indexOf("en") === 0) {
-              picked = "en";
-              break;
-            }
-          }
-
-          for (var j = 0; j < intros.length; j++) {
-            intros[j].hidden = intros[j].dataset.intro !== picked;
-          }
-        })();
-      </script>
-
       {
         socials.length > 0 && (
           <div class="mt-4 flex max-sm:flex-col sm:items-center">
             <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
-              {t.home.socialLinks}:
+              <T k="home.socialLinks" />:
             </div>
             <Socials />
           </div>
@@ -178,7 +139,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
           ]}
         >
           <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.featured}
+            <T k="home.featured" />
           </h2>
           <ul>
             {featuredPosts.map(data => (
@@ -193,7 +154,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
       recentPosts.length > 0 && (
         <section id="recent-posts" class="pt-12 pb-6">
           <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.recentPosts}
+            <T k="home.recentPosts" />
           </h2>
           <ul>
             {recentPosts.slice(0, postsConfig.perIndex).map(data => (
@@ -206,7 +167,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
 
     <div class="my-8 text-center">
       <LinkButton href={getRelativeLocaleUrl(locale, "blog")}>
-        {t.home.allPosts}
+        <T k="home.allPosts" />
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>

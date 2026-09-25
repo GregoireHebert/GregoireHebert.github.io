@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import IconEdit from "@/assets/icons/IconEdit.svg";
-import { useTranslations } from "@/i18n";
+import T from "@/components/T.astro";
 import config from "@/config";
 
 type Props = {
@@ -15,8 +15,6 @@ const { hideEditPost, post, class: className = "" } = Astro.props;
 const editPost = config.features.editPost;
 const href = editPost.enabled ? `${editPost.url}${post.filePath}` : "";
 const showEditPost = editPost.enabled && !hideEditPost && href.trim() !== "";
-
-const t = useTranslations(Astro.currentLocale);
 ---
 
 {
@@ -31,7 +29,9 @@ const t = useTranslations(Astro.currentLocale);
       ]}
     >
       <IconEdit class="inline-block" />
-      <span>{t.post.editPage}</span>
+      <span>
+        <T k="post.editPage" />
+      </span>
     </a>
   )
 }

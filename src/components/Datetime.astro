@@ -6,7 +6,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/fr";
 import IconCalendar from "@/assets/icons/IconCalendar.svg";
 import config from "@/config";
-import { useTranslations } from "@/i18n";
+import T from "./T.astro";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -28,19 +28,15 @@ const {
   timezone: postTimezone,
 } = Astro.props;
 
-const t = useTranslations(Astro.currentLocale);
-
-// dayjs only ships English; unknown locales leave the current one in place.
-const locale = Astro.currentLocale ?? config.site.lang;
-
 const isModified = modDatetime && modDatetime > pubDatetime;
 
-const datetime = dayjs(isModified ? modDatetime : pubDatetime)
-  .tz(postTimezone ?? config.site.timezone)
-  .locale(locale);
+const datetime = dayjs(isModified ? modDatetime : pubDatetime).tz(
+  postTimezone ?? config.site.timezone
+);
 
-// "LL" is the locale's long date: "9 août 2023" in fr, "August 9, 2023" in en.
-const date = datetime.format("LL");
+// "LL" is the locale's long date. Both are rendered; CSS shows one.
+const dateFr = datetime.locale("fr").format("LL");
+const dateEn = datetime.locale("en").format("LL");
 ---
 
 <div
@@ -55,7 +51,7 @@ const date = datetime.format("LL");
   {
     isModified && (
       <span class:list={["text-sm", { "sm:text-base": size === "lg" }]}>
-        {t.post.updatedAt}:
+        <T k="post.updatedAt" />:
       </span>
     )
   }
@@ -63,6 +59,6 @@ const date = datetime.format("LL");
     class:list={["text-sm", { "sm:text-base": size === "lg" }]}
     datetime={datetime.toISOString()}
   >
-    {date}
+    <span data-l="fr">{dateFr}</span><span data-l="en">{dateEn}</span>
   </time>
 </div>

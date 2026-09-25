@@ -1,11 +1,11 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { stripBase, stripLocale, stripPageExtension } from "@/utils/withBase";
-import { useTranslations } from "@/i18n";
+import T from "./T.astro";
+import { both } from "@/i18n/dual";
 import config from "@/config";
 
 const locale = Astro.currentLocale ?? config.site.lang;
-const t = useTranslations(locale);
 
 // Strip base prefix and trailing slash, then locale prefix so segments
 // reflect the logical page path only.
@@ -26,41 +26,55 @@ const decodeSegment = (value: string) => {
   }
 };
 
-const navLabels: Record<string, string> = {
-  blog: t.nav.posts,
-  tags: t.nav.tags,
-  memex: t.nav.memex,
-  // a product name, the same in every locale
-  "api-platform-card": "API Platform card",
-  "hire-me": t.nav.hireMe,
-  archives: t.nav.archives,
-  search: t.nav.search,
+// Segment -> i18n key. Segments absent here render as-is (slugs, tag names).
+const navKeys: Record<string, string> = {
+  blog: "nav.posts",
+  tags: "nav.tags",
+  memex: "nav.memex",
+  "hire-me": "nav.hireMe",
+  archives: "nav.archives",
+  search: "nav.search",
 };
+
+// A product name, identical in every locale.
+const navLiterals: Record<string, string> = {
+  "api-platform-card": "API Platform card",
+};
+
+type Crumb = { key?: string; text?: string; dual?: { fr: string; en: string } };
 
 // if breadcrumb is Home > Posts > [page] <etc>
 // replace Posts with localized "Posts (page number)"
 // (only for the paginated listing, not for /blog/<slug>)
+let paginated: { fr: string; en: string } | null = null;
 if (breadcrumbList[0] === "blog" && !isNaN(Number(breadcrumbList[1]))) {
-  breadcrumbList.splice(
-    0,
-    2,
-    `${t.nav.posts} (${t.pagination.page.toLowerCase()} ${breadcrumbList[1] || 1})`
-  );
+  const n = breadcrumbList[1] || 1;
+  const posts = both("nav.posts");
+  const page = both("pagination.page");
+  paginated = {
+    fr: `${posts.fr} (${page.fr.toLowerCase()} ${n})`,
+    en: `${posts.en} (${page.en.toLowerCase()} ${n})`,
+  };
+  breadcrumbList.splice(0, 2, "\u0000paginated");
 }
 
 // if breadcrumb is Home > Tags > [tag] > [page] <etc>
 // replace [tag] > [page] with localized [tag] (page number)
 if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
-  breadcrumbList.splice(
-    1,
-    3,
-    `${decodeSegment(breadcrumbList[1])} ${
-      Number(breadcrumbList[2]) === 1
-        ? ""
-        : `(${t.pagination.page.toLowerCase()} ${breadcrumbList[2]})`
-    }`
-  );
+  const tag = decodeSegment(breadcrumbList[1]);
+  const n = breadcrumbList[2];
+  const page = both("pagination.page");
+  const suffix = (label: string) =>
+    Number(n) === 1 ? tag : `${tag} (${label.toLowerCase()} ${n})`;
+  paginated = { fr: suffix(page.fr), en: suffix(page.en) };
+  breadcrumbList.splice(1, 3, "\u0000paginated");
 }
+
+const crumbs: Crumb[] = breadcrumbList.map(segment => {
+  if (segment === "\u0000paginated" && paginated) return { dual: paginated };
+  if (navKeys[segment]) return { key: navKeys[segment] };
+  return { text: navLiterals[segment] ?? decodeSegment(segment) };
+});
 ---
 
 <nav class="app-layout mt-8 mb-1" aria-label="breadcrumb">
@@ -69,29 +83,38 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
   >
     <li class="flex items-center gap-x-1">
       <a href={getRelativeLocaleUrl(locale, "")} class="opacity-80">
-        {t.nav.home}
+        <T k="nav.home" />
       </a>
       <span aria-hidden="true" class="opacity-80">&raquo;</span>
     </li>
     {
-      breadcrumbList.map((breadcrumb, index) =>
-        index + 1 === breadcrumbList.length ? (
+      crumbs.map((crumb, index) =>
+        index + 1 === crumbs.length ? (
           <li>
             <span
               class:list={["capitalize opacity-75", { lowercase: index > 0 }]}
               aria-current="page"
             >
               {/* make the last part lowercase in Home > Tags > some-tag */}
-              {navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}
+              {crumb.key ? (
+                <T k={crumb.key} />
+              ) : crumb.dual ? (
+                <Fragment>
+                  <span data-l="fr">{crumb.dual.fr}</span>
+                  <span data-l="en">{crumb.dual.en}</span>
+                </Fragment>
+              ) : (
+                crumb.text
+              )}
             </span>
           </li>
         ) : (
           <li class="flex items-center gap-x-1">
             <a
-              href={getRelativeLocaleUrl(locale, breadcrumb)}
+              href={getRelativeLocaleUrl(locale, breadcrumbList[index])}
               class="capitalize opacity-70"
             >
-              {navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}
+              {crumb.key ? <T k={crumb.key} /> : crumb.text}
             </a>
             <span aria-hidden="true" class="opacity-70">
               &raquo;

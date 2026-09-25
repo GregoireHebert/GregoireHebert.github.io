@@ -11,7 +11,8 @@ import Pagination from "@/components/Pagination.astro";
 import { getUniqueTags } from "@/utils/getUniqueTags";
 import { getSortedPosts } from "@/utils/getSortedPosts";
 import { slugifyAll } from "@/utils/slugify";
-import { useTranslations } from "@/i18n";
+import T from "@/components/T.astro";
+import { tr } from "@/i18n/dual";
 import config from "@/config";
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
@@ -32,20 +33,23 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 }
 
 const { page, tagName } = Astro.props;
-
-const locale = Astro.currentLocale ?? config.site.lang;
-const t = useTranslations(locale);
 ---
 
-<Layout title={`${t.pages.tagTitle}: ${tagName} | ${config.site.title}`}>
+<Layout
+  title={`${tr("fr", "pages.tagTitle")}: ${tagName} | ${config.site.title}`}
+  titleEn={`${tr("en", "pages.tagTitle")}: ${tagName} | ${config.site.title}`}
+>
   <Header />
 
   <Breadcrumb />
 
-  <Main
-    pageTitle={`${t.pages.tagTitle}: ${tagName}`}
-    pageDesc={`${t.pages.tagDesc} "${tagName}".`}
-  >
+  <Main>
+    <Fragment slot="title">
+      <T k="pages.tagTitle" />: {tagName}
+    </Fragment>
+    <Fragment slot="desc">
+      <T k="pages.tagDesc" /> "{tagName}".
+    </Fragment>
     <ul>
       {page.data.map(data => <Card {...data} />)}
     </ul>

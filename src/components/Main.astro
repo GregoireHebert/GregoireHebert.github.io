@@ -1,15 +1,26 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { stripPageExtension } from "@/utils/withBase";
+import T from "./T.astro";
 import config from "@/config";
 
 type Props = {
-  pageTitle: string | [string, string];
+  /** Literal heading, for pages whose title is not a UI string. */
+  pageTitle?: string | [string, string];
   pageDesc?: string;
+  /** i18n keys, for pages whose heading follows the reader's language. */
+  titleKey?: string;
+  descKey?: string;
   class?: string;
 };
 
-const { pageTitle, pageDesc, class: className } = Astro.props;
+const {
+  pageTitle,
+  pageDesc,
+  titleKey,
+  descKey,
+  class: className,
+} = Astro.props;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const backUrl = config.features.showBackButton
@@ -22,8 +33,28 @@ const backUrl = config.features.showBackButton
   id="main-content"
   class:list={["app-layout pb-4", className]}
 >
-  <h1 class="text-2xl font-semibold sm:text-3xl">{pageTitle}</h1>
-  <p class="mt-2 mb-6 italic">{pageDesc}</p>
+  <h1 class="text-2xl font-semibold sm:text-3xl">
+    {
+      Astro.slots.has("title") ? (
+        <slot name="title" />
+      ) : titleKey ? (
+        <T k={titleKey} />
+      ) : (
+        pageTitle
+      )
+    }
+  </h1>
+  <p class="mt-2 mb-6 italic">
+    {
+      Astro.slots.has("desc") ? (
+        <slot name="desc" />
+      ) : descKey ? (
+        <T k={descKey} />
+      ) : (
+        pageDesc
+      )
+    }
+  </p>
   <slot />
 </main>
 

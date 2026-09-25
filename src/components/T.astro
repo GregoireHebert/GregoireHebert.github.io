@@ -1,0 +1,23 @@
+---
+/**
+ * Renders a UI string in both languages. CSS shows one and hides the other,
+ * so the choice happens before paint with no flash and no layout shift.
+ */
+import { both } from "@/i18n/dual";
+
+type Props = {
+  k: string;
+  vars?: Record<string, string | number>;
+  /** Use when the string sits where a block box is expected. */
+  block?: boolean;
+};
+
+const { k, vars, block = false } = Astro.props;
+const { fr, en } = both(k, vars);
+const blockAttr = block ? "" : undefined;
+---
+
+<span data-l="fr" data-l-block={blockAttr}>{fr}</span><span
+  data-l="en"
+  data-l-block={blockAttr}>{en}</span
+>

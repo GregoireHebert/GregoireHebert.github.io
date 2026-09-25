@@ -2,6 +2,7 @@
 @import "./theme.css";
 @import "./typography.css";
 @import "./post-embeds.css";
+@import "./i18n.css";
 @import "katex/dist/katex.min.css";
 @import "rehype-callouts/theme/obsidian";
 

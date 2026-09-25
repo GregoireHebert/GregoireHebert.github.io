@@ -9,13 +9,13 @@ import IconMoon from "@/assets/icons/IconMoon.svg";
 import IconX from "@/assets/icons/IconX.svg";
 import LinkButton from "./LinkButton.astro";
 import { stripBase, stripLocale, stripPageExtension } from "@/utils/withBase";
-import { useTranslations } from "@/i18n";
+import T from "./T.astro";
+import { i18nAttrs } from "@/i18n/dual";
 import config from "@/config";
 
 const { site, features } = config;
 
 const locale = Astro.currentLocale ?? config.site.lang;
-const t = useTranslations(locale);
 
 // Strip the base prefix so isActive comparisons work regardless of deploy subdirectory.
 // e.g. with base "/sub": "/sub/blog/slug" → "/blog/slug"
@@ -39,7 +39,7 @@ const isActive = (path: string) => {
   href="#main-content"
   class="bg-background text-accent absolute inset-s-16 -top-full z-50 px-3 py-2 backdrop-blur-lg transition-all focus:top-4"
 >
-  {t.a11y.skipToContent}
+  <T k="a11y.skipToContent" />
 </a>
 
 <header
@@ -61,11 +61,13 @@ const isActive = (path: string) => {
       <button
         id="menu-btn"
         class="focus-outline self-end p-2 sm:hidden"
-        aria-label={t.a11y.openMenu}
         aria-expanded="false"
         aria-controls="menu-items"
-        data-label-open={t.a11y.openMenu}
-        data-label-close={t.a11y.closeMenu}
+        {...i18nAttrs({
+          "aria-label": "a11y.openMenu",
+          "data-label-open": "a11y.openMenu",
+          "data-label-close": "a11y.closeMenu",
+        })}
       >
         <IconX id="close-icon" class="hidden" />
         <IconMenuDeep id="menu-icon" />
@@ -79,7 +81,7 @@ const isActive = (path: string) => {
             href={getRelativeLocaleUrl(locale, "blog")}
             class:list={{ "active-nav": isActive("/blog") }}
           >
-            {t.nav.posts}
+            <T k="nav.posts" />
           </a>
         </li>
         <li class="col-span-2">
@@ -87,7 +89,7 @@ const isActive = (path: string) => {
             href={getRelativeLocaleUrl(locale, "tags")}
             class:list={{ "active-nav": isActive("/tags") }}
           >
-            {t.nav.tags}
+            <T k="nav.tags" />
           </a>
         </li>
         <li class="col-span-2">
@@ -95,7 +97,7 @@ const isActive = (path: string) => {
             href={getRelativeLocaleUrl(locale, "blog/memex")}
             class:list={{ "active-nav": currentPath.startsWith("/blog/memex") }}
           >
-            {t.nav.memex}
+            <T k="nav.memex" />
           </a>
         </li>
         <li class="col-span-2">
@@ -103,7 +105,7 @@ const isActive = (path: string) => {
             href={getRelativeLocaleUrl(locale, "hire-me")}
             class:list={{ "active-nav": isActive("/hire-me") }}
           >
-            {t.nav.hireMe}
+            <T k="nav.hireMe" />
           </a>
         </li>
         {
@@ -115,11 +117,15 @@ const isActive = (path: string) => {
                   "focus-outline flex size-full justify-center p-3 sm:relative sm:size-8 sm:p-0",
                   { "active-nav": isActive("/archives") },
                 ]}
-                title={t.nav.archives}
-                aria-label={t.nav.archives}
+                {...i18nAttrs({
+                  title: "nav.archives",
+                  "aria-label": "nav.archives",
+                })}
               >
                 <IconArchive class="hidden sm:absolute sm:top-1/2 sm:left-1/2 sm:block sm:size-6 sm:-translate-x-1/2 sm:-translate-y-1/2" />
-                <span class="sm:sr-only">{t.nav.archives}</span>
+                <span class="sm:sr-only">
+                  <T k="nav.archives" />
+                </span>
                 {isActive("/archives") && (
                   <IconUnderline
                     aria-hidden="true"
@@ -136,11 +142,15 @@ const isActive = (path: string) => {
               <LinkButton
                 href={getRelativeLocaleUrl(locale, "search")}
                 class:list={["focus-outline relative size-8"]}
-                title={t.nav.search}
-                aria-label={t.nav.search}
+                {...i18nAttrs({
+                  title: "nav.search",
+                  "aria-label": "nav.search",
+                })}
               >
                 <IconSearch class="absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2" />
-                <span class="sr-only">{t.nav.search}</span>
+                <span class="sr-only">
+                  <T k="nav.search" />
+                </span>
                 {isActive("/search") && (
                   <IconUnderline
                     aria-hidden="true"
@@ -157,7 +167,7 @@ const isActive = (path: string) => {
               <button
                 id="theme-btn"
                 class="focus-outline hover:[&>svg]:stroke-accent relative size-12 p-4 sm:size-8"
-                title={t.a11y.toggleTheme}
+                {...i18nAttrs({ title: "a11y.toggleTheme" })}
                 aria-label="auto"
                 aria-live="polite"
               >

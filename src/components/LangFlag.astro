@@ -1,8 +1,8 @@
 ---
 import FlagFr from "@/assets/icons/flags/fr.svg";
 import FlagEn from "@/assets/icons/flags/en.svg";
-import { useTranslations } from "@/i18n";
-import config from "@/config";
+import T from "./T.astro";
+import { i18nAttrs } from "@/i18n/dual";
 
 type Props = {
   lang: "fr" | "en";
@@ -10,11 +10,11 @@ type Props = {
 };
 
 const { lang, class: className } = Astro.props;
-const t = useTranslations(Astro.currentLocale ?? config.site.lang);
 
 const flags = { fr: FlagFr, en: FlagEn };
 const Flag = flags[lang] ?? FlagFr;
-const label = lang === "en" ? t.post.writtenInEnglish : t.post.writtenInFrench;
+const labelKey =
+  lang === "en" ? "post.writtenInEnglish" : "post.writtenInFrench";
 ---
 
 <span
@@ -22,8 +22,8 @@ const label = lang === "en" ? t.post.writtenInEnglish : t.post.writtenInFrench;
     "border-border inline-block h-3 w-[1.125rem] shrink-0 overflow-hidden rounded-xs border align-[0.05em]",
     className,
   ]}
-  title={label}
+  {...i18nAttrs({ title: labelKey })}
 >
   <Flag class="block h-full w-full" aria-hidden="true" />
-  <span class="sr-only">{label}</span>
+  <span class="sr-only"><T k={labelKey} /></span>
 </span>

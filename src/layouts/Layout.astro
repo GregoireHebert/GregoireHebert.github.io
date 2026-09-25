@@ -14,6 +14,8 @@ type Props = {
   canonicalURL?: string;
   /** Language of the page content, when it differs from the site language. */
   contentLang?: string;
+  /** English <title>, swapped in at runtime for English readers. */
+  titleEn?: string;
 };
 
 const { site } = config;
@@ -25,6 +27,7 @@ const {
   canonicalURL = new URL(stripPageExtension(Astro.url.pathname), Astro.site)
     .href,
   contentLang,
+  titleEn,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.site ?? Astro.url);
@@ -38,6 +41,7 @@ const rssHref = getRelativeLocaleUrl(
 <html
   dir={site.dir ?? "ltr"}
   lang={contentLang ?? Astro.currentLocale ?? site.lang}
+  data-content-lang={contentLang ? "" : undefined}
   class="overflow-y-scroll scroll-smooth"
 >
   <head>
@@ -58,6 +62,7 @@ const rssHref = getRelativeLocaleUrl(
     <!-- Primary meta -->
     <title>{title}</title>
     <meta name="title" content={title} />
+    {titleEn && <meta name="i18n-title-en" content={titleEn} />}
     <meta name="description" content={description} />
     <meta name="author" content={site.author} />
     <link rel="sitemap" href={getAssetPath("sitemap-index.xml")} />
@@ -101,6 +106,43 @@ const rssHref = getRelativeLocaleUrl(
     }
 
     <!--
+      Picks the UI language before the body is parsed, so the CSS in
+      i18n.css has already chosen a side by the time anything paints.
+      The page content keeps whatever language it was written in.
+    -->
+    <script is:inline>
+      (function () {
+        var list =
+          navigator.languages && navigator.languages.length
+            ? navigator.languages
+            : [navigator.language || "fr"];
+
+        // First stated preference wins; anyone not asking for French gets
+        // English, which is likelier to be readable than French.
+        var ui = "en";
+        for (var i = 0; i < list.length; i++) {
+          var tag = String(list[i]).toLowerCase();
+          if (tag.indexOf("fr") === 0) {
+            ui = "fr";
+            break;
+          }
+          if (tag.indexOf("en") === 0) {
+            ui = "en";
+            break;
+          }
+        }
+
+        var root = document.documentElement;
+        root.setAttribute("data-ui-lang", ui);
+        // Only the shell follows the reader; a post keeps its own language,
+        // which the post route sets explicitly.
+        if (!root.hasAttribute("data-content-lang"))
+          root.setAttribute("lang", ui);
+        window.__uiLang = ui;
+      })();
+    </script>
+
+    <!--
       Inline FOUC-prevention script: sets data-theme on <html> before
       the browser paints. Runs synchronously, no defer/async.
     -->
@@ -125,6 +167,30 @@ const rssHref = getRelativeLocaleUrl(
     class="bg-background font-app text-foreground selection:bg-accent/75 selection:text-accent-foreground flex min-h-svh flex-col"
   >
     <slot />
+    <script is:inline data-astro-rerun>
+      (function () {
+        if ((window.__uiLang || "fr") !== "en") return;
+
+        // Attributes cannot be rendered twice, so swap the ones that carry an
+        // English counterpart. Invisible to sighted readers, so doing this
+        // after parse costs nothing.
+        var nodes = document.querySelectorAll("[data-l-attrs]");
+        for (var i = 0; i < nodes.length; i++) {
+          var el = nodes[i];
+          var attrs = (el.getAttribute("data-l-attrs") || "").split(",");
+          for (var j = 0; j < attrs.length; j++) {
+            var name = attrs[j].trim();
+            if (!name) continue;
+            var value = el.getAttribute("data-l-" + name + "-en");
+            if (value !== null) el.setAttribute(name, value);
+          }
+        }
+
+        var title = document.querySelector('meta[name="i18n-title-en"]');
+        if (title)
+          document.title = title.getAttribute("content") || document.title;
+      })();
+    </script>
     <script>
       import "@/scripts/theme";
     </script>
