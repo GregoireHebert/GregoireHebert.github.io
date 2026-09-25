@@ -1,0 +1,100 @@
+/*
+ * Styling for markup that lives inside the migrated posts: the chat transcript
+ * in "As we used to think", the video/album embeds in "DIY — Meuble vélo" and
+ * the Medium-style figures in "Vous travaillez d'abord pour vous !".
+ * All of it is themed with the same tokens as the rest of the site.
+ */
+@layer base {
+  .app-prose {
+    /* ---- Embeds: keep them inside the column and responsive ---- */
+    iframe {
+      @apply border-border mx-auto my-6 block w-full rounded-lg border;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      margin-inline: auto !important;
+    }
+
+    .pa-carousel-widget {
+      @apply border-border my-6 rounded-lg border;
+    }
+
+    /* ---- Figures with a credit line ---- */
+    figure {
+      @apply my-6;
+
+      img {
+        @apply rounded-lg;
+      }
+
+      figcaption {
+        @apply mt-2 text-center text-sm;
+      }
+    }
+
+    /* ---- Inline images that used to carry width:30vw ---- */
+    img.centered {
+      @apply my-4 inline-block w-full rounded-lg sm:w-[calc(50%-0.75rem)];
+      /* the original pages set these inline */
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ---- Chat transcript ---- */
+    .msger {
+      @apply border-border my-8 overflow-hidden rounded-lg border;
+    }
+
+    .msger-header {
+      @apply border-border bg-muted text-foreground border-b px-4 py-2 text-sm font-medium;
+    }
+
+    .msger-header-title {
+      @apply flex items-center gap-2;
+    }
+
+    .msger-chat {
+      @apply flex flex-col gap-4 p-4;
+    }
+
+    .msg {
+      @apply flex items-end gap-3;
+    }
+
+    .msg.right-msg {
+      @apply flex-row-reverse;
+    }
+
+    .msg-img {
+      @apply border-border size-10 shrink-0 rounded-full border bg-cover bg-center;
+    }
+
+    .msg-bubble {
+      @apply bg-muted text-foreground max-w-[min(32rem,80%)] rounded-lg px-4 py-3;
+    }
+
+    .right-msg .msg-bubble {
+      @apply bg-accent text-accent-foreground;
+    }
+
+    .msg-info {
+      @apply mb-1 flex items-baseline justify-between gap-4;
+    }
+
+    .msg-info-name {
+      @apply text-sm font-semibold;
+    }
+
+    .msg-info-time {
+      @apply text-xs opacity-70;
+    }
+
+    .msg-text {
+      @apply text-[0.95rem] leading-relaxed;
+    }
+
+    .right-msg .msg-info-name,
+    .right-msg .msg-text {
+      @apply text-accent-foreground;
+    }
+  }
+}

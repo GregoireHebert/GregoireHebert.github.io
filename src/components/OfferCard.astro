@@ -1,0 +1,40 @@
+---
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+
+type Props = {
+  href: string;
+  title: string;
+  price?: string;
+  description?: string;
+  external?: boolean;
+};
+
+const { href, title, price, description, external = false } = Astro.props;
+---
+
+<li class="list-none">
+  <a
+    href={href}
+    target={external ? "_blank" : undefined}
+    rel={external ? "noopener noreferrer" : undefined}
+    class:list={[
+      "group border-border bg-background flex h-full flex-col rounded-lg border p-5",
+      "hover:border-accent focus-visible:border-accent transition-colors",
+    ]}
+  >
+    <span
+      class="text-accent flex items-center gap-2 text-lg font-medium decoration-dashed underline-offset-4 group-hover:underline"
+    >
+      {title}
+      <IconArrowRight
+        class="inline-block size-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100 rtl:-rotate-180"
+      />
+    </span>
+    {price && <span class="mt-1 font-semibold">{price}</span>}
+    {
+      description && (
+        <span class="text-muted-foreground mt-2 text-sm">{description}</span>
+      )
+    }
+  </a>
+</li>

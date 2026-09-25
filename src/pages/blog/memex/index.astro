@@ -1,0 +1,280 @@
+---
+import { Image } from "astro:assets";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import coverImage from "@/assets/images/memex/scene_wood.jpg";
+import config from "@/config";
+
+const BUY_URL = "https://gum.co/ctlhzX?wanted=true";
+
+const topics = [
+  {
+    title: "World Wide Web",
+    items: ["HTTP", "URI", "Restreindre et contrôler l'accès aux données"],
+  },
+  {
+    title: "Semantic Web",
+    items: [
+      "Comprendre le web",
+      "Qu'est-ce qu'un standard ?",
+      "Identifier une ressource",
+    ],
+  },
+  {
+    title: "REST",
+    items: [
+      "La spécification REST",
+      "Le style architectural",
+      "Les éléments constituants de REST",
+      "REST pour une API",
+      "HTTP et idempotence",
+      "L'aide de la sémantique",
+      "Performances",
+      "Faire évoluer son API, quelle stratégie ?",
+    ],
+  },
+  {
+    title: "Sécurité",
+    items: [
+      "Le top 10 de l'OWASP",
+      "Injection",
+      "Authentification frauduleuse",
+      "Exposition aux données sensibles",
+    ],
+  },
+];
+
+const reviews = [
+  {
+    author: "Vincent C.",
+    title: "Très bon livre",
+    body: "Je ne me suis pas du tout ennuyé à lire ce livre, car les points souvent complexes sont bien expliqués, simplifiés et clarifiés. J'ai aimé la vulgarisation et l'introduction historique.",
+  },
+  {
+    author: "Fabien K.",
+    title: "Bon livre !",
+    body: "J'ai abordé le livre essentiellement pour son aspect technique. Il permet de bien appréhender le vocabulaire des APIs et vulgariser les concepts. J'ai apprécié toute la partie sécurité et les pointes d'humour étaient bienvenues pour qu'il ne devienne pas un livre technique assommant.",
+  },
+];
+
+const description =
+  "Memex — La route du REST : créer une API REST respectueuse du web. Un livre sur les origines du World Wide Web, du REST, et sur la façon d'en tirer parti.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  breadcrumb: "Grégoire Hébert > Blog > Memex",
+  mainEntity: {
+    "@type": "Book",
+    "@id": "https://knot.gheb.dev/blog/memex",
+    author: "Grégoire Hébert",
+    bookFormat: "https://schema.org/Hardcover",
+    datePublished: "2020-11-01",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      bestRating: "5",
+      ratingCount: "2",
+      ratingValue: "5",
+    },
+    image: new URL(coverImage.src, config.site.url).href,
+    inLanguage: "French",
+    isbn: "9782957453900",
+    name: "Memex - La route du REST",
+    numberOfPages: "242",
+    offers: {
+      "@type": "AggregateOffer",
+      availability: "https://schema.org/InStock",
+      price: "28",
+      priceCurrency: "EUR",
+      offerCount: "1",
+      offers: [
+        {
+          "@type": "Offer",
+          url: "https://fr.ulule.com/memex-la-route-du-rest/",
+        },
+      ],
+    },
+    publisher: "Grégoire Hébert",
+    review: reviews.map(r => ({
+      "@type": "Review",
+      author: r.author,
+      datePublished: "2020-11-01",
+      name: r.title,
+      reviewBody: r.body,
+      reviewRating: { "@type": "Rating", ratingValue: "5" },
+    })),
+  },
+};
+---
+
+<Layout
+  title={`Memex — La route du REST | ${config.site.title}`}
+  description={description}
+  ogImage={coverImage.src}
+>
+  <Header />
+
+  <main id="main-content" class="app-layout my-1" data-pagefind-body>
+    <section
+      class="border-border relative mt-8 overflow-hidden rounded-lg border"
+    >
+      <Image
+        src={coverImage}
+        alt="Memex — La route du REST"
+        widths={[640, 1024, 1536]}
+        sizes="(max-width: 768px) 100vw, 768px"
+        loading="eager"
+        class="h-64 w-full object-cover sm:h-80"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20"
+        aria-hidden="true"
+      >
+      </div>
+      <div class="absolute inset-x-0 bottom-0 p-5 sm:p-8">
+        <h1 class="text-3xl font-bold text-white sm:text-4xl">
+          <span class="text-accent block text-sm tracking-[0.3em] uppercase">
+            Memex
+          </span>
+          La route du REST
+        </h1>
+        <p class="mt-2 text-white/85">Créer une API REST respectueuse du web</p>
+      </div>
+    </section>
+
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+      <a
+        href={BUY_URL}
+        target="_blank"
+        rel="noopener"
+        class="bg-accent text-accent-foreground rounded-md px-5 py-2.5 font-medium hover:opacity-90"
+      >
+        Je m'offre MEMEX — 28 €
+      </a>
+      <LinkButton
+        href="#sommaire"
+        class="hover:text-accent underline decoration-dashed underline-offset-4"
+      >
+        En savoir plus
+      </LinkButton>
+    </div>
+
+    <section class="app-prose max-w-app mt-12">
+      <h2>Sujet du livre</h2>
+      <p>
+        Depuis l'apparition des smartphones, le mode de consommation des données
+        informatiques change. Il est devenu habituel, bien que ce soit invisible
+        la plupart du temps, que nous ayons affaire à des API. Elles sont un
+        excellent moyen pour qu'une machine communique avec une autre.
+      </p>
+      <p>
+        Nous utilisons un système bâti au début des années 70, conçu par des
+        gens brillants, qui ont imaginé des systèmes assez souples pour être
+        maintenables, extensibles et pérennes.
+      </p>
+      <p>Il s'agit du Web et du REST.</p>
+      <p>
+        Pour comprendre ces termes indissociables, les secrets de leur
+        longévité, de leur efficacité, et comment en tirer parti, nous allons
+        parcourir leurs origines et leurs mécanismes. À commencer par les
+        origines du Web que nous connaissons. Le World Wide Web. Saviez-vous que
+        nous devons l'internet que nous utilisons chaque jour au satellite russe
+        Sputnik ?
+      </p>
+    </section>
+
+    <section id="sommaire" class="mt-12">
+      <h2 class="text-2xl font-semibold tracking-wide">
+        Quelques sujets abordés
+      </h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        {
+          topics.map(topic => (
+            <div class="border-border rounded-lg border p-5">
+              <h3 class="text-accent font-semibold">{topic.title}</h3>
+              <ul class="mt-2 space-y-1">
+                {topic.items.map(item => (
+                  <li class="text-muted-foreground flex gap-2 text-sm">
+                    <span aria-hidden="true">—</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="app-prose max-w-app mt-12">
+      <h2>À qui s'adresse le livre ?</h2>
+      <p>
+        Ce livre est destiné aux personnes qui souhaitent en apprendre un peu
+        plus sur le fonctionnement d'internet, les origines du web, de REST, et
+        des concepts établis qui font le web d'aujourd'hui.
+      </p>
+      <p>
+        Il est aussi destiné aux développeurs d'API qui souhaitent en apprendre
+        plus sur les standards et la philosophie derrière REST. Que vous ayez
+        pour objectif de créer une API REST de zéro, ou avec un framework comme
+        API Platform.
+      </p>
+      <p>
+        Ce livre exprime une partie du travail de Roy Fielding et Tim
+        Berners-Lee sur le sujet. Il vous guidera vers une meilleure
+        compréhension, implémentation et respect de leur vision. Rappelons
+        qu'ils sont à l'origine du web que nous exploitons et enrichissons, mais
+        qu'en voyant ce que nous en faisons, ils sont déçus.
+      </p>
+      <p>
+        Ce livre vous guidera à travers l'histoire du World Wide Web et de REST.
+        Les innombrables articles présents sur internet (Wikipédia inclus) ne
+        sont pas suffisants pour connaître l'intégralité des tenants et
+        aboutissants de REST et du Web. Une fois que vous aurez terminé ce livre
+        et que vous aurez compris les différents rouages, prenez le temps de
+        lire leurs travaux afin de devenir vous-même un expert sur le sujet.
+      </p>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold tracking-wide">Ils l'ont lu</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        {
+          reviews.map(review => (
+            <figure class="border-border rounded-lg border p-5">
+              <div class="text-accent" aria-label="Noté 5 sur 5">
+                <span aria-hidden="true">★★★★★</span>
+              </div>
+              <blockquote class="mt-2 text-sm italic">{review.body}</blockquote>
+              <figcaption class="text-muted-foreground mt-3 text-sm">
+                — {review.author},{" "}
+                <cite class="not-italic">{review.title}</cite>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </section>
+
+    <div class="my-12 text-center">
+      <a
+        href={BUY_URL}
+        target="_blank"
+        rel="noopener"
+        class="bg-accent text-accent-foreground inline-block rounded-md px-6 py-3 text-lg font-medium hover:opacity-90"
+      >
+        Je m'offre MEMEX
+      </a>
+    </div>
+  </main>
+
+  <Footer />
+
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(jsonLd)}
+  />
+</Layout>

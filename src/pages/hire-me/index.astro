@@ -1,0 +1,71 @@
+---
+import { getEntry, render } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import OfferCard from "@/components/OfferCard.astro";
+import config from "@/config";
+
+const page = await getEntry("pages", "hire-me");
+
+if (!page) {
+  throw new Error(
+    "Missing content entry: `hire-me.md` in `src/content/pages/`"
+  );
+}
+
+const { Content } = await render(page);
+const locale = Astro.currentLocale ?? config.site.lang;
+const base = getRelativeLocaleUrl(locale, "hire-me");
+---
+
+<Layout
+  title={`${page.data.title} | ${config.site.title}`}
+  description={page.data.description}
+>
+  <Header />
+
+  <Breadcrumb />
+
+  <Main pageTitle={page.data.title} pageDesc="let's work together, shall we!">
+    <section aria-labelledby="offers" class="mb-10">
+      <h2 id="offers" class="text-xl font-semibold tracking-wide">
+        If you wish to work with me
+      </h2>
+      <ul class="mt-4 grid gap-4 sm:grid-cols-2">
+        <OfferCard
+          href={`${base}/custom`}
+          title="Custom Training"
+          description="Tailored to your team and your codebase. Drop me an email."
+        />
+        <OfferCard
+          href={`${base}/consulting`}
+          title="Consulting"
+          price="1200 €"
+          description="Team leader, technical direction and software architecture."
+        />
+        <OfferCard
+          href={`${base}/audit`}
+          title="Code Audit"
+          price="Starts at 5000 €"
+          description="Code quality and security review, with a written report."
+        />
+        <OfferCard
+          href="https://les-tilleuls.coop/masterclass/formations"
+          title="Trainings"
+          description="The full catalogue at MasterClass by Les-Tilleuls.coop."
+          external
+        />
+      </ul>
+    </section>
+
+    <div class="app-prose max-w-app">
+      <Content />
+    </div>
+  </Main>
+
+  <Footer />
+</Layout>

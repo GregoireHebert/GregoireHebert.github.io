@@ -1,0 +1,241 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Footer from "@/components/Footer.astro";
+import ApiPlatformLogo from "@/assets/images/api-platform-logo.svg";
+import Webby from "@/assets/images/webby.svg";
+import config from "@/config";
+
+const description =
+  "Grab a collector card! An API Platform trading card that tilts under your cursor. Can you collect them all?";
+---
+
+<Layout
+  title={`Grab a collector card! | ${config.site.title}`}
+  description={description}
+>
+  <Header />
+
+  <Breadcrumb />
+
+  <main id="main-content" class="app-layout pb-4" data-pagefind-body>
+    <h1 class="text-2xl font-semibold sm:text-3xl">Grab a collector card!</h1>
+    <p class="mt-2 mb-6 italic">
+      Can you collect them all? Here is one to begin with :)
+    </p>
+
+    <div class="card-stage" data-card-stage>
+      <article class="card" data-card>
+        <div class="card__art">
+          <span class="card__halo" aria-hidden="true"></span>
+          <Webby class="card__webby" data-card-webby aria-hidden="true" />
+        </div>
+
+        <ApiPlatformLogo
+          class="card__logo"
+          data-card-title
+          role="img"
+          aria-label="API Platform"
+        />
+
+        <p class="card__tagline" data-card-tagline>
+          REST and GraphQL framework to build modern API-driven projects
+        </p>
+
+        <div class="card__cta" data-card-cta>
+          <a
+            href="https://api-platform.com/docs"
+            target="_blank"
+            rel="noopener"
+          >
+            Docs
+          </a>
+          <a
+            href="https://tidelift.com/funding/github/packagist/api-platform/core"
+            target="_blank"
+            rel="noopener"
+          >
+            Fund
+          </a>
+          <a
+            href="https://github.com/api-platform/api-platform"
+            target="_blank"
+            rel="noopener"
+          >
+            Code
+          </a>
+        </div>
+
+        <a
+          class="card__sponsor"
+          data-card-sponsor
+          href="https://les-tilleuls.coop/fr"
+          target="_blank"
+          rel="noopener"
+        >
+          Sponsored by Les-Tilleuls.coop
+        </a>
+      </article>
+    </div>
+
+    <p class="text-muted-foreground mt-8 text-center text-sm">
+      Move your cursor over the card.
+    </p>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .card-stage {
+    display: flex;
+    justify-content: center;
+    perspective: 1000px;
+    padding: 1rem 0 2rem;
+  }
+
+  .card {
+    --pop: 0px;
+    transform-style: preserve-3d;
+    width: min(26rem, 100%);
+    border-radius: 1.75rem;
+    padding: 2.5rem 2rem;
+    background: #ffffff;
+    box-shadow:
+      0 20px 20px rgb(0 0 0 / 0.2),
+      0 0 50px rgb(0 0 0 / 0.2);
+    transition: transform 0.5s ease;
+  }
+
+  .card__art {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 13rem;
+  }
+
+  .card__halo {
+    position: absolute;
+    width: 13rem;
+    height: 13rem;
+    border-radius: 50%;
+    background-color: #c4f0f0;
+  }
+
+  .card :global(.card__webby) {
+    position: relative;
+    width: 9rem;
+    height: auto;
+    transition: transform 0.75s ease-out;
+  }
+
+  .card :global(.card__logo) {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 1.5rem;
+    fill: #2895a0;
+    transition: transform 0.75s ease-out;
+  }
+
+  .card__tagline {
+    padding: 1.75rem 0;
+    color: #1f7079;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.4;
+    transition: transform 0.75s ease-out;
+  }
+
+  .card__cta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    transition: transform 0.75s ease-out;
+  }
+
+  .card__cta a {
+    padding: 0.5rem 1.75rem;
+    border-radius: 2rem;
+    box-shadow: 0 5px 10px rgb(0 0 0 / 0.2);
+    color: #585858;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .card__sponsor {
+    display: block;
+    margin-top: 2.5rem;
+    padding: 1rem 0;
+    border-radius: 2rem;
+    background: #f54642;
+    color: #ffffff;
+    font-weight: 800;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.75s ease-out;
+  }
+
+  /* The parallax depends on a pointer; keep it flat otherwise. */
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .card :global(.card__webby),
+    .card :global(.card__logo),
+    .card__tagline,
+    .card__cta,
+    .card__sponsor {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  function initCard() {
+    const stage = document.querySelector<HTMLElement>("[data-card-stage]");
+    const card = document.querySelector<HTMLElement>("[data-card]");
+    if (!stage || !card) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const layers: [HTMLElement | null, string][] = [
+      [document.querySelector("[data-card-title]"), "translateZ(150px)"],
+      [
+        document.querySelector("[data-card-webby]"),
+        "translateZ(200px) rotateZ(-45deg)",
+      ],
+      [document.querySelector("[data-card-tagline]"), "translateZ(125px)"],
+      [document.querySelector("[data-card-cta]"), "translateZ(100px)"],
+      [document.querySelector("[data-card-sponsor]"), "translateZ(75px)"],
+    ];
+
+    const setLayers = (popped: boolean) => {
+      for (const [el, transform] of layers) {
+        if (el) el.style.transform = popped ? transform : "";
+      }
+    };
+
+    stage.addEventListener("pointermove", event => {
+      const rect = stage.getBoundingClientRect();
+      const xAxis = (rect.width / 2 - (event.clientX - rect.left)) / 25;
+      const yAxis = (rect.height / 2 - (event.clientY - rect.top)) / -25;
+      card.style.transform = `rotateY(${-xAxis}deg) rotateX(${yAxis}deg)`;
+    });
+
+    stage.addEventListener("pointerenter", () => {
+      card.style.transition = "none";
+      setLayers(true);
+    });
+
+    stage.addEventListener("pointerleave", () => {
+      card.style.transition = "transform 0.5s ease";
+      card.style.transform = "rotateY(0deg) rotateX(0deg)";
+      setLayers(false);
+    });
+  }
+
+  initCard();
+  document.addEventListener("astro:after-swap", initCard);
+</script>
