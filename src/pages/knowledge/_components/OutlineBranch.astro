@@ -1,0 +1,33 @@
+---
+/**
+ * The graph as a nested index. This is what a keyboard, a screen reader, a
+ * crawler and Pagefind get. Descriptions live in the readout beside the map,
+ * not here: repeated down a 385-entry list they only get in the way.
+ */
+import type { GraphNode } from "@/data/knowledge-graph";
+import Self from "./OutlineBranch.astro";
+
+type Props = {
+  node: GraphNode;
+  childrenOf: Map<string, GraphNode[]>;
+};
+
+const { node, childrenOf } = Astro.props;
+const kids = childrenOf.get(node.id) ?? [];
+---
+
+<li class="kg-item">
+  <button type="button" class="kg-pick" data-kg-id={node.id}>
+    {node.label}
+  </button>
+
+  {
+    kids.length > 0 && (
+      <ul class="kg-children">
+        {kids.map(kid => (
+          <Self node={kid} childrenOf={childrenOf} />
+        ))}
+      </ul>
+    )
+  }
+</li>
