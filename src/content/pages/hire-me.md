@@ -11,7 +11,7 @@ We may have met at one of the conferences where I have spoken or attended (Symfo
 
 In terms of technical skills, my deepest areas of expertise include product engineering in PHP/OOP, clean code, proper use of design patterns, SOLID principles, the Law of Demeter, and a solid understanding of architectural variations around DDD (hexagonal, onion, and clean architecture).
 
-I also consider myself to have a strong knowledge of GIT, GitLab, Symfony, API Platform, RESTful API design (I have written a book on this topic; you can find my knowledge tree here: [https://miro.com/app/board/uXjVMW-gn64=/](https://miro.com/app/board/uXjVMW-gn64=/)), API governance, and API-centric software design, open-source software, algorithms and data structures, programming language fundamentals, Kubernetes and containerization, security, and privacy protection.
+I also consider myself to have a strong knowledge of GIT, GitLab, Symfony, API Platform, RESTful API design (I have written a book on this topic; my knowledge tree is [here](/knowledge), merged with a map of what three live codebases actually do with it), API governance, and API-centric software design, open-source software, algorithms and data structures, programming language fundamentals, Kubernetes and containerization, security, and privacy protection.
 
 I have been a member of the [AFUP Haut De France](https://afup.org/home) office (The french association of PHP Users) for several years, and I contribute to organizing local meetups (connecting people and topics for discussions, as well as businesses wishing to host the event, with 2 to 3 speakers and between 40 and 80 participants), as well as AFUP Day (which brings together 8 to 10 speakers and between 100 and 200 participants, depending on the edition).
 

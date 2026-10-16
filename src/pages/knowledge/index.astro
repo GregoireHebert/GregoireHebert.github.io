@@ -1,0 +1,1060 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import OutlineBranch from "./_components/OutlineBranch.astro";
+import config from "@/config";
+import {
+  nodes,
+  edges,
+  stats,
+  ROOTS,
+  type GraphNode,
+} from "@/data/knowledge-graph";
+
+const title = "Knowledge graph";
+const description =
+  "What I know about the web, APIs, engineering practice and running systems in production — drawn as one graph you can pan and zoom.";
+
+const childrenOf = new Map<string, GraphNode[]>();
+for (const node of nodes) {
+  if (node.parent === null) continue;
+  const siblings = childrenOf.get(node.parent) ?? [];
+  siblings.push(node);
+  childrenOf.set(node.parent, siblings);
+}
+
+const roots = (["api", "practice", "field"] as const).map(source => ({
+  meta: ROOTS[source],
+  node: nodes.find(n => n.id === ROOTS[source].id) as GraphNode,
+}));
+
+const payload = {
+  nodes: nodes.map(n => ({
+    id: n.id,
+    label: n.label,
+    up: n.parent,
+    source: n.source,
+    depth: n.depth,
+    note: n.note ?? null,
+  })),
+  edges: edges.map(e => ({
+    id: e.id,
+    source: e.source,
+    target: e.target,
+    kind: e.kind,
+    why: e.why ?? null,
+  })),
+};
+---
+
+<Layout title={`${title} | ${config.site.title}`} description={description}>
+  <Header />
+  <Breadcrumb />
+
+  <Main pageTitle={title} pageDesc="what I know, drawn as a map">
+    <p class="mb-4">
+      This is my knowledge, gathered over the years and laid out in one place.
+      It began as the board I kept while writing the book on REST, and it has
+      taken on everything since: what the web is made of, how a model is
+      shaped, how a message crosses a boundary, how a system is kept standing
+      once people depend on it.
+    </p>
+    <p class="mb-6">
+      Three areas, one graph. The dashed edges are the point — each joins an
+      idea in one area to the place it is put to work in another. Drag to pan,
+      scroll to zoom, click any node to read what it is.
+    </p>
+
+    <dl class="kg-stats">
+      <div><dt>nodes</dt><dd>{stats.nodes}</dd></div>
+      <div><dt>web and API design</dt><dd>{stats.apiNodes}</dd></div>
+      <div><dt>engineering practice</dt><dd>{stats.practiceNodes}</dd></div>
+      <div><dt>production</dt><dd>{stats.fieldNodes}</dd></div>
+      <div><dt>bridges</dt><dd>{stats.bridges}</dd></div>
+    </dl>
+  </Main>
+
+  <section class="kg" aria-labelledby="kg-heading">
+    <h2 id="kg-heading" class="sr-only">The graph</h2>
+
+    <div class="kg-controls">
+      <div class="kg-chips" role="group" aria-label="Filter the graph">
+        <button type="button" class="kg-chip" data-kg-source="all" aria-pressed="true">
+          Everything
+        </button>
+        {
+          roots.map(({ meta }) => (
+            <button
+              type="button"
+              class={`kg-chip kg-chip-${meta.id}`}
+              data-kg-source={meta.id}
+              aria-pressed="false"
+            >
+              <span class="kg-swatch" aria-hidden="true"></span>
+              {meta.label}
+            </button>
+          ))
+        }
+        <button type="button" class="kg-chip kg-chip-bridge" data-kg-bridges aria-pressed="false">
+          <span class="kg-swatch" aria-hidden="true"></span>
+          Bridges only
+        </button>
+      </div>
+
+      <div class="kg-tools">
+        <label class="kg-search">
+          <span class="sr-only">Search the graph</span>
+          <input
+            type="search"
+            id="kg-search"
+            placeholder="Search…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </label>
+        <button type="button" class="kg-btn" data-kg-zoom="in" aria-label="Zoom in">+</button>
+        <button type="button" class="kg-btn" data-kg-zoom="out" aria-label="Zoom out">−</button>
+        <button type="button" class="kg-btn kg-btn-wide" data-kg-fit>Fit</button>
+      </div>
+    </div>
+
+    <div class="kg-stage">
+      <div
+        id="kg-canvas"
+        role="img"
+        aria-label={`A force-directed graph of ${stats.nodes} nodes covering the web and API design, engineering practice, and running systems in production. The same content is listed below the graph.`}
+      >
+      </div>
+      <p class="kg-status" id="kg-status" role="status">Laying out the graph…</p>
+      <p class="kg-hint">Drag to pan · scroll to zoom · click a node</p>
+    </div>
+
+    <div class="kg-readout" id="kg-readout" aria-live="polite">
+      <p class="kg-readout-path" id="kg-readout-path"></p>
+      <p class="kg-readout-name" id="kg-readout-name">Nothing selected</p>
+      <p class="kg-readout-note" id="kg-readout-note">
+        Click a node in the graph, or any entry in the index below.
+      </p>
+      <ul class="kg-readout-bridges" id="kg-readout-bridges"></ul>
+    </div>
+  </section>
+
+  <Main class="mt-12">
+    <h2 class="text-xl font-semibold tracking-wide" id="kg-index">The index</h2>
+    <p class="mt-2 mb-6 italic">
+      The same graph, in reading order. Every entry selects itself in the map
+      above, where its description and its bridges are shown.
+    </p>
+
+    <div class="kg-outline">
+      {
+        roots.map(({ meta, node }) => (
+          <section class={`kg-root kg-root-${meta.id}`}>
+            <h3>{meta.label}</h3>
+            <p class="kg-root-blurb">{meta.blurb}</p>
+            <ul class="kg-children">
+              {(childrenOf.get(node.id) ?? []).map(domain => (
+                <OutlineBranch node={domain} childrenOf={childrenOf} />
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+
+
+    <p class="mt-10 text-sm opacity-80">
+      The web and API half of this map is also kept on
+      <a href="https://miro.com/app/board/uXjVMW-gn64=/">Miro</a>, where it was
+      first drawn.
+    </p>
+  </Main>
+
+  <Footer />
+</Layout>
+
+<script type="application/json" id="kg-data" is:inline set:html={JSON.stringify(payload)} />
+
+<style is:global>
+  :root {
+    --kg-api: #0f6f7d;
+    --kg-practice: #a8561b;
+    --kg-field: #2f6b4f;
+    --kg-bridge: #63479a;
+  }
+  [data-theme="dark"] {
+    --kg-api: #49c1d0;
+    --kg-practice: #e19b57;
+    --kg-field: #6fbf96;
+    --kg-bridge: #ac90e2;
+  }
+
+  .kg-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .kg-stats dt {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+  .kg-stats dd {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kg {
+    width: 100%;
+    max-width: 1400px;
+    margin: 2rem auto 0;
+    padding-inline: 1rem;
+  }
+
+  .kg-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .kg-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .kg-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted-foreground);
+    font: inherit;
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+  .kg-chip:hover {
+    color: var(--foreground);
+    border-color: var(--muted-foreground);
+  }
+  .kg-chip[aria-pressed="true"] {
+    color: var(--foreground);
+    border-color: currentColor;
+  }
+  .kg-swatch {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 2px;
+    background: currentColor;
+  }
+  .kg-chip-api[aria-pressed="true"] {
+    color: var(--kg-api);
+  }
+  .kg-chip-practice[aria-pressed="true"] {
+    color: var(--kg-practice);
+  }
+  .kg-chip-field[aria-pressed="true"] {
+    color: var(--kg-field);
+  }
+  .kg-chip-bridge[aria-pressed="true"] {
+    color: var(--kg-bridge);
+  }
+
+  .kg-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .kg-search input {
+    width: 11rem;
+    padding: 0.32rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.82rem;
+  }
+  .kg-btn {
+    min-width: 2rem;
+    height: 2rem;
+    padding-inline: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+  .kg-btn:hover {
+    border-color: var(--muted-foreground);
+  }
+  .kg-btn-wide {
+    font-size: 0.8rem;
+  }
+
+  .kg-stage {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  #kg-canvas {
+    width: 100%;
+    height: clamp(420px, 72vh, 760px);
+    touch-action: none;
+  }
+  .kg-status {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.85rem;
+    background: var(--background);
+    pointer-events: none;
+  }
+  .kg-status[hidden] {
+    display: none;
+  }
+  .kg-hint {
+    position: absolute;
+    inset-inline-start: 0.6rem;
+    inset-block-end: 0.5rem;
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.72rem;
+    pointer-events: none;
+  }
+
+  .kg-readout {
+    min-height: 6.5rem;
+    margin-top: 0.75rem;
+    padding: 0.85rem 0 0;
+    border-top: 1px solid var(--border);
+  }
+  .kg-readout-path {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted-foreground);
+  }
+  .kg-readout-name {
+    margin: 0.15rem 0 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .kg-readout-note {
+    margin: 0.3rem 0 0;
+    max-width: 72ch;
+  }
+  .kg-readout-bridges {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+  }
+  .kg-readout-bridges li {
+    padding: 0.15rem 0;
+  }
+  .kg-readout-bridges .kg-why {
+    color: var(--muted-foreground);
+  }
+
+  .kg-outline ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .kg-outline .kg-children {
+    margin-inline-start: 0.85rem;
+    padding-inline-start: 0.85rem;
+    border-inline-start: 1px solid var(--border);
+  }
+  .kg-item {
+    padding: 0.18rem 0;
+  }
+  .kg-pick {
+    all: unset;
+    cursor: pointer;
+    text-underline-offset: 3px;
+  }
+  .kg-pick:hover {
+    text-decoration: underline;
+    text-decoration-style: wavy;
+  }
+  .kg-pick:focus-visible {
+    outline: 2px dashed var(--accent);
+    outline-offset: 2px;
+  }
+  .kg-root {
+    margin-bottom: 2.5rem;
+  }
+  .kg-root h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-block-end: 2px solid;
+    display: inline-block;
+    padding-block-end: 0.15rem;
+  }
+  .kg-root-api h3 {
+    border-color: var(--kg-api);
+  }
+  .kg-root-practice h3 {
+    border-color: var(--kg-practice);
+  }
+  .kg-root-field h3 {
+    border-color: var(--kg-field);
+  }
+  .kg-root-blurb {
+    margin: 0.5rem 0 1rem;
+    max-width: 70ch;
+  }
+
+
+  @media (max-width: 640px) {
+    .kg-tools {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .kg-search input {
+      width: 100%;
+    }
+    .kg-search {
+      flex: 1;
+    }
+  }
+</style>
+
+<script>
+  import type {
+    Core,
+    ElementDefinition,
+    LayoutOptions,
+    NodeSingular,
+    StylesheetStyle,
+  } from "cytoscape";
+
+  type Source = "api" | "practice";
+
+  interface RawNode {
+    id: string;
+    label: string;
+    /** Parent id. Not named `parent`: cytoscape reserves that for compound nodes. */
+    up: string | null;
+    source: Source;
+    depth: number;
+    note: string | null;
+  }
+
+  interface RawEdge {
+    id: string;
+    source: string;
+    target: string;
+    kind: "tree" | "bridge";
+    why: string | null;
+  }
+
+  // Node radius and label size shrink with depth, so the trunk reads at a
+  // glance and the leaves only earn their label once you zoom toward them.
+  const SIZE = [34, 21, 12, 8.5, 7, 6, 5];
+  const FONT = [16, 13, 10, 8.5, 7.5, 7, 6.5];
+  // Zoom at which each depth earns its label. Gating this by hand rather than
+  // by min-zoomed-font-size keeps it identical on a 1x and a 2x display.
+  const LABEL_AT = [0, 0, 0.62, 1.2, 1.9, 2.6, 3.2];
+  // Edge length by the depth of the node it feeds, so the trunk is long and
+  // the twigs are short. This is most of what makes the shape readable.
+  const EDGE_LEN = [0, 340, 160, 90, 56, 42, 36];
+  const pick = (table: number[], depth: number) =>
+    table[Math.min(depth, table.length - 1)];
+
+  let cy: Core | null = null;
+  let cleanup: (() => void) | null = null;
+  let fcoseRegistered = false;
+
+  function palette(scope: Element) {
+    const css = getComputedStyle(scope);
+    const read = (name: string, fallback: string) =>
+      css.getPropertyValue(name).trim() || fallback;
+    return {
+      api: read("--kg-api", "#0f6f7d"),
+      practice: read("--kg-practice", "#a8561b"),
+      field: read("--kg-field", "#2f6b4f"),
+      bridge: read("--kg-bridge", "#63479a"),
+      fg: read("--foreground", "#282728"),
+      bg: read("--background", "#fdfdfd"),
+      line: read("--border", "#ece9e9"),
+      muted: read("--muted-foreground", "#6b7280"),
+      accent: read("--accent", "#006cac"),
+      font: read("--font-google-sans-code", "monospace"),
+    };
+  }
+
+  const territory = (c: ReturnType<typeof palette>, n: NodeSingular) => {
+    const source = n.data("source") as Source;
+    if (source === "api") return c.api;
+    if (source === "practice") return c.practice;
+    return c.field;
+  };
+
+  function stylesheet(c: ReturnType<typeof palette>) {
+    return [
+      {
+        selector: "node",
+        style: {
+          "background-color": (n: NodeSingular) => territory(c, n),
+          width: (n: NodeSingular) => pick(SIZE, n.data("depth")),
+          height: (n: NodeSingular) => pick(SIZE, n.data("depth")),
+          label: "",
+          color: c.fg,
+          "font-family": c.font,
+          "font-size": (n: NodeSingular) => pick(FONT, n.data("depth")),
+          "text-wrap": "wrap",
+          "text-max-width": 120,
+          "text-valign": "center",
+          "text-halign": "right",
+          "text-margin-x": 6,
+          "text-background-color": c.bg,
+          "text-background-opacity": 0.72,
+          "text-background-padding": 2,
+          "text-background-shape": "roundrectangle",
+          "border-width": 0,
+          "overlay-opacity": 0,
+          "z-index": (n: NodeSingular) => 20 - n.data("depth"),
+        },
+      },
+      // A label is drawn only once its depth has earned it; see LABEL_AT.
+      { selector: "node.lbl", style: { label: "data(label)" } },
+      {
+        selector: "node[depth = 0]",
+        style: {
+          "text-halign": "center",
+          "text-margin-x": 0,
+          "text-margin-y": -6,
+          "font-weight": 700,
+          "text-background-opacity": 0.92,
+          "border-width": 2,
+          "border-color": c.bg,
+        },
+      },
+      { selector: "node[depth = 1]", style: { "text-background-opacity": 0.88 } },
+      {
+        selector: "edge",
+        style: {
+          "curve-style": "straight",
+          width: (e: { data: (k: string) => unknown; target: () => NodeSingular }) =>
+            Math.max(0.4, 1.6 - 0.28 * (e.target().data("depth") as number)),
+          // Tinting each branch by its territory is what makes the two trees
+          // readable as clouds before a single label appears.
+          "line-color": (e: { target: () => NodeSingular }) =>
+            territory(c, e.target()),
+          opacity: 0.42,
+        },
+      },
+      {
+        selector: 'edge[kind = "bridge"]',
+        style: {
+          "curve-style": "unbundled-bezier",
+          "control-point-distances": [55],
+          "control-point-weights": [0.5],
+          "line-color": c.bridge,
+          "line-style": "dashed",
+          "line-dash-pattern": [5, 4],
+          width: 1.5,
+          opacity: 0.95,
+          "z-index": 30,
+        },
+      },
+      {
+        selector: "node.dim",
+        style: { opacity: 0.1, "text-opacity": 0, events: "no" },
+      },
+      { selector: "edge.dim", style: { opacity: 0.04, events: "no" } },
+      // Selection, search hits and neighbours always carry their label,
+      // whatever the zoom.
+      {
+        selector: "node.nb, node.hit, node.sel",
+        style: { label: "data(label)", "text-background-opacity": 0.92 },
+      },
+      {
+        selector: "node.hit",
+        style: { "border-width": 2, "border-color": c.accent },
+      },
+      {
+        selector: "node.sel",
+        style: {
+          "border-width": 3,
+          "border-color": c.accent,
+          "font-weight": 700,
+          "z-index": 99,
+        },
+      },
+    ] as unknown as StylesheetStyle[];
+  }
+
+  /**
+   * A deterministic radial spread, used as fcose's starting point. Without it
+   * the layout is seeded at random and the page draws a different shape on
+   * every visit, which makes the graph impossible to get to know.
+   */
+  function seed(
+    nodes: RawNode[],
+    childrenOf: Map<string, string[]>
+  ): Map<string, { x: number; y: number }> {
+    const pos = new Map<string, { x: number; y: number }>();
+    const RADII = [0, 420, 230, 130, 80, 52, 38];
+
+    const place = (
+      id: string,
+      x: number,
+      y: number,
+      angle: number,
+      spread: number,
+      depth: number
+    ) => {
+      pos.set(id, { x, y });
+      const kids = childrenOf.get(id) ?? [];
+      if (kids.length === 0) return;
+      const step = spread / kids.length;
+      const r = RADII[Math.min(depth + 1, RADII.length - 1)];
+      let a = angle - spread / 2 + step / 2;
+      for (const kid of kids) {
+        place(
+          kid,
+          x + r * Math.cos(a),
+          y + r * Math.sin(a),
+          a,
+          Math.min(step * 0.92, Math.PI * 0.85),
+          depth + 1
+        );
+        a += step;
+      }
+    };
+
+    // Roots sit evenly around one circle, so adding a third tree does not
+    // push the other two into each other.
+    const roots = nodes.filter(n => n.up === null);
+    const spread = 1800;
+    roots.forEach((root, index) => {
+      const angle = Math.PI + (index * Math.PI * 2) / Math.max(roots.length, 1);
+      const x = roots.length === 1 ? 0 : spread * Math.cos(angle);
+      const y = roots.length === 1 ? 0 : spread * Math.sin(angle);
+      place(root.id, x, y, angle, Math.PI * 2, 0);
+    });
+    return pos;
+  }
+
+  async function boot() {
+    const mount = document.getElementById("kg-canvas");
+    const scope = document.querySelector(".kg");
+    const dataEl = document.getElementById("kg-data");
+    if (!mount || !scope || !dataEl) return;
+
+    const raw = JSON.parse(dataEl.textContent || "{}") as {
+      nodes: RawNode[];
+      edges: RawEdge[];
+    };
+    if (!raw.nodes?.length) return;
+
+    const byId = new Map(raw.nodes.map(n => [n.id, n]));
+    const parentOf = new Map<string, string>();
+    const childrenOf = new Map<string, string[]>();
+    for (const node of raw.nodes) {
+      if (!node.up) continue;
+      parentOf.set(node.id, node.up);
+      const list = childrenOf.get(node.up) ?? [];
+      list.push(node.id);
+      childrenOf.set(node.up, list);
+    }
+
+    const bridgePartners = new Map<string, { id: string; why: string }[]>();
+    const bridgeNodes = new Set<string>();
+    for (const edge of raw.edges) {
+      if (edge.kind !== "bridge") continue;
+      bridgeNodes.add(edge.source);
+      bridgeNodes.add(edge.target);
+      const why = edge.why ?? "";
+      const link = (from: string, to: string) => {
+        const list = bridgePartners.get(from) ?? [];
+        list.push({ id: to, why });
+        bridgePartners.set(from, list);
+      };
+      link(edge.source, edge.target);
+      link(edge.target, edge.source);
+    }
+
+    const [{ default: cytoscape }, { default: fcose }] = await Promise.all([
+      import("cytoscape"),
+      import("cytoscape-fcose"),
+    ]);
+    if (!fcoseRegistered) {
+      cytoscape.use(fcose);
+      fcoseRegistered = true;
+    }
+
+    const positions = seed(raw.nodes, childrenOf);
+    const elements: ElementDefinition[] = [
+      ...raw.nodes.map(n => ({
+        group: "nodes" as const,
+        data: { ...n },
+        position: positions.get(n.id) ?? { x: 0, y: 0 },
+      })),
+      ...raw.edges.map(e => ({ group: "edges" as const, data: { ...e } })),
+    ];
+
+    cy = cytoscape({
+      container: mount,
+      elements,
+      style: stylesheet(palette(scope)),
+      minZoom: 0.12,
+      maxZoom: 4,
+      wheelSensitivity: 0.25,
+      textureOnViewport: false,
+      motionBlur: false,
+      boxSelectionEnabled: false,
+      autoungrabify: true,
+    });
+
+    // ---- labels ----------------------------------------------------------
+    // Toggling a class on 333 nodes is too costly to do on every zoom frame,
+    // so only redraw when the zoom crosses into a band that reveals a new
+    // depth.
+    let labelBand = -1;
+    function syncLabels(force = false) {
+      if (!cy) return;
+      const zoom = cy.zoom();
+      let band = 0;
+      while (band < LABEL_AT.length && zoom >= LABEL_AT[band]) band += 1;
+      if (!force && band === labelBand) return;
+      labelBand = band;
+      cy.batch(() => {
+        cy!.nodes().forEach(node => {
+          node.toggleClass("lbl", (node.data("depth") as number) < band);
+        });
+      });
+    }
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const anchors = raw.nodes
+      .filter(n => n.up === null)
+      .map(n => ({ nodeId: n.id, position: positions.get(n.id) as { x: number; y: number } }));
+
+    const layout = cy.layout({
+      name: "fcose",
+      quality: "proof",
+      randomize: false,
+      animate: false,
+      fit: true,
+      padding: 70,
+      nodeSeparation: 140,
+      nodeRepulsion: (node: { data: (k: string) => unknown }) =>
+        (node.data("depth") as number) <= 1 ? 130000 : 24000,
+      idealEdgeLength: (edge: {
+        data: (k: string) => unknown;
+        target: () => { data: (k: string) => unknown };
+      }) =>
+        edge.data("kind") === "bridge"
+          ? 520
+          : pick(EDGE_LEN, edge.target().data("depth") as number),
+      edgeElasticity: (edge: { data: (k: string) => unknown }) =>
+        edge.data("kind") === "bridge" ? 0.02 : 0.45,
+      gravity: 0.08,
+      gravityRange: 4.5,
+      numIter: 3000,
+      tile: false,
+      fixedNodeConstraint: anchors,
+    } as unknown as LayoutOptions);
+
+    layout.one("layoutstop", () => {
+      document.getElementById("kg-status")?.setAttribute("hidden", "");
+      cy?.fit(undefined, 50);
+      syncLabels(true);
+    });
+    layout.run();
+
+    // ---- state -----------------------------------------------------------
+    const state = {
+      source: "all" as "all" | Source,
+      bridgesOnly: false,
+      query: "",
+      selected: null as string | null,
+    };
+
+    const ancestry = (id: string) => {
+      const chain: string[] = [];
+      let current = parentOf.get(id);
+      while (current) {
+        chain.unshift(current);
+        current = parentOf.get(current);
+      }
+      return chain;
+    };
+
+    function focusSet(id: string) {
+      const set = new Set<string>([id, ...ancestry(id)]);
+      for (const kid of childrenOf.get(id) ?? []) set.add(kid);
+      for (const partner of bridgePartners.get(id) ?? []) set.add(partner.id);
+      return set;
+    }
+
+    function visibleSet() {
+      const query = state.query.trim().toLowerCase();
+      const hits = new Set<string>();
+      const keep = new Set<string>();
+
+      for (const node of raw.nodes) {
+        if (state.source !== "all" && node.source !== state.source) continue;
+        if (state.bridgesOnly && !bridgeNodes.has(node.id)) continue;
+        if (query && !node.label.toLowerCase().includes(query)) continue;
+        if (query) hits.add(node.id);
+        keep.add(node.id);
+      }
+      // Pull in the spine, so nothing is left floating off its branch.
+      for (const id of [...keep]) {
+        for (const parent of ancestry(id)) keep.add(parent);
+      }
+      return { keep, hits };
+    }
+
+    function refresh() {
+      if (!cy) return;
+      const focus = state.selected ? focusSet(state.selected) : null;
+      const { keep, hits } = visibleSet();
+
+      cy.batch(() => {
+        cy!.nodes().forEach(node => {
+          const id = node.id();
+          const on = focus ? focus.has(id) : keep.has(id);
+          node.toggleClass("dim", !on);
+          node.toggleClass("hit", on && hits.has(id));
+          node.toggleClass("sel", id === state.selected);
+          node.toggleClass("nb", Boolean(focus) && on);
+        });
+        cy!.edges().forEach(edge => {
+          const live =
+            !edge.source().hasClass("dim") &&
+            !edge.target().hasClass("dim") &&
+            (!state.bridgesOnly || edge.data("kind") === "bridge");
+          edge.toggleClass("dim", !live);
+        });
+      });
+    }
+
+    // ---- readout ---------------------------------------------------------
+    const elPath = document.getElementById("kg-readout-path")!;
+    const elName = document.getElementById("kg-readout-name")!;
+    const elNote = document.getElementById("kg-readout-note")!;
+    const elBridges = document.getElementById("kg-readout-bridges")!;
+
+    function readout(id: string | null) {
+      if (!id) {
+        elPath.textContent = "";
+        elName.textContent = "Nothing selected";
+        elNote.textContent =
+          "Click a node in the graph, or any entry in the index below.";
+        elBridges.replaceChildren();
+        return;
+      }
+      const node = byId.get(id);
+      if (!node) return;
+
+      elPath.textContent = ancestry(id)
+        .map(a => byId.get(a)?.label ?? a)
+        .join("  ›  ");
+      elName.textContent = node.label;
+      elNote.textContent = node.note ?? "";
+
+      elBridges.replaceChildren(
+        ...(bridgePartners.get(id) ?? []).map(partner => {
+          const li = document.createElement("li");
+          const target = byId.get(partner.id);
+          li.append(`⇄ ${target?.label ?? partner.id}`);
+          const why = document.createElement("span");
+          why.className = "kg-why";
+          why.textContent = ` — ${partner.why}`;
+          li.append(why);
+          return li;
+        })
+      );
+    }
+
+    function select(id: string | null, recentre = false) {
+      state.selected = id;
+      readout(id);
+      refresh();
+      if (id && recentre && cy) {
+        const node = cy.getElementById(id);
+        if (node.nonempty()) {
+          // Frame the node with whatever it is attached to, then back off if
+          // that left us uselessly close on a node with one neighbour.
+          const around = cy.nodes().not(".dim");
+          const target = around.nonempty() ? around : node;
+          if (reduced) {
+            cy.fit(target, 110);
+            if (cy.zoom() > 1.8) cy.zoom({ level: 1.8, position: node.position() });
+          } else {
+            cy.animate(
+              { fit: { eles: target, padding: 110 } },
+              {
+                duration: 420,
+                complete: () => {
+                  if (cy && cy.zoom() > 1.8)
+                    cy.zoom({ level: 1.8, position: node.position() });
+                },
+              }
+            );
+          }
+        }
+      }
+    }
+
+    let zoomTimer = 0;
+    cy.on("zoom", () => {
+      window.clearTimeout(zoomTimer);
+      zoomTimer = window.setTimeout(() => syncLabels(), 90);
+    });
+
+    cy.on("tap", "node", event => select(event.target.id()));
+    cy.on("tap", event => {
+      if (event.target === cy) select(null);
+    });
+
+    // ---- controls --------------------------------------------------------
+    const chips = Array.from(
+      scope.querySelectorAll<HTMLButtonElement>(".kg-chip")
+    );
+
+    const syncChips = () => {
+      for (const chip of chips) {
+        const source = chip.dataset.kgSource;
+        let on = false;
+        if (source) on = state.source === source;
+        else if ("kgBridges" in chip.dataset) on = state.bridgesOnly;
+        chip.setAttribute("aria-pressed", String(on));
+      }
+    };
+
+    const onChip = (event: Event) => {
+      const chip = (event.target as HTMLElement).closest<HTMLButtonElement>(
+        ".kg-chip"
+      );
+      if (!chip) return;
+      const source = chip.dataset.kgSource;
+
+      if (source) {
+        state.source = source as "all" | Source;
+        if (source === "all") state.bridgesOnly = false;
+      } else if ("kgBridges" in chip.dataset) {
+        state.bridgesOnly = !state.bridgesOnly;
+      }
+
+      state.selected = null;
+      readout(null);
+      syncChips();
+      refresh();
+      cy?.fit(cy.nodes().not(".dim"), 50);
+    };
+    scope.addEventListener("click", onChip);
+
+    const search = document.getElementById("kg-search") as HTMLInputElement;
+    let searchTimer = 0;
+    const onSearch = () => {
+      window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(() => {
+        state.query = search.value;
+        state.selected = null;
+        readout(null);
+        refresh();
+        const hits = cy?.nodes(".hit");
+        if (hits && hits.nonempty()) cy?.fit(hits, 80);
+      }, 160);
+    };
+    search?.addEventListener("input", onSearch);
+
+    const onTool = (event: Event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>(
+        "[data-kg-zoom], [data-kg-fit]"
+      );
+      if (!button || !cy) return;
+      if ("kgFit" in button.dataset) {
+        cy.fit(cy.nodes().not(".dim"), 50);
+        return;
+      }
+      const factor = button.dataset.kgZoom === "in" ? 1.6 : 1 / 1.6;
+      cy.zoom({
+        level: cy.zoom() * factor,
+        renderedPosition: { x: mount.clientWidth / 2, y: mount.clientHeight / 2 },
+      });
+    };
+    scope.addEventListener("click", onTool);
+
+    // The index below the graph drives the same selection.
+    const onPick = (event: Event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>(
+        ".kg-pick"
+      );
+      if (!button?.dataset.kgId) return;
+      select(button.dataset.kgId, true);
+      scope.scrollIntoView({
+        behavior: reduced ? "auto" : "smooth",
+        block: "start",
+      });
+    };
+    document.addEventListener("click", onPick);
+
+    // Canvas colours cannot use CSS variables, so re-read them on theme change.
+    const themeWatcher = new MutationObserver(() => {
+      cy?.style(stylesheet(palette(scope))).update();
+    });
+    themeWatcher.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    const onResize = () => cy?.resize();
+    window.addEventListener("resize", onResize);
+
+    readout(null);
+    syncChips();
+
+    cleanup = () => {
+      themeWatcher.disconnect();
+      window.removeEventListener("resize", onResize);
+      document.removeEventListener("click", onPick);
+      scope.removeEventListener("click", onChip);
+      scope.removeEventListener("click", onTool);
+      search?.removeEventListener("input", onSearch);
+      window.clearTimeout(searchTimer);
+      window.clearTimeout(zoomTimer);
+      cy?.destroy();
+      cy = null;
+    };
+  }
+
+  function teardown() {
+    cleanup?.();
+    cleanup = null;
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    if (document.getElementById("kg-canvas")) void boot();
+  });
+  document.addEventListener("astro:before-swap", teardown);
+</script>
