@@ -1,0 +1,379 @@
+---
+/**
+ * A directory tree, revealed row by row, and stepped by the reader when there
+ * is more than one way to arrange the same files.
+ *
+ * The trees are data rather than markup, for the reason the other diagrams are
+ * components: a chapter that drew its own tree would draw a different one.
+ * Every step of a set holds the same units, so only the arrangement moves.
+ *
+ * A row's tail after two spaces and a hash is an aside, and a row that carries
+ * one is the row that step is about.
+ */
+interface Step {
+  name: string;
+  note: string;
+  tree: string;
+}
+
+interface Props {
+  kind: keyof typeof sets;
+  title: string;
+}
+
+const sets = {
+  /** Chapter 34's four groupings, with the same six units in each. */
+  packaging: [
+    {
+      name: "Package by layer",
+      note: "Change one capability and you touch three directories.",
+      tree: `
+src/
+├── Controller/
+│   ├── OrdersController.php
+│   └── InvoicesController.php
+├── Service/
+│   ├── OrdersService.php
+│   └── InvoicesService.php
+└── Repository/
+    ├── OrdersRepository.php
+    └── InvoicesRepository.php`,
+    },
+    {
+      name: "Package by feature",
+      note: "The same six files, sliced the other way. One capability, one directory.",
+      tree: `
+src/
+├── Orders/
+│   ├── OrdersController.php
+│   ├── OrdersService.php
+│   └── OrdersRepository.php
+└── Invoices/
+    ├── InvoicesController.php
+    ├── InvoicesService.php
+    └── InvoicesRepository.php`,
+    },
+    {
+      name: "Ports and adapters",
+      note: "No slice at all: a core that names its ports, and an adapter behind each one.",
+      tree: `
+src/
+├── Domain/
+│   ├── OrdersService.php
+│   ├── Orders.php  # a port
+│   ├── InvoicesService.php
+│   └── Invoices.php  # a port
+└── Adapter/
+    ├── Web/OrdersController.php
+    ├── Sql/OrdersRepository.php
+    ├── Web/InvoicesController.php
+    └── Sql/InvoicesRepository.php`,
+    },
+    {
+      name: "Package by component",
+      note: "Feature slices with one declared entrance. Nothing outside the slice names anything else.",
+      tree: `
+src/
+├── Orders/
+│   ├── Orders.php  # the only door
+│   ├── OrdersService.php
+│   └── OrdersRepository.php
+└── Invoices/
+    ├── Invoices.php  # the only door
+    ├── InvoicesService.php
+    └── InvoicesRepository.php`,
+    },
+  ],
+
+  /** A context that carries its own delivery, which is the shape a service takes. */
+  vertical: [
+    {
+      name: "A context with a delivery of its own",
+      note: "Autonomous, as long as the deployment and the routing come with it.",
+      tree: `
+src/
+└── UserManagement/
+    ├── Application/
+    ├── Domain/
+    ├── Infrastructure/
+    └── Ui/  # the one in question`,
+    },
+  ],
+
+  /** Where the delivery goes once there are several contexts. */
+  placement: [
+    {
+      name: "One delivery, over all of them",
+      note: "You declare the shape once, where you declare the contexts.",
+      tree: `
+src/
+├── Ui/  # declared once
+│   ├── Api/
+│   ├── Console/
+│   └── Web/
+├── UserManagement/
+│   ├── Application/
+│   ├── Domain/
+│   └── Infrastructure/
+└── Orders/
+    ├── Application/
+    ├── Domain/
+    └── Infrastructure/`,
+    },
+    {
+      name: "Split into modules, if a context earns it",
+      note: "Each delivery holds the modules it serves, and the contexts stay flat.",
+      tree: `
+src/
+├── Ui/
+│   ├── Api/
+│   │   ├── Orders/Basket/
+│   │   └── Orders/Shipping/
+│   ├── Console/
+│   │   └── Orders/Basket/
+│   └── Web/
+│       └── Orders/Basket/
+└── Orders/
+    ├── Basket/
+    └── Shipping/`,
+    },
+  ],
+
+  /** The directory the drawings in this part have, and the tree does not. */
+  machinery: [
+    {
+      name: "The tree every drawing in this part shows",
+      note: "The framework adapters sit in the delivery layer, beside the things you wrote.",
+      tree: `
+src/
+├── Ui/
+│   ├── Api/
+│   ├── Console/
+│   ├── Web/
+│   └── Infrastructure/  # the framework adapters
+└── Shared/`,
+    },
+    {
+      name: "The tree you can clone",
+      note: "Ui/ holds what the delivery does. The machinery behind it is somewhere you can ignore.",
+      tree: `
+src/
+├── Ui/
+│   ├── Api/
+│   ├── Console/
+│   └── Web/
+└── Shared/
+    ├── Domain/
+    └── Infrastructure/  # the framework adapters`,
+    },
+  ],
+} satisfies Record<string, Step[]>;
+
+interface Row {
+  prefix: string;
+  name: string;
+  aside?: string;
+}
+
+function parse(tree: string): Row[] {
+  return tree
+    .trim()
+    .split("\n")
+    .map(line => {
+      const [body, aside] = line.split(/ {2}# ?/);
+      const [, prefix, name] = body.match(/^([\s│├└─]*)(.*)$/) ?? [
+        "",
+        "",
+        body,
+      ];
+      return { prefix, name: name.trimEnd(), aside };
+    });
+}
+
+const { kind, title } = Astro.props;
+const steps: Step[] = sets[kind];
+const stepped = steps.length > 1;
+---
+
+<figure
+  class="dia-tree"
+  data-tree
+  data-steps={JSON.stringify(steps.map(s => s.note))}
+  data-names={JSON.stringify(steps.map(s => s.name))}
+  aria-label={title}
+>
+  <p class="dia-tree-name" data-tree-name>{steps[0].name}</p>
+
+  <div class="dia-tree-stack">
+    {
+      steps.map((step, i) => (
+        <div
+          class="dia-tree-panel"
+          data-panel
+          style={i === 0 ? undefined : "visibility:hidden"}
+        >
+          {parse(step.tree).map(row => (
+            <div class="dia-tree-line" data-row>
+              <span class="dia-tree-prefix">{row.prefix}</span>
+              <span
+                class:list={[
+                  row.name.endsWith("/") && "is-dir",
+                  row.aside && "is-pub",
+                ]}
+              >
+                {row.name}
+              </span>
+              {row.aside && <span class="dia-tree-aside">{row.aside}</span>}
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+
+  {
+    stepped ? (
+      <>
+        <div class="dia-steps">
+          <button type="button" data-step-prev disabled>
+            Back
+          </button>
+          <p data-step-label aria-live="polite">
+            {steps[0].note}
+          </p>
+          <button type="button" data-step-next>
+            Next
+          </button>
+        </div>
+        <div class="dia-dots" data-dots aria-hidden="true">
+          {steps.map((_, i) => (
+            <span data-on={i === 0 ? "" : undefined} />
+          ))}
+        </div>
+      </>
+    ) : (
+      <p class="dia-tree-note">{steps[0].note}</p>
+    )
+  }
+
+  {
+    Astro.slots.has("caption") && (
+      <figcaption>
+        <slot name="caption" />
+      </figcaption>
+    )
+  }
+</figure>
+
+<script>
+  import { animate, createScope, cubicBezier, stagger } from "animejs";
+  import { mountStepper } from "@/components/diagrams/stepper";
+
+  const scopes: { revert: () => void }[] = [];
+  const watchers: IntersectionObserver[] = [];
+
+  const ms = (cs: CSSStyleDeclaration, name: string) =>
+    parseFloat(cs.getPropertyValue(name)) || 300;
+
+  const ease = (cs: CSSStyleDeclaration, name: string) => {
+    const n = cs.getPropertyValue(name).match(/-?[\d.]+/g);
+    return n && n.length === 4
+      ? cubicBezier(+n[0], +n[1], +n[2], +n[3])
+      : cubicBezier(0.4, 0, 0.2, 1);
+  };
+
+  function build(root: HTMLElement) {
+    const scope = createScope({ root }).add(() => {
+      const cs = getComputedStyle(root);
+      const fast = ms(cs, "--dia-dur-fast");
+      const settle = ms(cs, "--dia-dur-settle");
+      const step = ms(cs, "--dia-stagger") / 2;
+      const standard = ease(cs, "--dia-ease-standard");
+      const enter = ease(cs, "--dia-ease-enter");
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const panels = [...root.querySelectorAll<HTMLElement>("[data-panel]")];
+      const name = root.querySelector<HTMLElement>("[data-tree-name]");
+      const names: string[] = JSON.parse(root.dataset.names ?? "[]");
+      const notes: string[] = JSON.parse(root.dataset.steps ?? "[]");
+
+      const rows = (panel: HTMLElement) => [
+        ...panel.querySelectorAll<HTMLElement>("[data-row]"),
+      ];
+
+      const reveal = (panel: HTMLElement) => {
+        panel.style.visibility = "visible";
+        if (reduced) return;
+        animate(rows(panel), {
+          opacity: [0, 1],
+          translateX: [-6, 0],
+          duration: settle,
+          delay: stagger(step),
+          ease: enter,
+        });
+      };
+
+      const hide = (panel: HTMLElement) => {
+        if (reduced) {
+          panel.style.visibility = "hidden";
+          return;
+        }
+        animate(rows(panel), {
+          opacity: 0,
+          duration: fast,
+          ease: standard,
+          onComplete: () => {
+            panel.style.visibility = "hidden";
+          },
+        });
+      };
+
+      // The reveal is the point of the figure, so it waits until somebody can
+      // see it rather than playing to an empty screen above the fold.
+      // A reader who has already stepped is not looking at the first
+      // arrangement any more, so the reveal plays whichever one is showing.
+      let at = 0;
+
+      const watcher = new IntersectionObserver(
+        entries => {
+          if (!entries.some(e => e.isIntersecting)) return;
+          watcher.disconnect();
+          reveal(panels[at]);
+        },
+        { threshold: 0.3 }
+      );
+      panels[0].style.visibility = "hidden";
+      watcher.observe(root);
+      watchers.push(watcher);
+
+      if (panels.length > 1) {
+        mountStepper({
+          root,
+          steps: notes,
+          onStep: (index, previous) => {
+            if (name) name.textContent = names[index] ?? "";
+            if (index === previous) return;
+            at = index;
+            watcher.disconnect();
+            hide(panels[previous]);
+            reveal(panels[index]);
+          },
+        });
+      }
+    });
+
+    scopes.push(scope);
+  }
+
+  function setup() {
+    document.querySelectorAll<HTMLElement>("[data-tree]").forEach(build);
+  }
+
+  function teardown() {
+    while (scopes.length) scopes.pop()?.revert();
+    while (watchers.length) watchers.pop()?.disconnect();
+  }
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", teardown);
+</script>

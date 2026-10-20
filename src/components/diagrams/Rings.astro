@@ -1,0 +1,93 @@
+---
+/**
+ * Concentric layers with one arrow pointing inward. The shape is a prop
+ * because the chapter's argument is that the drawing changes and the arrow
+ * does not. CSS path: no JavaScript ships for this one.
+ */
+import Frame from "./atoms/Frame.astro";
+import Arrow from "./atoms/Arrow.astro";
+
+interface Props {
+  shape?: "hexagon" | "circle" | "square";
+  title: string;
+  labels?: [string, string, string];
+}
+
+const {
+  shape = "circle",
+  title,
+  labels = ["Adapters", "Use cases", "Entities"],
+} = Astro.props;
+
+const cx = 100;
+const cy = 100;
+const radii = [90, 62, 34];
+
+// A hexagon's edge at the top sits at its apothem, not at its radius, so a
+// label placed on the radius would land on the line rather than inside it.
+const inset = shape === "hexagon" ? Math.sqrt(3) / 2 : 1;
+
+function polygon(r: number, sides: number) {
+  return Array.from({ length: sides }, (_, i) => {
+    const angle = (Math.PI * 2 * i) / sides;
+    return `${(cx + r * Math.cos(angle)).toFixed(1)},${(cy + r * Math.sin(angle)).toFixed(1)}`;
+  }).join(" ");
+}
+---
+
+<Frame
+  viewBox="0 0 212 200"
+  title={title}
+  desc="Three concentric layers with a single arrow crossing them from the outside towards the centre."
+>
+  {
+    radii.map((r, i) => (
+      <g class="dia-anim-emerge" style={`--dia-delay:${i * 80}ms`}>
+        {shape === "circle" && <circle cx={cx} cy={cy} r={r} class="dia-box" />}
+        {shape === "hexagon" && (
+          <polygon points={polygon(r, 6)} class="dia-box" />
+        )}
+        {shape === "square" && (
+          <rect
+            x={cx - r}
+            y={cy - r}
+            width={r * 2}
+            height={r * 2}
+            rx="var(--dia-radius)"
+            class="dia-box"
+          />
+        )}
+      </g>
+    ))
+  }
+
+  {
+    labels.map((label, i) => (
+      <text
+        x={cx}
+        y={i === 2 ? cy : cy - (inset * (radii[i] + radii[i + 1])) / 2}
+        class:list={[
+          "dia-label",
+          "dia-anim-emerge",
+          i < 2 && "dia-label--soft",
+        ]}
+        style={`--dia-delay:${i * 80 + 120}ms`}
+      >
+        {label}
+      </text>
+    ))
+  }
+
+  <Arrow
+    x1={206}
+    y1={cy}
+    x2={142}
+    y2={cy}
+    variant="focus"
+    animate="draw"
+    delay={320}
+    id="inward"
+  />
+
+  <slot name="caption" slot="caption" />
+</Frame>

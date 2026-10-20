@@ -1,0 +1,68 @@
+---
+title: "Defend an Architecture: One UI over many contexts"
+description: "Declare the API inside each context and the definition scatters. The argument that settles it is about drift, not about purity."
+pubDatetime: 2026-10-19T14:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+---
+
+import Surface from "@/components/diagrams/Surface.astro";
+import Tree from "@/components/diagrams/Tree.astro";
+import Wrapping from "@/components/diagrams/Wrapping.astro";
+
+Say your contexts are not separate deployables, which is the common case. The reasoning from last time still leaves a tempting idea standing: declare the API inside each context anyway, because that keeps them autonomous.
+
+It does not. It scatters the definition, and the thing that gets scattered is the one thing your callers experience as a single product.
+
+<div class="dia-row">
+  <Surface kind="scattered" title="A delivery declared inside each context">
+    <Fragment slot="caption">Declared per context</Fragment>
+  </Surface>
+  <Surface kind="shared" title="One delivery across every context">
+    <Fragment slot="caption">Declared once, over all of them</Fragment>
+  </Surface>
+</div>
+
+With the left-hand shape, no file knows what the API looks like. Four contexts each answer for their quarter of it, four teams make four reasonable local decisions, and the result is one document with four accents. One context returns `created_at`, another `createdAt`. One paginates with a cursor, another with a page number. Each decision was fine where it was made.
+
+Plenty of things soften that. A design system, a Storybook, a Spectral ruleset in CI, and coordination from somebody with the authority and the calendar space to coordinate. They work. They also all cost money, time and people, and I have worked on a lot of projects that had the ambition for all four and the budget for none.
+
+There is an older observation underneath this, and the way it was published is my favourite part of it.
+
+In 1967 Melvin Conway submitted a paper called How Do Committees Invent? to the Harvard Business Review. They rejected it, on the grounds that he had not proved his thesis. Datamation, the major computing magazine of the day, published it in April 1968. Fred Brooks later cited it in The Mythical Man-Month and called it Conway's Law, which is how most people meet it.
+
+The thesis is that any system designed by an organisation will copy that organisation's communication structure. Four teams producing four accents in one API is not a discipline failure. It is that sentence, working exactly as described, in a paper a business magazine turned down for lack of proof.
+
+So the question is not whether your teams are good. It is whether the structure you gave them produces the thing you want.
+
+The UI layer, meanwhile, knows nothing about your contexts and does not need to. It does not know what "User Management" is, or "Billing". It expresses intentions: somebody wants to do a thing, here is the shape of asking. That vocabulary is the caller's, not the domain's, and putting it inside a domain directory is filing it under the wrong name.
+
+So I draw it as the layer on the outside. A request crosses the delivery, then the machinery every context shares. Only then is it inside a context, where it meets that context's own infrastructure, its own application layer and its own domain.
+
+<Wrapping title="The delivery as a layer over the contexts">
+  <Fragment slot="caption">
+    The delivery sits outside every context. Use Next for the second frame.
+  </Fragment>
+</Wrapping>
+
+Here is the argument I actually find decisive, and it is not about purity.
+
+Open some code you wrote three years ago. Measure the distance to what you would write today. Better now, obviously, and that is the problem: your interfaces drift exactly that way, and a drifting API is worse than a drifting service because callers are standing on it. Predictability pays for itself faster in a UI than anywhere else in the system, and predictability comes from having one place where the shape is decided.
+
+So `Ui/` sits at the level where you declare the contexts, wrapping them rather than hiding inside one of them. And it stays flat: nesting the layers as directories with the contexts inside each one helps neither the vertical slice nor anybody trying to see where the decoupling is.
+
+You can still split a context into modules underneath that, and the shape holds either way.
+
+<Tree kind="placement" title="Where the delivery goes once there are several contexts">
+  <Fragment slot="caption">
+    The flat tree, and the same tree once a context is worth splitting into
+    modules.
+  </Fragment>
+</Tree>
+
+Next time, the delivery everybody forgets to place. A web page is as much a delivery as the API and the terminal, so where does it go?

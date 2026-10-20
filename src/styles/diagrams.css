@@ -1,0 +1,418 @@
+/*
+ * Diagram system for the "Defend an Architecture" series.
+ *
+ * Both animation paths read the tokens below. CSS reads them with var(); the
+ * anime.js island reads the same custom properties off the figure with
+ * getComputedStyle. Neither path holds a duration, an easing or a colour of
+ * its own, so the two look and move alike.
+ *
+ * Geometry tokens carry no unit, or carry px, because they are SVG user units
+ * either way: the viewBox scales them with the drawing.
+ */
+@layer base {
+  :root {
+    /* ---- Roles, derived from the site palette in theme.css ---- */
+    --dia-ink: var(--foreground);
+    --dia-ink-soft: var(--muted-foreground);
+    --dia-line: var(--muted-foreground);
+    --dia-surface: var(--muted);
+    --dia-boundary: var(--muted-foreground);
+    --dia-focus: var(--accent);
+
+    /* ---- Geometry ---- */
+    --dia-stroke: 1.5;
+    --dia-stroke-emphasis: 2.5;
+    --dia-radius: 6;
+    --dia-arrow: 7;
+    --dia-dash: 5 4;
+    /*
+     * font-size needs a unit or the declaration is dropped and the label
+     * inherits the page's 16px. Inside a viewBox a px is a user unit, so this
+     * still scales with the drawing.
+     */
+    --dia-label: 11px;
+    --dia-knockout: 3;
+    /* How wide one user unit is allowed to render, so a one-panel figure is
+       not blown up to four times the size of a panel in a row. */
+    --dia-unit: 2.2px;
+
+    /* ---- Motion, shared with the anime.js island ---- */
+    --dia-dur-fast: 180ms;
+    --dia-dur-draw: 640ms;
+    --dia-dur-travel: 900ms;
+    --dia-dur-settle: 320ms;
+    --dia-stagger: 80ms;
+    --dia-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --dia-ease-enter: cubic-bezier(0, 0, 0.2, 1);
+    --dia-ease-travel: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+
+  .dia {
+    @apply mx-auto my-8;
+
+    svg {
+      @apply block h-auto w-full overflow-visible;
+    }
+  }
+
+  .dia figcaption,
+  .dia-tree figcaption {
+    @apply text-muted-foreground mt-3 text-center text-sm;
+  }
+
+  /*
+   * The anti-pattern colour is the one role the site palette has no answer
+   * for: this series argues by contrast constantly, and the accent already
+   * means "this is the subject".
+   */
+  :root,
+  [data-theme="light"] {
+    --dia-warn: #b4342a;
+  }
+
+  [data-theme="dark"] {
+    --dia-warn: #ff8a7a;
+  }
+
+  /* ---- Atoms ---- */
+  .dia-box {
+    fill: var(--dia-surface);
+    stroke: var(--dia-line);
+    stroke-width: var(--dia-stroke);
+  }
+
+  /*
+   * One shape of a nest. The fills stack, so the deeper a shape sits the
+   * darker it reads, without the palette gaining a colour for depth.
+   */
+  .dia-box--layer {
+    fill-opacity: 0.45;
+  }
+
+  .dia-label {
+    fill: var(--dia-ink);
+    font-family: var(--font-app);
+    font-size: var(--dia-label);
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  .dia-label--soft {
+    fill: var(--dia-ink-soft);
+  }
+
+  /* For a label beside the drawing rather than inside it. */
+  .dia-label--start {
+    text-anchor: start;
+  }
+
+  /* For labels that carry a media type or a class name and need the room. */
+  .dia-label--sm {
+    font-size: 9px;
+  }
+
+  .dia-line {
+    fill: none;
+    stroke: var(--dia-line);
+    stroke-width: var(--dia-stroke);
+    stroke-linecap: round;
+  }
+
+  .dia-head {
+    fill: var(--dia-line);
+    stroke: none;
+  }
+
+  .dia-boundary {
+    fill: none;
+    stroke: var(--dia-boundary);
+    stroke-width: var(--dia-stroke);
+    stroke-dasharray: var(--dia-dash);
+  }
+
+  /* ---- Emphasis, shared by both paths ---- */
+  .is-focus {
+    stroke: var(--dia-focus);
+    stroke-width: var(--dia-stroke-emphasis);
+  }
+
+  .dia-head.is-focus {
+    fill: var(--dia-focus);
+    stroke: none;
+  }
+
+  .dia-label.is-focus {
+    fill: var(--dia-focus);
+    stroke: none;
+  }
+
+  .is-warn {
+    stroke: var(--dia-warn);
+    stroke-width: var(--dia-stroke-emphasis);
+  }
+
+  .dia-head.is-warn {
+    fill: var(--dia-warn);
+    stroke: none;
+  }
+
+  .dia-label.is-warn {
+    fill: var(--dia-warn);
+    stroke: none;
+  }
+
+  /*
+   * A label that crosses a line knocks it out behind its glyphs. A label
+   * sitting inside a filled shape must not take this: the knockout is the page
+   * background, and it would draw a halo around the words.
+   */
+  .dia-label.dia-label--over {
+    paint-order: stroke;
+    stroke: var(--background);
+    stroke-width: var(--dia-knockout);
+    stroke-linejoin: round;
+  }
+
+  /* ---- Layout for several small figures in a row ---- */
+  .dia-row {
+    @apply my-8 grid gap-6;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+    .dia {
+      @apply my-0;
+    }
+  }
+
+  /*
+   * Every diagram's resting style IS its final frame, so each keyframe set
+   * only names a "from". Removing the animation leaves the finished drawing,
+   * which is what makes the reduced-motion branch one switch rather than a
+   * second set of drawings.
+   */
+  @keyframes dia-draw {
+    from {
+      stroke-dashoffset: var(--dia-draw-length, 200);
+    }
+  }
+
+  @keyframes dia-emerge {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+
+  @keyframes dia-breathe {
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  .dia-anim-draw {
+    stroke-dasharray: var(--dia-draw-length, 200);
+    animation: dia-draw var(--dia-dur-draw) var(--dia-ease-standard) both;
+    animation-delay: var(--dia-delay, 0ms);
+  }
+
+  .dia-anim-emerge {
+    animation: dia-emerge var(--dia-dur-settle) var(--dia-ease-enter) both;
+    animation-delay: var(--dia-delay, 0ms);
+  }
+
+  .dia-anim-breathe {
+    animation: dia-breathe 2.4s var(--dia-ease-travel) infinite;
+  }
+
+  /*
+   * The travelling payload is ambient: it carries no information the resting
+   * drawing does not already hold, which is why it may end on opacity 0.
+   */
+  @keyframes dia-travel {
+    from {
+      transform: translateX(0);
+      opacity: 0;
+    }
+    18%,
+    82% {
+      opacity: 1;
+    }
+    to {
+      transform: translateX(var(--dia-travel, 36px));
+      opacity: 0;
+    }
+  }
+
+  .dia-anim-travel {
+    animation: dia-travel var(--dia-dur-travel) var(--dia-ease-travel) infinite;
+    animation-delay: var(--dia-delay, 0ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dia-anim-draw,
+    .dia-anim-emerge,
+    .dia-anim-breathe,
+    .dia-anim-travel,
+    .dia-anim-ripple,
+    .dia-anim-dive {
+      animation: none;
+      stroke-dasharray: none;
+    }
+  }
+
+  /*
+   * A ripple travelling inward: each ring flashes on its own delay, so the
+   * wave reads as one request crossing them in order.
+   */
+  @keyframes dia-ripple {
+    0%,
+    14%,
+    100% {
+      stroke: var(--dia-line);
+      stroke-width: var(--dia-stroke);
+    }
+    7% {
+      stroke: var(--dia-focus);
+      stroke-width: var(--dia-stroke-emphasis);
+    }
+  }
+
+  @keyframes dia-dive {
+    0% {
+      transform: translate(0, 0);
+      opacity: 0;
+    }
+    8%,
+    38% {
+      opacity: 1;
+    }
+    46%,
+    100% {
+      transform: translate(var(--dia-dive-x, 0), var(--dia-dive-y, 0));
+      opacity: 0;
+    }
+  }
+
+  .dia-anim-ripple {
+    animation: dia-ripple 3s linear infinite;
+    animation-delay: var(--dia-delay, 0ms);
+  }
+
+  .dia-anim-dive {
+    animation: dia-dive 3s var(--dia-ease-travel) infinite;
+  }
+
+  /* ---- Directory trees ---- */
+  .dia-tree {
+    @apply mx-auto my-8;
+    max-width: 44rem;
+
+    .dia-tree-name {
+      @apply mb-2 text-sm font-semibold;
+      color: var(--dia-focus);
+    }
+
+    /*
+     * Every arrangement sits in the same grid cell, so the panel is as tall as
+     * the tallest of them and nothing below it moves as the reader steps.
+     */
+    .dia-tree-stack {
+      @apply grid;
+    }
+
+    .dia-tree-stack > * {
+      grid-area: 1 / 1;
+    }
+
+    .dia-tree-panel {
+      @apply overflow-x-auto;
+      font-family: var(--font-app);
+      font-size: 0.8125rem;
+      line-height: 1.7;
+    }
+
+    .dia-tree-line {
+      @apply whitespace-pre;
+      color: var(--dia-ink-soft);
+    }
+
+    .dia-tree-prefix {
+      color: var(--dia-line);
+      opacity: 0.55;
+    }
+
+    .is-dir {
+      color: var(--dia-ink);
+      font-weight: 600;
+    }
+
+    .is-pub {
+      color: var(--dia-focus);
+      font-weight: 600;
+    }
+
+    .dia-tree-aside {
+      color: var(--dia-line);
+
+      &::before {
+        content: "  ← ";
+      }
+    }
+
+    .dia-tree-note {
+      @apply text-muted-foreground mt-3 text-sm;
+    }
+  }
+
+  /* ---- Stepper controls ---- */
+  .dia-steps {
+    @apply mt-4 grid items-center gap-3;
+    grid-template-columns: auto minmax(0, 22rem) auto;
+    justify-content: center;
+  }
+
+  .dia-steps button {
+    @apply bg-accent text-accent-foreground rounded-md px-4 py-1.5 text-sm font-semibold;
+    transition:
+      transform var(--dia-dur-fast) var(--dia-ease-standard),
+      opacity var(--dia-dur-fast) var(--dia-ease-standard);
+
+    &:hover:not(:disabled) {
+      @apply opacity-85;
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      @apply cursor-not-allowed opacity-25;
+    }
+  }
+
+  .dia-steps p {
+    @apply text-muted-foreground text-center text-sm;
+    min-height: 2.6em;
+  }
+
+  /* Dots say "there is more here" before anybody reads the caption. */
+  .dia-dots {
+    @apply mt-3 flex items-center justify-center gap-2;
+
+    span {
+      @apply bg-muted-foreground block size-2 rounded-full opacity-35;
+      transition: opacity var(--dia-dur-fast) var(--dia-ease-standard);
+    }
+
+    span[data-on] {
+      @apply bg-accent opacity-100;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dia-steps button,
+    .dia-dots span {
+      transition: none;
+    }
+  }
+}

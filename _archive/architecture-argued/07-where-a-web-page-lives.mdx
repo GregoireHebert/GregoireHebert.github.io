@@ -1,0 +1,46 @@
+---
+title: "Defend an Architecture: Where a web page lives"
+description: "A page is a delivery, so it lives beside the others. And most pages need no controller at all, which surprises people."
+pubDatetime: 2026-10-19T15:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+---
+
+import Branch from "@/components/diagrams/Branch.astro";
+
+The tree so far has an API and a terminal. Then somebody opens a browser, and the usual reflex is to treat HTML as a third thing that needs routes of its own.
+
+It does not, and the reason is older than every framework you have used.
+
+An HTTP endpoint answers with the representation the client asked for. That is not a REST opinion, it is how the protocol works. The `Accept` header shipped in HTTP/1.0 in 1996. Roy Fielding, who helped write that specification, went on to name REST in his dissertation in 2000 and put the idea that a resource is separate from its representations at the centre of it.
+
+So one address can answer in JSON or in HTML, and which one you get is a property of the request rather than of the URL.
+
+<Branch title="One address answering in two representations">
+  <Fragment slot="caption">
+    One URL. The representation is chosen by the request.
+  </Fragment>
+</Branch>
+
+Twenty-five years on, we mostly ignore this and bolt `.html` onto the end of paths, or add `/page`, or stand up a parallel controller that fetches the same data and renders it differently. Three URLs for one thing, and now somebody has to keep them agreeing.
+
+If your resource already offers a read, the page is not a new delivery. It is a second representation of an address you already own, and what it needs is a template. No controller, no route, no provider. The thing that answers the JSON answers the HTML, and the only new file is the one with the markup in it.
+
+That covers most pages, which is the part people do not expect.
+
+It does not cover all of them, and the exception is specific enough to state plainly. Some pages exist so a person can perform a write, and the resource behind that write offers no read at all. A login form is the clearest case. There is nothing to represent, because "the login form" is not a resource anybody can GET in any format. That page needs a controller, and it gets one.
+
+So the rule has two halves. `Ui/Web/` holds the classic controllers, sitting beside `Ui/Api/` and `Ui/Console/`, and never inside a bounded context. One controller per action, which keeps each file small enough that nobody is tempted to add a second route to it. And a page that renders a resource with a read gets no controller at all.
+
+In the boilerplate this series is built on, that means `src/Ui/Web/` contains exactly two controllers: `LoginFormController.php` and `LogoutController.php`. Both are there for the reason above, and the emptiness of that directory is the rule working rather than the tree being unfinished.
+
+There is more to say about how a page picks its representation, what happens when a write fails and the person needs their typed values back, and why no write operation gets an HTML representation at all. That argument is a long way further into this series and it has its own part.
+
+What matters here is the placement. A page is a delivery, so it lives with the deliveries. It is not a layer inside a domain, and it is not a fourth kind of thing.
+
+Next time, a shorter one. Templates are not source, and the reason has nothing to do with layering.

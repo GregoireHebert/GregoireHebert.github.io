@@ -1,0 +1,90 @@
+---
+/**
+ * A straight line with a head. The head is a polygon rather than a marker so
+ * it takes the same colour tokens as the line without relying on
+ * context-stroke, which still varies between engines.
+ */
+interface Props {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  variant?: "default" | "focus" | "warn";
+  dashed?: boolean;
+  label?: string;
+  labelOffset?: number;
+  delay?: number;
+  id?: string;
+  animate?: "draw" | false;
+}
+
+const {
+  x1,
+  y1,
+  x2,
+  y2,
+  variant = "default",
+  dashed = false,
+  label,
+  labelOffset = -8,
+  delay,
+  id,
+  animate = false,
+} = Astro.props;
+
+const emphasis =
+  variant === "focus" ? "is-focus" : variant === "warn" ? "is-warn" : undefined;
+
+const dx = x2 - x1;
+const dy = y2 - y1;
+const length = Math.hypot(dx, dy) || 1;
+const ux = dx / length;
+const uy = dy / length;
+
+// The head sits at the end point; the shaft stops where the head begins.
+const head = 7;
+const baseX = x2 - ux * head;
+const baseY = y2 - uy * head;
+const wing = head * 0.42;
+const points = [
+  `${x2},${y2}`,
+  `${baseX - uy * wing},${baseY + ux * wing}`,
+  `${baseX + uy * wing},${baseY - ux * wing}`,
+].join(" ");
+
+const shaftStyle = [
+  delay === undefined ? null : `--dia-delay:${delay}ms`,
+  animate === "draw" ? `--dia-draw-length:${length.toFixed(1)}` : null,
+]
+  .filter(Boolean)
+  .join(";");
+---
+
+<g data-arrow={id}>
+  <line
+    x1={x1}
+    y1={y1}
+    x2={baseX}
+    y2={baseY}
+    class:list={["dia-line", emphasis, animate === "draw" && "dia-anim-draw"]}
+    style={[shaftStyle, dashed ? "stroke-dasharray:var(--dia-dash)" : null]
+      .filter(Boolean)
+      .join(";") || undefined}></line>
+  <polygon points={points} class:list={["dia-head", emphasis]}></polygon>
+  {
+    label && (
+      <text
+        x={(x1 + x2) / 2}
+        y={(y1 + y2) / 2 + labelOffset}
+        class:list={[
+          "dia-label",
+          "dia-label--soft",
+          "dia-label--over",
+          emphasis,
+        ]}
+      >
+        {label}
+      </text>
+    )
+  }
+</g>

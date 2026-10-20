@@ -1,0 +1,39 @@
+---
+/**
+ * The wrapper every diagram in the series uses: one <svg> with a viewBox, an
+ * accessible name, and an optional caption. Nothing else opens an <svg>.
+ */
+import { slugifyStr } from "@/utils/slugify";
+
+interface Props {
+  viewBox: string;
+  title: string;
+  desc?: string;
+  class?: string;
+}
+
+const { viewBox, title, desc, class: className } = Astro.props;
+const id = `dia-${slugifyStr(title)}`;
+
+// A figure wider than its viewBox scales its labels and strokes with it, so a
+// one-panel diagram would draw at four times the weight of a panel in a row.
+const units = Number(viewBox.split(/\s+/)[2]);
+---
+
+<figure
+  class:list={["dia", className]}
+  style={`max-width:calc(${units} * var(--dia-unit))`}
+>
+  <svg viewBox={viewBox} role="img" aria-labelledby={`${id}-title`}>
+    <title id={`${id}-title`}>{title}</title>
+    {desc && <desc>{desc}</desc>}
+    <slot />
+  </svg>
+  {
+    Astro.slots.has("caption") && (
+      <figcaption>
+        <slot name="caption" />
+      </figcaption>
+    )
+  }
+</figure>

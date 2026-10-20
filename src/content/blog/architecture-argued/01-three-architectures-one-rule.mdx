@@ -1,0 +1,71 @@
+---
+title: "Defend an Architecture: Three names, one rule"
+description: "Hexagonal, onion and clean are not three choices. Overlap them to see why."
+pubDatetime: 2026-10-19T09:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+  - "api-platform"
+---
+
+import Rings from "@/components/diagrams/Rings.astro";
+
+In a period where AI Assisted coding, fast coding, and efficiency is more than ever reshaping my job. I want to say that it does not hurt to give our agents enough structure so the produced code is not spagetti code, but a well-structured one. And only with a good vision, one can give clear instructions. And so here I am, starting a new serie, to defend an architecture I like and see how it could be integrated with agents.
+
+Somebody tells you their project is hexagonal. Somebody else says theirs is onion. A third says clean, and all three say it the way you would pick a football team on your FIFA game.
+
+I have sat in that argument more than once, and to me, it is not quite right. The question is not about what those three disagree on. It's about what encourages any of the choices.
+
+To do so: lay the diagrams these approaches represent over each other, ask yourself a set of question so that one survives the overlap.
+
+Before that, it helps to know where the shapes came from, because at least two of them were named by somebody who was irritated.
+
+In June 2005 Alistair Cockburn had the moment that named the first one. He had been drawing a shape for years, and what he finally worked out was that the facets of that shape are ports, and the objects sitting between the inside and the outside are adapters. So he renamed the whole idea Ports and Adapters.
+
+The hexagon has six sides for no reason at all. Cockburn has said so himself: the six turned up more or less arbitrarily, and a pentagon or an octagon would have done the same job. He wanted room to draw several ports around a core, and six sides was enough room. People have been counting those sides ever since.
+
+With that out of the way, here is what each of the three actually asks of you.
+
+**Ports and adapters.** The outside world reaches your core through a port, and every adapter behind that port should be interchangeable. That is what gives a test its most characteristic aspect, when you do not care of the delivery part of your app.
+
+**Onion.** Jeffrey Palermo published part one of The Onion Architecture in July 2008. Interfaces push the infrastructure outside, and inversion of control cuts the core itself into concentric rings. So a very similar idea.
+
+**Clean.** Robert C. Martin gathers both of those, plus a few other variants, and adds an opinion the other two mostly left alone: what belongs in each ring. The user interface, the databases, the external systems and the devices sit on the outside. Use cases and entities sit inside.
+
+So far, so good. Three shapes, three vocabularies.
+
+Palermo's first post is worth reading for what he is annoyed by rather than for what he proposes. He names traditional layered architecture and the coupling it creates, where each layer leans on the one below it and most of them end up leaning on infrastructure one way or another. None of these three shapes were invented from nothing. Each one is somebody who had been bitten by the same thing and reached for a different drawing to explain it.
+
+Which is why overlaping them is interesting. Same three layers, same single arrow, three different drawings.
+
+<div class="dia-row">
+  <Rings shape="hexagon" title="Ports and adapters, drawn as a hexagon">
+    <Fragment slot="caption">Ports and adapters</Fragment>
+  </Rings>
+  <Rings shape="circle" title="Onion architecture, drawn as rings">
+    <Fragment slot="caption">Onion</Fragment>
+  </Rings>
+  <Rings shape="square" title="Clean architecture, drawn as nested boxes">
+    <Fragment slot="caption">Clean</Fragment>
+  </Rings>
+</div>
+
+A dependency points inward. That is the whole of it.
+
+Change the shape and the principle stays the same. Rename the rings and the principle stays the same. The arrow points the same way in all three, and every rule any of the three authors goes on to give you is a consequence of having it pointed that way.
+
+That is also why the direction outranks the vocabulary, and the reason is dull and practical: a static analyzer can check a direction. It's just that.
+
+In a Symfony project, that check would sit in a directory. `tests/phpstan/Architecture/` would hold the rule sets that fails when a dependency points the wrong way. They do not know what a hexagon is. They know that a class under `Domain` may name `Shared\Domain`, itself, and a short list of framework-free vendor conveniences, and nothing else. That list lives in `ArchitectureTestCase`, and it is where the rule forces the shapes to become reality. Rules that can stay flexible because there are always two or three vendor things you decide you can live with.
+
+Nobody should ever judge for whether your project is sufficiently onion.
+
+So: three authors, roughly twelve years apart, reaching for three different shapes to draw the same complaint, and one of them told you outright that his shape means nothing.
+
+Pick whichever vocabulary you like. Keep the direction.
+
+Next time, I'll detail the tree. Because the diagram above has told you exactly nothing about what to call your folders, and unfortunately the books that argues the rule hardest handed us that question... so lets try to answer it.

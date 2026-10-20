@@ -1,0 +1,36 @@
+---
+title: "Defend an Architecture: Templates are not source"
+description: "They live in templates/ because of a release, not because of a layering argument. That is still a decision worth writing down."
+pubDatetime: 2026-10-19T16:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+---
+
+You have a `Ui/` directory now. It holds the API, the console and the web controllers. So why are the templates somewhere else entirely?
+
+The honest answer is that it is a convention, and I kept it on purpose. Which is a weaker reason than the ones in the rest of this series, and I would rather say so than dress it up.
+
+Where they go first. A page's template lives at `templates/<context>/<module>/<page>.html.twig`, and a partial several pages share lives at `templates/components/_<component>.html.twig`. Mirroring the context and module structure means somebody looking for the markup of a page can find it from the page's name without opening anything.
+
+The directory itself has a release date, which is the part I find quietly funny.
+
+`templates/` at the project root arrived with Symfony 4 and Flex. Before that, views lived in `app/Resources/views/`, and overridden bundle templates in `app/Resources/<BundleName>/views/`. The restructuring moved them to `templates/` and `templates/bundles/<BundleName>/`, and the stated reason was to reserve `src/` for PHP classes only, with no resources mixed in.
+
+So a convention that an entire community now arranges its projects around came out of a release, and most of the people following it were not there for the move. I was, and I still could not have told you the reasoning without going back to look it up.
+
+Here is why it matters for this tree specifically. The original argument was sound when `src/` held a `Controller/` directory and nothing resembling a delivery layer. Externalising the views kept `src/` meaning one thing. But a project with a `Ui/` directory already has a home for delivery concerns, and `Ui/Web/templates/` would be a perfectly defensible place to put markup. The layering argument does not forbid it. There is no dependency direction being violated, nothing pointing outward that should point inward.
+
+I chose not to do it, and the reason is the person who clones this repository. A Symfony developer knows where `templates/` is. They will find it without being told, they will not wonder whether something clever is going on, and the first thing they do will not be moving a directory back. The cost of complying is approximately zero and the cost of being different is a small tax on every newcomer, paid forever.
+
+That is the whole argument, and I want to be clear that it is a different kind of argument from the rest. Everywhere else in this series the reasoning survives if you change language and framework: a dependency points inward whether you are writing PHP or Go. This one does not survive the move. It is local, it is about expectation, and in another ecosystem the same reasoning would put the templates somewhere else entirely.
+
+Which is exactly why it is worth writing down rather than leaving implicit. A convention you keep because it is correct and a convention you keep because your reader expects it look identical in the tree. They are not identical the day somebody proposes changing it, because one of them has an argument underneath and the other has a cost-benefit judgement that may have expired.
+
+One more thing while we are here. This repository renders with Twig, and nothing above depends on that. Plain HTML, React, Svelte or anything else would sit in the same place and the rule would not move. The template directory is about what kind of artefact this is, not about which library turns it into bytes.
+
+Next time, back to the arguments that travel. A delivery can reach for a lot of things the container will happily hand it, and two of those things it must not.

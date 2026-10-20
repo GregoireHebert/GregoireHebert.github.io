@@ -1,0 +1,63 @@
+---
+/**
+ * What a delivery may reach for. The bus is the door; the blocked arrow is
+ * the import that compiles and should not.
+ */
+import Frame from "./atoms/Frame.astro";
+import Box from "./atoms/Box.astro";
+import Arrow from "./atoms/Arrow.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<Frame viewBox="0 0 244 118" title={title}>
+  <Box x={6} y={40} w={62} h={36} label="Ui" class="dia-anim-emerge" />
+
+  <Arrow
+    x1={72}
+    y1={50}
+    x2={146}
+    y2={28}
+    variant="focus"
+    label="a bus"
+    labelOffset={-10}
+    id="allowed"
+  />
+  <Box
+    x={150}
+    y={10}
+    w={88}
+    h={34}
+    label="Application"
+    small
+    delay={160}
+    class="dia-anim-emerge"
+  />
+
+  <line
+    x1="72"
+    y1="66"
+    x2="128"
+    y2="88"
+    class="dia-line is-warn"
+    style="stroke-dasharray:var(--dia-dash)"></line>
+  <line x1="130" y1="78" x2="140" y2="100" class="dia-line is-warn"></line>
+  <text x={96} y={108} class="dia-label is-warn">no</text>
+
+  <Box
+    x={150}
+    y={72}
+    w={88}
+    h={34}
+    label="Infrastructure"
+    small
+    delay={240}
+    class="dia-anim-emerge"
+  />
+
+  <slot name="caption" slot="caption" />
+</Frame>

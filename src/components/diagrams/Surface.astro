@@ -1,0 +1,68 @@
+---
+/**
+ * Where the delivery sits when there are several contexts: one per context,
+ * or one across all of them.
+ */
+import Frame from "./atoms/Frame.astro";
+import Box from "./atoms/Box.astro";
+
+interface Props {
+  kind: "scattered" | "shared";
+  title: string;
+}
+
+const { kind, title } = Astro.props;
+const columns = [6, 58, 110];
+---
+
+<Frame viewBox="0 0 164 104" title={title}>
+  {
+    kind === "scattered" ? (
+      columns.map((x, i) => (
+        <Box
+          x={x}
+          y={10}
+          w={48}
+          h={24}
+          label="Ui"
+          variant="warn"
+          delay={i * 80}
+          class="dia-anim-emerge"
+        />
+      ))
+    ) : (
+      <Box
+        x={6}
+        y={10}
+        w={152}
+        h={24}
+        label="Ui"
+        variant="focus"
+        class="dia-anim-emerge"
+      />
+    )
+  }
+
+  {
+    columns.map((x, i) => (
+      <Box
+        x={x}
+        y={48}
+        w={48}
+        h={44}
+        label="Context"
+        small
+        delay={i * 80 + 120}
+        class="dia-anim-emerge"
+      />
+    ))
+  }
+
+  {
+    columns.map(x => (
+      <line x1={x + 24} y1="34" x2={x + 24} y2="48" class="dia-line" />
+    ))
+  }
+
+  <slot name="caption" slot="caption" />
+</Frame>

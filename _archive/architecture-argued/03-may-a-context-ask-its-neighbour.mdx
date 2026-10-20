@@ -1,0 +1,52 @@
+---
+title: "Defend an Architecture: May a context ask its neighbour?"
+description: "A command is in flight and the value it needs lives next door. You may reach for it, on one condition, and the condition is not about the transport."
+pubDatetime: 2026-10-19T11:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+---
+
+import Boundary from "@/components/diagrams/Boundary.astro";
+
+You are halfway through a handler. The command is in flight, the aggregate is loaded, and the next line needs a value that belongs to the context next door.
+
+Two answers come back quickly, and both are wrong. The purist says a bounded context never speaks to another one, which would make most software impossible. The pragmatist points out that both contexts are in the same repository, two directories apart, so what exactly are we protecting.
+
+The useful question is narrower, and it is not the one people usually ask. Not how do I call the neighbour. May I.
+
+That distinction is older than it looks, and Eric Evans made it on purpose.
+
+The context map chapter of the blue book is a list of names, and every one of them describes two teams rather than two codebases. Shared kernel. Customer and supplier. Conformist. Anticorruption layer. Separate ways. Open host service. Read them in a row and you notice that not one of them is about a protocol. Conformist in particular reads less like a pattern you choose and more like a diagnosis somebody received: you have given up translating, and you now speak the upstream team's language whether it fits your problem or not.
+
+That is the register the question belongs in. It was filed in 2003 under relationships, and the mechanism was never the hard part.
+
+So here is the answer. You may ask, when the value you are asking for carries no meaning in the domain you are standing in.
+
+The weight is on *meaning*. A shipping context asking an identity context whether an account exists is fine, because existence is not a shipping concept and shipping will never have an opinion about it. A shipping context reading an account's tier so it can work out a discount is not fine, even though it is the same HTTP call to the same endpoint. Tier means something. The moment you branch on it, you have taken a decision that belongs to somebody else and made it yours, quietly, in a file they will never read.
+
+Step through what goes wrong when you ignore that.
+
+<Boundary title="One context reaching into another's model, and the form that survives">
+  <Fragment slot="caption">
+    Use Next to step through it. The last frame is the only one that holds.
+  </Fragment>
+</Boundary>
+
+The reason the second form survives and the first does not is that the reach-in couples you to a shape rather than to a fact.
+
+When A reads B's model directly, A now holds an opinion about how B arranges itself. Not about what B knows, which would be fine, but about the arrangement: this field, that name, this nesting. B's team has every right to rearrange, because the whole point of giving them a boundary was that what happens inside it is theirs. They rearrange, nothing tells A, and A breaks in a way that will take somebody an afternoon to trace back.
+
+The second form asks for a fact and gets a fact. B can rebuild everything behind it and the answer stays the same, because the answer was never about the arrangement.
+
+Which is also why "both contexts are in the same repository" is not the reassurance it sounds like. Being able to reach something is not permission to reach it, and a boundary that only holds while the two things sit in separate deployments was never a boundary. It was network latency doing your design work for you.
+
+The bill for getting this wrong arrives late, and that is what makes it expensive. It does not arrive on the day you write the reach-in, when everything passes and the feature ships. It arrives months later, in somebody else's sprint, when a change that was correct and local and well reviewed inside B turns something red inside A, and the person holding the failing build has no idea why their context is implicated.
+
+So the condition is about meaning. Nothing above said anything about how the value crosses, and that is deliberate, because the transport has not entered the conversation yet.
+
+Next time it does. There are three ways to get that value across, and two of them turn out to be the same mechanism wearing different intentions.

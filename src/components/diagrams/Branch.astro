@@ -1,0 +1,53 @@
+---
+/**
+ * One address answering in two representations, chosen by the request rather
+ * than by the path.
+ */
+import Frame from "./atoms/Frame.astro";
+import Box from "./atoms/Box.astro";
+import Arrow from "./atoms/Arrow.astro";
+
+interface Props {
+  title: string;
+  address?: string;
+  representations?: [string, string];
+}
+
+const {
+  title,
+  address = "GET /thing",
+  representations = ["application/ld+json", "text/html"],
+} = Astro.props;
+---
+
+<Frame viewBox="0 0 252 112" title={title}>
+  <Box x={6} y={38} w={76} h={32} label={address} class="dia-anim-emerge" />
+
+  <text x={104} y={18} class="dia-label dia-label--soft is-focus">Accept</text>
+
+  <Arrow x1={86} y1={50} x2={124} y2={28} variant="focus" id="json" />
+  <Arrow x1={86} y1={62} x2={124} y2={84} variant="focus" id="html" />
+
+  <Box
+    x={128}
+    y={12}
+    w={118}
+    h={30}
+    label={representations[0]}
+    small
+    delay={160}
+    class="dia-anim-emerge"
+  />
+  <Box
+    x={128}
+    y={68}
+    w={118}
+    h={30}
+    label={representations[1]}
+    small
+    delay={240}
+    class="dia-anim-emerge"
+  />
+
+  <slot name="caption" slot="caption" />
+</Frame>

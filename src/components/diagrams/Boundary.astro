@@ -1,0 +1,217 @@
+---
+/**
+ * Two contexts and what passes between them, stepped by the reader.
+ *
+ * The anime.js path. The timeline is paused and seekable, and the Next button
+ * scrubs to the next label rather than jumping, which is the one thing CSS
+ * could not do here once the steps outnumbered a handful.
+ */
+import Frame from "./atoms/Frame.astro";
+import Box from "./atoms/Box.astro";
+import Arrow from "./atoms/Arrow.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+
+const steps = [
+  "Two contexts, each owning its own model.",
+  "A reaches in and reads B's model directly.",
+  "B reshapes its model. Nothing told A, and A breaks.",
+  "A asks B for one value that means nothing inside B.",
+];
+---
+
+<div data-boundary data-steps={JSON.stringify(steps)}>
+  <Frame
+    viewBox="0 0 330 190"
+    title={title}
+    desc="Two bounded contexts either side of a dashed boundary. One arrow reaches into the other's model; a second asks only for a value."
+  >
+    <line x1="166" y1="16" x2="166" y2="174" class="dia-boundary" data-el="edge"
+    ></line>
+
+    <Box x={14} y={56} w={116} h={72} label="Context A" id="ctx-a" />
+
+    <text x={258} y={22} class="dia-label dia-label--soft">Context B</text>
+    <rect
+      x="200"
+      y="30"
+      width="116"
+      height="128"
+      rx="var(--dia-radius)"
+      class="dia-box"
+      style="fill:none"></rect>
+    {
+      [0, 1, 2].map(i => (
+        <rect
+          x="214"
+          y={54 + i * 30}
+          width="88"
+          height="20"
+          rx="3"
+          class="dia-box"
+          data-el={`model-${i}`}
+        />
+      ))
+    }
+
+    <g data-el="reach" style="opacity:0">
+      <Arrow x1={134} y1={74} x2={210} y2={64} variant="warn" id="reach" />
+      <text x={172} y={46} class="dia-label dia-label--over is-warn">
+        reads B's model
+      </text>
+    </g>
+
+    <g data-el="ask" style="opacity:0">
+      <Arrow x1={134} y1={112} x2={196} y2={112} variant="focus" id="ask" />
+      <text x={165} y={136} class="dia-label dia-label--over is-focus">
+        asks for a value
+      </text>
+    </g>
+
+    <slot name="caption" slot="caption" />
+  </Frame>
+
+  <div class="dia-steps">
+    <button type="button" data-step-prev disabled>Back</button>
+    <p data-step-label aria-live="polite">{steps[0]}</p>
+    <button type="button" data-step-next>Next</button>
+  </div>
+
+  <div class="dia-dots" data-dots aria-hidden="true">
+    {steps.map((_, i) => <span data-on={i === 0 ? "" : undefined} />)}
+  </div>
+</div>
+
+<script>
+  import { animate, createScope, createTimeline, cubicBezier } from "animejs";
+
+  const scopes: { revert: () => void }[] = [];
+
+  /** Both animation paths read the same custom properties off the figure. */
+  const ms = (cs: CSSStyleDeclaration, name: string) =>
+    parseFloat(cs.getPropertyValue(name)) || 300;
+
+  const ease = (cs: CSSStyleDeclaration, name: string) => {
+    const n = cs.getPropertyValue(name).match(/-?[\d.]+/g);
+    return n && n.length === 4
+      ? cubicBezier(+n[0], +n[1], +n[2], +n[3])
+      : cubicBezier(0.4, 0, 0.2, 1);
+  };
+
+  function build(root: HTMLElement) {
+    const scope = createScope({ root }).add(() => {
+      const cs = getComputedStyle(root.querySelector(".dia")!);
+      const fast = ms(cs, "--dia-dur-fast");
+      const settle = ms(cs, "--dia-dur-settle");
+      const standard = ease(cs, "--dia-ease-standard");
+      const enter = ease(cs, "--dia-ease-enter");
+      const warn = cs.getPropertyValue("--dia-warn").trim();
+      const line = cs.getPropertyValue("--dia-line").trim();
+
+      const steps: string[] = JSON.parse(root.dataset.steps ?? "[]");
+      const label = root.querySelector<HTMLElement>("[data-step-label]")!;
+      const prev = root.querySelector<HTMLButtonElement>("[data-step-prev]")!;
+      const next = root.querySelector<HTMLButtonElement>("[data-step-next]")!;
+      const dots = [...root.querySelectorAll<HTMLElement>("[data-dots] span")];
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const tl = createTimeline({ autoplay: false });
+      const marks = [0];
+
+      // A reaches in.
+      tl.label("reach").add('[data-el="reach"]', {
+        opacity: [0, 1],
+        duration: settle,
+        ease: enter,
+      });
+      marks.push(tl.duration);
+
+      // B reshapes, and A finds out the hard way.
+      tl.label("break")
+        .add('[data-el="model-0"]', {
+          x: 226,
+          width: 64,
+          stroke: warn,
+          duration: settle,
+          ease: standard,
+        })
+        .add(
+          '[data-box="ctx-a"] rect',
+          { stroke: warn, duration: fast, ease: standard },
+          `-=${fast}`
+        );
+      marks.push(tl.duration);
+
+      // The condition that makes the question answerable.
+      tl.label("ask")
+        .add('[data-el="reach"]', {
+          opacity: 0,
+          duration: fast,
+          ease: standard,
+        })
+        .add(
+          '[data-el="model-0"]',
+          { x: 214, width: 88, stroke: line, duration: settle, ease: standard },
+          `-=${fast}`
+        )
+        .add(
+          '[data-box="ctx-a"] rect',
+          { stroke: line, duration: fast, ease: standard },
+          "<"
+        )
+        .add('[data-el="ask"]', {
+          opacity: [0, 1],
+          duration: settle,
+          ease: enter,
+        });
+      marks.push(tl.duration);
+
+      let at = 0;
+      const cursor = { t: 0 };
+
+      const show = (i: number) => {
+        at = Math.max(0, Math.min(marks.length - 1, i));
+        label.textContent = steps[at] ?? "";
+        prev.disabled = at === 0;
+        next.disabled = at === marks.length - 1;
+        dots.forEach((dot, j) => dot.toggleAttribute("data-on", j === at));
+
+        if (reduced) {
+          tl.seek(marks[at]);
+          return;
+        }
+        animate(cursor, {
+          t: marks[at],
+          duration: settle,
+          ease: standard,
+          onUpdate: () => tl.seek(cursor.t),
+        });
+      };
+
+      prev.addEventListener("click", () => show(at - 1));
+      next.addEventListener("click", () => show(at + 1));
+      show(0);
+    });
+
+    scopes.push(scope);
+  }
+
+  function setup() {
+    document
+      .querySelectorAll<HTMLElement>("[data-boundary]")
+      .forEach(el => build(el));
+  }
+
+  function teardown() {
+    while (scopes.length) scopes.pop()?.revert();
+  }
+
+  // ClientRouter is on, so a DOMContentLoaded listener would bind once and
+  // then never again as the reader moves through the book.
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", teardown);
+</script>

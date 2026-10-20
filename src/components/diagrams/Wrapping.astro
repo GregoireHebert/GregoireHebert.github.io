@@ -1,0 +1,265 @@
+---
+/**
+ * The delivery drawn as a layer over the contexts rather than a directory
+ * inside one of them, and then the same drawing once there is more than one
+ * context in it.
+ *
+ * The two frames are the two drawings in ADR 001 of the boilerplate this
+ * series is built on, which is why the inner shape is a hexagon: each context
+ * is its own core with its own adapters, and the delivery is outside all of
+ * them.
+ */
+import Frame from "./atoms/Frame.astro";
+import Arrow from "./atoms/Arrow.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+
+const cx = 105;
+const cy = 100;
+
+/** The two layers nobody's context owns, outermost first. */
+const rings = [
+  { r: 92, label: "Ui", at: 15, focus: true },
+  { r: 78, label: "Shared", at: 29, focus: false },
+  { r: 64, label: null, at: 0, focus: false },
+];
+
+/** One context: its own infrastructure, its own application, its own domain. */
+const bands = [58, 42, 26];
+
+function hexagon(r: number) {
+  return Array.from({ length: 6 }, (_, i) => {
+    const a = (Math.PI * 2 * i) / 6;
+    return `${(r * Math.cos(a)).toFixed(1)},${(r * Math.sin(a)).toFixed(1)}`;
+  }).join(" ");
+}
+
+/** A point on the drawing, for a leader line to end on. */
+function on(r: number, deg: number): [number, number] {
+  const a = (deg * Math.PI) / 180;
+  return [
+    Number((cx + r * Math.cos(a)).toFixed(1)),
+    Number((cy + r * Math.sin(a)).toFixed(1)),
+  ];
+}
+
+const legend: { text: string; y: number; to: [number, number] }[] = [
+  { text: "Infrastructure", y: 62, to: on(50, -35) },
+  { text: "Application", y: 94, to: on(34, -8) },
+  { text: "Domain", y: 126, to: on(13, 25) },
+];
+
+// The request enters from outside, crosses both layers and stops where the
+// context begins. The payload travels the same line on a loop.
+const entry: [number, number] = [15, 37];
+const reaches = on(55, 215);
+---
+
+<div data-wrapping>
+  <Frame
+    viewBox="0 0 330 200"
+    title={title}
+    desc="Two concentric layers, Ui outermost, wrapping one bounded context drawn as nested hexagons, and then three of them."
+  >
+    {
+      rings.map((ring, i) => (
+        <circle
+          cx={cx}
+          cy={cy}
+          r={ring.r}
+          class="dia-box dia-box--layer dia-anim-ripple"
+          style={`--dia-delay:${i * 180}ms`}
+        />
+      ))
+    }
+
+    {
+      rings.map(
+        ring =>
+          ring.label && (
+            <text
+              x={cx}
+              y={ring.at}
+              class:list={[
+                "dia-label",
+                !ring.focus && "dia-label--sm",
+                ring.focus && "is-focus",
+              ]}
+            >
+              {ring.label}
+            </text>
+          )
+      )
+    }
+
+    {
+      [0, 1, 2].map(i => (
+        <g
+          data-nest={i}
+          style={`transform:translateX(${cx}px) translateY(${cy}px) scale(${i === 0 ? 1 : 0.1});opacity:${i === 0 ? 1 : 0}`}
+        >
+          {bands.map(r => (
+            <polygon points={hexagon(r)} class="dia-box dia-box--layer" />
+          ))}
+        </g>
+      ))
+    }
+
+    <g data-legend>
+      {
+        legend.map(item => (
+          <>
+            <line
+              x1={210}
+              y1={item.y}
+              x2={item.to[0]}
+              y2={item.to[1]}
+              class="dia-line"
+            />
+            <text
+              x={214}
+              y={item.y}
+              class="dia-label dia-label--sm dia-label--start"
+            >
+              {item.text}
+            </text>
+          </>
+        ))
+      }
+    </g>
+
+    <text
+      x={8}
+      y={18}
+      class="dia-label dia-label--sm dia-label--start is-focus"
+    >
+      a request
+    </text>
+    <Arrow
+      x1={entry[0]}
+      y1={entry[1]}
+      x2={reaches[0]}
+      y2={reaches[1]}
+      variant="focus"
+      id="request"
+    />
+    <circle
+      cx={entry[0]}
+      cy={entry[1]}
+      r="3.5"
+      fill="var(--dia-focus)"
+      class="dia-anim-dive"
+      style={`--dia-dive-x:${(reaches[0] - entry[0]).toFixed(1)}px;--dia-dive-y:${(reaches[1] - entry[1]).toFixed(1)}px`}
+    ></circle>
+
+    <slot name="caption" slot="caption" />
+  </Frame>
+
+  <div class="dia-steps">
+    <button type="button" data-step-prev disabled>Back</button>
+    <p data-step-label aria-live="polite"></p>
+    <button type="button" data-step-next>Next</button>
+  </div>
+
+  <div class="dia-dots" data-dots aria-hidden="true">
+    <span data-on></span>
+    <span></span>
+  </div>
+</div>
+
+<script>
+  import { animate, createScope, cubicBezier } from "animejs";
+  import { mountStepper } from "@/components/diagrams/stepper";
+
+  const scopes: { revert: () => void }[] = [];
+
+  const steps = [
+    "One context, with the delivery outside it rather than inside.",
+    "One bounded context is never the whole picture.",
+  ];
+
+  /** Where each context sits, per step: x, y, scale. */
+  const layout: [number, number, number][][] = [
+    [
+      [105, 100, 1],
+      [105, 100, 0.1],
+      [105, 100, 0.1],
+    ],
+    [
+      [105, 66, 0.44],
+      [134.4, 117, 0.44],
+      [75.6, 117, 0.44],
+    ],
+  ];
+
+  const ms = (cs: CSSStyleDeclaration, name: string) =>
+    parseFloat(cs.getPropertyValue(name)) || 300;
+
+  const ease = (cs: CSSStyleDeclaration, name: string) => {
+    const n = cs.getPropertyValue(name).match(/-?[\d.]+/g);
+    return n && n.length === 4
+      ? cubicBezier(+n[0], +n[1], +n[2], +n[3])
+      : cubicBezier(0.4, 0, 0.2, 1);
+  };
+
+  function build(root: HTMLElement) {
+    const scope = createScope({ root }).add(() => {
+      const cs = getComputedStyle(root);
+      const settle = ms(cs, "--dia-dur-settle");
+      const stagger = ms(cs, "--dia-stagger");
+      const standard = ease(cs, "--dia-ease-standard");
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const nests = [...root.querySelectorAll<SVGElement>("[data-nest]")];
+      const legend = root.querySelector<SVGElement>("[data-legend]");
+
+      mountStepper({
+        root,
+        steps,
+        onStep: index => {
+          const duration = reduced ? 0 : settle * 2;
+
+          nests.forEach((nest, i) => {
+            const [x, y, scale] = layout[index][i];
+            animate(nest, {
+              translateX: `${x}px`,
+              translateY: `${y}px`,
+              scale,
+              opacity: index === 0 && i > 0 ? 0 : 1,
+              duration,
+              delay: reduced ? 0 : i * stagger,
+              ease: standard,
+            });
+          });
+
+          // The leader lines name the bands of a context drawn at full size.
+          // Once there are three of them they point at nothing.
+          if (legend) {
+            animate(legend, {
+              opacity: index === 0 ? 1 : 0,
+              duration,
+              ease: standard,
+            });
+          }
+        },
+      });
+    });
+
+    scopes.push(scope);
+  }
+
+  function setup() {
+    document.querySelectorAll<HTMLElement>("[data-wrapping]").forEach(build);
+  }
+
+  function teardown() {
+    while (scopes.length) scopes.pop()?.revert();
+  }
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", teardown);
+</script>

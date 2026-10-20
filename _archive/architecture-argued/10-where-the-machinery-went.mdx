@@ -1,0 +1,50 @@
+---
+title: "Defend an Architecture: Where the machinery went"
+description: "The drawing has a Ui/Infrastructure. The tree you clone does not. That gap is the last decision in this part."
+pubDatetime: 2026-10-19T18:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+---
+
+import Tree from "@/components/diagrams/Tree.astro";
+
+If you have been following along with the repository open, you have hit something that looks like a mistake.
+
+Every tree in this part puts an `Infrastructure/` inside `Ui/`, next to `Api/`, `Console/` and `Web/`. That is where the framework adapters go: the API Platform metadata factories, the OpenAPI decorators, the JSON-RPC protocol, the pagination adapters, the translation renderer. Open `src/Ui/` in the actual tree and there is no such directory.
+
+<Tree kind="machinery" title="The directory the drawings have and the tree does not">
+  <Fragment slot="caption">
+    One directory apart. Step through it, then read why it moved.
+  </Fragment>
+</Tree>
+
+It moved into `Shared/`, and the reason is the last argument in this part.
+
+I want `Shared/` to read like a library that could be published from a repository of its own. Not because I intend to publish it, but because writing it that way forces a particular discipline: nothing in there may know about your business, and everything in there has to make sense to somebody who has never seen your domain. The moment `Shared/` contains something that only works for one project, it has stopped being a library and started being a junk drawer with a tidy name.
+
+Which gives me somewhere to put the machinery, and that matters more than it sounds.
+
+If you clone this tree and start a project, `Ui/` is yours. Every file in it is something you wrote because your product needed it. There is no framework plumbing in there that you have to read past, no adapter you have to understand before you can find your own controller, nothing you are frightened to delete because you are not sure what depends on it. The delivery layer holds what the delivery does, and the things that make the framework behave live somewhere you can mostly ignore.
+
+Eric Evans has a warning about this shape, and it is worth taking seriously rather than quoting approvingly and moving on.
+
+The blue book names the shared kernel and then spends most of its paragraphs on the cost. Keep it small. Do not change it without consulting the other team. It has special status precisely because two teams now own one thing, and of all the integration patterns it is the one that demands the most coordination.
+
+So putting a shared library at the centre of a boilerplate is, on its face, a strange thing to do. The answer is in the discipline above: the bill Evans is warning about is the bill for coordinating changes to shared code, and it stays small exactly as long as the shared code has no reason to change when your business does. A `Shared/` full of business-neutral machinery barely moves. A `Shared/` with one domain concept in it starts moving every sprint, and then you are paying the coordination cost on every feature.
+
+There is a real bill, and this one is paid in the build rather than in meetings.
+
+Those adapters carry the namespace of the library they extend rather than `App\`. `ApiPlatform\Metadata\GuardedOperationsFactory` lives in our tree, and `ApiPlatform\Metadata\Get` lives in the vendor's. Two extra PSR-4 roots in `composer.json` map those prefixes into `src/Shared/Infrastructure/`, and the service configuration has to register them under their own prefixes because the `App\**` glob cannot derive their class names.
+
+The architecture rules pay for it too. Every namespace-based selector missed those classes completely, which meant about thirty files were being checked by nothing at all. No namespace expression can fix it, because the prefix genuinely belongs to the vendor and no pattern separates our class from theirs. So `SharedAdapterArchitectureTest` selects by file path, and it is the only rule in the tree that does. Its first run immediately caught a class under `Shared` naming one under `Ui`, which is `Shared` depending on a delivery, which is the thing it must never do. The offending processor moved in beside the protocol it belonged to.
+
+That is the part I would point at if you only take one thing from this part of the series. The rule did not find the problem because somebody was clever. It found it because the rule could run, and it ran on everything.
+
+So the drawing and the tree disagree about one directory, and now you know which argument moved it.
+
+That closes the first part. Next, identifiers: what they are, why this tree has exactly one class for all of them, and why that class carries a type parameter it never reads.

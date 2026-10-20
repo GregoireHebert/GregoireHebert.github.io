@@ -1,0 +1,86 @@
+---
+/**
+ * One of chapter 34's packaging approaches, drawn abstractly: six units and
+ * the boundary somebody drew around them. The units never move between
+ * panels, only the grouping does, which is the whole of the comparison.
+ */
+import Frame from "./atoms/Frame.astro";
+
+interface Props {
+  kind: "layer" | "feature" | "ports" | "component";
+  title: string;
+}
+
+const { kind, title } = Astro.props;
+
+const unit = 15;
+const cols = [30, 58];
+const rows = [22, 45, 68];
+
+type Unit = { x: number; y: number; focus?: boolean };
+type Group = { x: number; y: number; w: number; h: number };
+
+const grid: Unit[] = rows.flatMap(y => cols.map(x => ({ x, y })));
+
+const layouts: Record<Props["kind"], { units: Unit[]; groups: Group[] }> = {
+  // Horizontal slices: every unit of one technical kind, together.
+  layer: {
+    units: grid,
+    groups: rows.map(y => ({ x: 24, y: y - 6, w: 55, h: unit + 12 })),
+  },
+  // Vertical slices: everything one capability needs, together.
+  feature: {
+    units: grid,
+    groups: cols.map(x => ({ x: x - 6, y: 16, w: unit + 12, h: 74 })),
+  },
+  // A core with its adapters around it, and no slice through either.
+  ports: {
+    units: [
+      { x: 44, y: 38 },
+      { x: 44, y: 57 },
+      { x: 14, y: 22 },
+      { x: 76, y: 22 },
+      { x: 14, y: 70 },
+      { x: 76, y: 70 },
+    ],
+    groups: [{ x: 38, y: 32, w: unit + 12, h: 2 * unit + 16 }],
+  },
+  // Feature slices, each with one unit that is allowed to be called.
+  component: {
+    units: grid.map((u, i) => (i < 2 ? { ...u, focus: true } : u)),
+    groups: cols.map(x => ({ x: x - 6, y: 16, w: unit + 12, h: 74 })),
+  },
+};
+
+const { units, groups } = layouts[kind];
+---
+
+<Frame viewBox="0 0 104 100" title={title}>
+  {
+    groups.map((g, i) => (
+      <rect
+        x={g.x}
+        y={g.y}
+        width={g.w}
+        height={g.h}
+        rx="var(--dia-radius)"
+        class="dia-boundary dia-anim-emerge"
+        style={`--dia-delay:${i * 80}ms`}
+      />
+    ))
+  }
+  {
+    units.map((u, i) => (
+      <rect
+        x={u.x}
+        y={u.y}
+        width={unit}
+        height={unit}
+        rx="2"
+        class:list={["dia-box", "dia-anim-emerge", u.focus && "is-focus"]}
+        style={`--dia-delay:${i * 60 + 120}ms`}
+      />
+    ))
+  }
+  <slot name="caption" slot="caption" />
+</Frame>

@@ -1,0 +1,40 @@
+---
+title: "Defend an Architecture: Should a context own its UI?"
+description: "Yes, when the context is its own deployable. The interesting part is the caveat that quietly undoes the win."
+pubDatetime: 2026-10-19T13:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+---
+
+import Tree from "@/components/diagrams/Tree.astro";
+
+There is a version of this question that sounds like a purity test. A bounded context should own its full vertical slice, interface included, or it is not really bounded.
+
+It is not a purity test, and the answer is not always the same. It depends on one thing: whether that context is, or is about to become, its own deployable.
+
+<Tree kind="vertical" title="A bounded context carrying its own delivery" />
+
+Laid out like that it looks obviously right, and for a microservice it is. The service declares its own routing acceptances, either for itself or on the ingress's behalf. A second autonomous module with its own interface costs nothing, because the two were never going to share anything anyway. And if you already suspect a context will be extracted in eighteen months, building it this way is a cheap bet on your own prediction.
+
+The people who sold the industry on that shape also sold the brakes, which is the part worth remembering.
+
+In May 2015 Martin Fowler published MicroservicePremium, whose argument is in the title: the architecture charges you a fee, and it charges it before it pays anything back, so it is a poor fit for systems that are not complex enough to need it. Three weeks later, in June, he published MonolithFirst, arguing that the teams he had seen succeed with microservices almost all started somewhere else and split later.
+
+His site did more than most to put the word in front of people. He then spent 2015 explaining when not to use it. That is not a contradiction, it is somebody watching what happened next and writing it down.
+
+So the fee is real, and the question is whether this context pays it.
+
+Here is the caveat that catches people, and it is specific. A microservice declaring its own routing is only a win if that declaration is the only one. In practice you also write those acceptances into the ingress, a Kubernetes ingress or a reverse proxy, because something at the edge has to know where traffic goes. Now you have declared the same thing twice, in two languages, maintained by two people who do not read each other's files. The in-context declaration has become a second layer over a job that was already finished, and the first time the two disagree you will spend a morning finding out which one is lying.
+
+That does not make the vertical shape wrong. It makes it conditional on actually getting the autonomy you paid for. A context that owns its interface, its deployment and its routing is autonomous. A context that owns its interface while something else owns its deployment and its routing has taken on the duplication without the independence.
+
+Which is the test I would apply, and it has nothing to do with how the directories look. Can this context be deployed, scaled and rolled back without anybody else being consulted? If yes, give it everything, interface included. If no, you are not looking at a service. You are looking at a module that has been drawn as one, and modules do not need their own delivery.
+
+Most of the projects I have worked on are the second case, and they usually got there honestly: somebody drew the ambitious diagram early, nobody ever extracted anything, and three years later there are four interfaces that answer for one product.
+
+Next time, that exact situation. One frontend, or one API, sitting across several contexts, and what happens to the definition when each context declares its own piece of it.

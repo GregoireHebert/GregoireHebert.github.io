@@ -1,0 +1,46 @@
+---
+title: "Defend an Architecture: What a delivery is allowed to do"
+description: "A controller reaches a context through a bus and nothing else, and it computes presentation and nothing else. Two rules, one enforcer."
+pubDatetime: 2026-10-19T17:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+---
+
+import Gate from "@/components/diagrams/Gate.astro";
+
+Here is a controller with a repository injected into it. It compiles. It is tested. The feature works and the review passed.
+
+Ask what the layering is still doing and the answer is nothing. It is decoration at that point, a set of directory names describing a structure that the code no longer has.
+
+Two rules stop this, and they are narrow enough to check mechanically.
+
+<Gate title="What a delivery may reach for">
+  <Fragment slot="caption">
+    The bus is the door. The dashed arrow compiles, and should not exist.
+  </Fragment>
+</Gate>
+
+The first rule: `Ui` may name a context's `Application`, and may not name its `Infrastructure`.
+
+The permission is deliberate. Expressing an intention means naming a command object and putting it on a bus, so the delivery layer has to be able to say the command's name. Reading travels the same road in reverse, through a query bus to a port in the context's `Application/ReadModel/`. Both of those are the context saying "here is what you may ask me", which is precisely the kind of thing a delivery should be allowed to know.
+
+The prohibition is where the value is. A context's `Infrastructure` holds repository implementations, gateways, connections, the Doctrine mappings, the HTTP clients. Let a controller name any of it and you have given the delivery layer a second route in, one that bypasses every decision the Application layer was making on the context's behalf. The import compiles. Nobody notices in review, because the line looks like every other `use` statement above it.
+
+The second rule: a delivery may compute presentation, and nothing else.
+
+Presentation is a pure function of what the page already holds. Formatting a date you were given, sorting a list you were handed, choosing which of two labels to show based on a value in front of you. The moment a computation needs a store, a clock or an aggregate to answer, it is not presentation. It is domain logic that has drifted into the delivery because the delivery was the convenient place to put it, and it will stay there until somebody needs the same answer in the console and finds it is not available.
+
+Both of those are the kind of rule that lives in a wiki page somebody wrote during onboarding and nobody has opened since. That is the real failure mode, and it is not a failure of good intentions.
+
+What changed is that these rules became executable. ArchUnit, from TNG, lets you assert architecture rules in plain Java as part of the test suite. Deptrac, from QOSSMIC, does the same job for PHP against a configured layer graph. Phpat does it as a PHPStan extension, which means the rules run wherever your static analysis already runs. Different tools, same shift: a rule that fails CI outranks a rule that is merely correct, because only one of the two survives a deadline.
+
+In the boilerplate this series is built on, both rules live in `tests/phpstan/Architecture/UiArchitectureTest.php`. The detail I like about that file is what is not in it: it names no context. Its rules match any `App\<Anything>\Domain` and any `App\<Anything>\Application` by pattern, so adding a bounded context next year does not mean remembering to edit it. A rule you have to maintain per context is a rule that will eventually be wrong for one of them.
+
+So: the bus is the only door, and the delivery arranges what comes through it. Everything else it might reach for is somebody else's to decide.
+
+Next time, the last one in this part. The tree I have been drawing has a directory that the tree you can clone does not have, and that difference is a decision rather than an oversight.
