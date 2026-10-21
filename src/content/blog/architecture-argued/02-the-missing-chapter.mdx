@@ -1,0 +1,78 @@
+---
+title: "Defend an Architecture: Did you read the missing chapter of the clean architecture book?"
+description: "Thirty-three chapters about rings, and then one chapter tells you what your directories should look like. Or does it?"
+pubDatetime: 2026-10-21T18:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+  - "api-platform"
+---
+
+import Packaging from "@/components/diagrams/Packaging.astro";
+import Tree from "@/components/diagrams/Tree.astro";
+
+You finished reading the Clean Architecture book. You agree with all of it. You open your IDE, your supercharged neovim or your favorite agent harness. You look at your empty `src/`, and then you sit there.
+
+The rings, the layers... They told you which way a dependency points. They did not tell you what to call a single folder. And because you cannot refactor your project every month, finding a good structure is something you will probably spend the next three years to iterate on.
+
+Fortunately for us somebody noticed that, and the way they handled it is (to me) the most interesting thing about the book.
+
+Clean Architecture spends thirty-three chapters on rings, boundaries and dependencies. Chapter 34 is about what you type into `mkdir`, and we have Simon Brown to thank for it, the author of the C4 model. He pointed out that no amount of circles tells you what to call the folder. He called his contribution The Missing Chapter, which is a quietly pointed thing to call your own sections and dissection of your project.
+
+What he puts in front of us is four ways to group the same code. The units never change between them. Only the boundary drew around those units changes.
+
+<div class="dia-row">
+  <Packaging kind="layer" title="Package by layer">
+    <Fragment slot="caption">Package by layer</Fragment>
+  </Packaging>
+  <Packaging kind="feature" title="Package by feature">
+    <Fragment slot="caption">Package by feature</Fragment>
+  </Packaging>
+  <Packaging kind="ports" title="Ports and adapters">
+    <Fragment slot="caption">Ports and adapters</Fragment>
+  </Packaging>
+  <Packaging kind="component" title="Package by component">
+    <Fragment slot="caption">Package by component</Fragment>
+  </Packaging>
+</div>
+
+**Package by layer** slices horizontally. Every controller together, every service together, every repository together. It is what most frameworks hand you on day one, and it means a single change to one capability touches three directories that have nothing else to do with each other.
+
+**Package by feature** slices vertically. Everything one capability needs, in one place.
+
+**Ports and adapters** does not slice at all. It draws a core and puts adapters around it, which is the previous blog post drawing with folder names on it.
+
+**Package by component** is feature slicing with one extra rule: each slice has exactly one unit that anybody outside is allowed to call. The rest is internal to that component.
+
+The same four, as directories you could type. Step through them and the file names stay put while the folders around them move.
+
+<Tree kind="packaging" title="The four groupings, as directories">
+  <Fragment slot="caption">
+    Four arrangements of two capabilities. The third adds a file, and the file
+    it adds is the port.
+  </Fragment>
+</Tree>
+
+Put that way the four look like a matter of taste, but I don't think they are. Layering optimises for somebody who knows what kind of thing they are looking for. Feature and component slicing optimize for somebody who knows what the software does. In my experience the feature or component shows up far more often, and the first one is usually just new in the job.
+
+What I like to use is the package by component. Not just because vertical slices are cool and work wonderfully with a fleet of agents. It is about the extra rule. A slice with no declared entrance is a slice that will be entered from anywhere, and then it is not correct anymore. It took me a few projects to work out that a boundary is worth nothing unless something enforces where the door is, what the door allows, and how the doors let things in or out.
+
+Which brings me to what that looks like in a tree you could actually create too.
+
+Each bounded context sits at the root of `src/`, with `Application/`, `Domain/` and `Infrastructure/` inside it. The delivery (an API, a CLI, an HTML page) sits beside the contexts rather than inside any of them, This is a decision of its own and I will cover it in detail in a future post, so take it as given for now. You enter a context through its `Application/` layer, by putting a command or a query on a bus, and you never name or call its `Infrastructure/` from outside. That's what the door the extra rule asks for.
+
+<Tree kind="contexts" title="Two bounded contexts, and the door into each">
+  <Fragment slot="caption">
+    What is could look like, and what you could ask for and control with PHPat or Deptrac.
+  </Fragment>
+</Tree>
+
+You take the delivery, the three layers and the rule about the door into any project you start. You just have to name what encapsulate the layers. Which contexts or module exist is a question about your business.
+
+The Clean Architecture book, that argued hardest about dependency direction needed a guest author to say where the files go, and he opened by telling you this is the hurdle people fall at. Choosing this tree structure, to me, is not a matter of taste, but how experience taught me it should be.
+
+Next time, I'll cover the first question that makes a "boundary" mean anything. Your handler is halfway through its ifs and elses, and it needs a value that belongs to another context. How should you get this value?

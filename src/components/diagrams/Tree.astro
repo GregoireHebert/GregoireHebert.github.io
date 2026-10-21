@@ -85,6 +85,51 @@ src/
     },
   ],
 
+  /** Chapter 34's grouping, pushed as far as a bounded context takes it. */
+  contexts: [
+    {
+      name: "Two contexts, three layers each",
+      note: "The same two capabilities, now with layers inside them. You reach either one through its Application layer and nowhere else.",
+      tree: `
+src/
+├── Ui/
+│   ├── Api/
+│   ├── Console/
+│   ├── Web/
+│   └── Infrastructure/
+├── Orders/
+│   ├── Application/  # the only door
+│   │   ├── Command/
+│   │   ├── Query/
+│   │   └── ReadModel/
+│   ├── Domain/
+│   │   ├── Model/
+│   │   ├── Repository/
+│   │   └── Exception/
+│   └── Infrastructure/
+│       └── Persistence/
+└── Invoices/
+    ├── Application/
+    ├── Domain/
+    └── Infrastructure/`,
+    },
+    {
+      name: "The same shape, before you name anything",
+      note: "Take the context names out and what remains is the part somebody could have handed you.",
+      tree: `
+src/
+├── Ui/
+│   ├── Api/
+│   ├── Console/
+│   ├── Web/
+│   └── Infrastructure/
+└── <Context>/  # yours to name
+    ├── Application/
+    ├── Domain/
+    └── Infrastructure/`,
+    },
+  ],
+
   /** A context that carries its own delivery, which is the shape a service takes. */
   vertical: [
     {
