@@ -1,0 +1,49 @@
+---
+title: "Defend an Architecture: Do you talk correctly to your neighbors?"
+description: "A command is processed and a value it needs lives in another context. You may reach for it, but should you?"
+pubDatetime: 2026-10-23T12:30:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+  - "api-platform"
+---
+
+import Boundary from "@/components/diagrams/Boundary.astro";
+
+The process is halfway through a handler. The command is in flight, the aggregate is loaded, and the next line needs a value that belongs to the context next door.
+
+If we say a bounded context never speaks to another one, that would make most software impossible. My idea of separate Contexts, is that it should be a different project with enough autonomy so the team responsible for a context is not constrained by the other. And the reason is that whichever choice you make to organize a context, it might require a diametrically different approach on the second. The pragmatism of single teams (or small teams) point out that both contexts could be in the same repository, two directories apart within the same `src/` or 2 projects sitting next to each other. So then what exactly are we protecting?
+
+But I find that the question is not "how do I call the neighbor" but "May I?".
+
+That distinction more important than it looks, and Eric Evans made it on purpose.
+
+The context map chapter of the blue book is a list of names, and every one of them describes more like two teams rather than two codebases. Shared kernel. Customer and supplier. Conformist. Anticorruption layer. Separate ways. Open host service. Read them in a row, and you notice that not one of them is about a protocol. Conformist in particular reads less like a pattern you choose and more like a diagnosis somebody received: you have given up translating, and you now speak the upstream team's language whether it fits your problem or not.
+
+So here is the answer: **You may ask, when the value you are asking for carries no meaning in the domain you are standing in.**
+
+The weight is on *meaning*. A Shipping context asking an Identity context whether an account exists is fine, because existence is not a shipping concept and shipping will never have an opinion about it. A shipping context reading an account's tier so it can work out a discount is not fine, even though it is the same HTTP call to the same endpoint. Tier means something. The moment you have a business rule on it, you have taken a decision on something that belongs to another context else and made it yours, quietly, in a file the other context know nothing about.
+
+Step through what goes wrong when you ignore that.
+
+<Boundary title="One context reaching into another's model, and the form that survives">
+  <Fragment slot="caption">
+    Use Next to step through it. The last frame is the only one that holds.
+  </Fragment>
+</Boundary>
+
+When A reads B's model directly, A now holds an opinion about how B arranges itself. The problem is not about what B knows, which is fine, but about the arrangement: a given field specifically named and nested . B's team has every right to rearrange, because the whole point of giving them a boundary is that what happens inside it is theirs. They rearrange, nothing tells A, and A breaks in a way that will take somebody an afternoon to trace back.
+
+The second form asks for a fact and gets a fact. B can rebuild everything behind it and the answer stays the same, because the answer was never about the arrangement.
+
+Which is also why saying "both contexts are in the same repository", or worse "both contexts are in the same project" is not the reassurance it sounds like. Being able to reach something is not permission to reach it, and you cannot pretend understanding and mastering context boundaries if the only thing holding them is a separate deployment. It's just the network constraint doing your design work for you.
+
+The real danger in our every day life is that, if you don't spot the mistake soon enough, it won't be an immediate problem. It does not arrive on the day you write the code reaching the other context data, when everything passes and the feature ships. It arrives months later, in somebody else's sprint, when a change that was correct and local and well reviewed inside context B turns something red inside contextA, and the person holding the failing build has no idea why their context is implicated.
+
+So the condition is about meaning. Nothing above said anything about how the value crosses, because the transport has not entered the conversation yet.
+
+Next time it does. I'll discuss three ways to get that value across.
