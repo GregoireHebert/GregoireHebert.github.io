@@ -2,12 +2,12 @@ import { defineAstroPaperConfig } from "./src/types/config";
 
 export default defineAstroPaperConfig({
   site: {
-    url: "https://knot.gheb.dev/",
+    url: "https://gheb.dev/",
     title: "Grégoire Hébert",
     description:
       "Principal Engineer chez Les-Tilleuls.coop. Articles sur PHP, Symfony, API Platform, l'architecture logicielle, les API — et quelques détours.",
     author: "Grégoire Hébert",
-    profile: "https://knot.gheb.dev/",
+    profile: "https://gheb.dev/",
     ogImage: "default-og.jpg",
     lang: "fr",
     timezone: "Europe/Paris",
