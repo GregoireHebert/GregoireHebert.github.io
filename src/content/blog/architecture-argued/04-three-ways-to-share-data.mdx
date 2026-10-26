@@ -1,0 +1,63 @@
+---
+title: "Defend an Architecture: Three ways to share data"
+description: "When only the intention differs from a single mechanism, how do you tell anybody which one you meant?"
+pubDatetime: 2026-10-26T21:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+  - "api-platform"
+---
+
+import Sharing from "@/components/diagrams/Sharing.astro";
+
+Last time I said you may ask your neighbor for a value, as long as that value carries no meaning in the domain you are standing in. Now for how it crosses.
+
+After a first research, you quickly find that there are two patterns here, and you pick one: publish domain events, or keep a local read model of what the neighbor knows. The trick is, this sentence actually counts three patterns. Look at two of them closely and there is one.
+
+Let's look at the first two drawn out, next to the third.
+
+<div class="dia-row">
+  <Sharing kind="event" title="A domain event, published and consumed">
+    <Fragment slot="caption">A domain event</Fragment>
+  </Sharing>
+  <Sharing kind="replication" title="A read model kept up to date by publication">
+    <Fragment slot="caption">A replicated read model</Fragment>
+  </Sharing>
+  <Sharing kind="service" title="A synchronous call to an open host service">
+    <Fragment slot="caption">An open host service</Fragment>
+  </Sharing>
+</div>
+
+The first two panels are the same picture. That is not a mistake.
+
+A publishes, B listens, B writes its own store. Identical wire, identical code, identical failure modes. What differs is what you meant.
+
+The first time you meant a chain reaction. An order is created, so an invoice is created, so an accounting record is written. Each step is a business consequence of the one before it, and a project manager could read the sequence during a meeting, and it would make sense to them although they probably never seen the code.
+
+The second time you meant replication. B needs to answer a question quickly, or without A being up, so B keeps its own copy. There is no business story. There is a performance and availability story.
+
+Same mechanism, two intentions, and the way it is plugged in your code carries no trace of which one you had in mind. Six months later somebody reads your event handler and has to guess, and the guess decides whether they feel free to change it.
+
+So write it down. Not in a comment next to the handler, which goes stale the day the handler moves, but in whatever place your project keeps decisions. At the root of my projects I usually put a docs/ADR (Architecture Decision Record) to store such decisions, or put it in a process view in an archimate document.
+
+Three things to avoid, while we are here. A direct query into a neighbor's tables; This marries you to their schema. A synchronous call over a bus trades availability for convenience, and you will not notice the trade until the neighbor is slow or down. And calling the neighbor's services directly when both contexts live in one source tree (the trademark of the combo: monorepo + mono project + many contexts in it) throws the boundary away while the directories still suggest it is there, which is the worst of the three because it looks fine in review.
+
+So, to summarize the mechanisms.
+
+First we have **Domain events** published by a context when data the business cares about a given changes. This is when other contexts that listen, write what they need into their own store. Synchronous or asynchronous is a transport decision and nothing more.
+
+Then we have **The local data mechanism** where a context keeps a read model of what it needs from its neighbor, fed by that neighbor's publications. Choosing to do that asynchronous means "eventual consistency" because... well eventually the data may not have been update due to a faulty message, or because a later failure should roll back an early storage. You have to be prepared for it.
+
+And we also have **The open host service.** The blue book's name for a protocol you open so that everyone who needs you can integrate. The call belongs in the Application or UI layer. It could be an HTTP call, an FTP call, wrapped under a gateway, or a repository in case the protocol changes. But it cannot be in the domain. The risk, when a domain depends on an external service is to have loosened, if not given up its separation of concerns, and a client that makes that call is just one that has walked off with the business logic in its pockets.
+
+I know that during a team discussion, saying eventual consistency out loud will make somebody wince, which is unfair, because it is difficult to argue and defend a great mechanism to someone that have a negative impression from the get-go.
+
+In October 2008, Werner Vogels published Eventually Consistent in ACM Queue. He was Amazon's CTO, writing about S3, SimpleDB and Dynamo, and the essay's actual argument is that a system at that scale has to trade consistency against availability, and that a storage system which guarantees you will eventually see the last written value is a reasonable thing to build on. A company that size needed its CTO to write that down and publish it, because the default assumption was that data is correct now or the system is broken.
+
+This phrase did its job so well that people now reach for it as a design rather than as a consequence. But it is a consequence.
+
+I mentioned the infamous trio "monorepo + mono project + many contexts in it" and the choice to have asynchronous events. There is then a question that decides the shape of the whole tree. Should a bounded context own its own user interface? That will be the next post.
