@@ -1,7 +1,7 @@
 ---
-title: "Defend an Architecture: One UI over many contexts"
-description: "Declare the API inside each context and the definition scatters. The argument that settles it is about drift, not about purity."
-pubDatetime: 2026-10-19T14:00:00+02:00
+title: "Defend an Architecture: What does One UI over many contexts implies?"
+description: "If you declare the API inside each context, how long before the definition scatters and loose homogeneity?"
+pubDatetime: 2026-10-28T18:00:00+02:00
 lang: "en"
 author: "Grégoire Hébert"
 tags:
@@ -9,6 +9,7 @@ tags:
   - "ddd"
   - "php"
   - "symfony"
+  - "api-platform"
 ---
 
 import Surface from "@/components/diagrams/Surface.astro";
@@ -17,7 +18,7 @@ import Wrapping from "@/components/diagrams/Wrapping.astro";
 
 Say your contexts are not separate deployables, which is the common case. The reasoning from last time still leaves a tempting idea standing: declare the API inside each context anyway, because that keeps them autonomous.
 
-It does not. It scatters the definition, and the thing that gets scattered is the one thing your callers experience as a single product.
+It does not, not really. It scatters the definition, and the thing that gets scattered is actually the one thing your callers experience as a single product.
 
 <div class="dia-row">
   <Surface kind="scattered" title="A delivery declared inside each context">
@@ -28,11 +29,11 @@ It does not. It scatters the definition, and the thing that gets scattered is th
   </Surface>
 </div>
 
-With the left-hand shape, no file knows what the API looks like. Four contexts each answer for their quarter of it, four teams make four reasonable local decisions, and the result is one document with four accents. One context returns `created_at`, another `createdAt`. One paginates with a cursor, another with a page number. Each decision was fine where it was made.
+With the left-hand shape, no single file knows what the API looks like - unless you are using API Platform that does a great job aggregating everything under a single OpenAPI definition, and it stops working the day you extract a context. Four contexts each answer for their quarter of it, four teams make four reasonable local decisions, and the result is one document with four "accents", four slight variation of approaches, one is REST, another is GRPC. One context returns `created_at`, another `createdAt`. One paginates with a cursor, another with a page number. Each decision was fine where it was made.
 
-Plenty of things soften that. A design system, a Storybook, a Spectral ruleset in CI, and coordination from somebody with the authority and the calendar space to coordinate. They work. They also all cost money, time and people, and I have worked on a lot of projects that had the ambition for all four and the budget for none.
+Plenty of things will help to soften that. A design system, a Storybook, a Spectral ruleset in CI, and coordination from a CXO (Chief Experience Officer). They work. They also all cost money, time and people, and I have worked on a lot of projects that had the ambition for all four and usually not allocated the budget for any.
 
-There is an older observation underneath this, and the way it was published is my favourite part of it.
+There is an older observation underneath this, which I like.
 
 In 1967 Melvin Conway submitted a paper called How Do Committees Invent? to the Harvard Business Review. They rejected it, on the grounds that he had not proved his thesis. Datamation, the major computing magazine of the day, published it in April 1968. Fred Brooks later cited it in The Mythical Man-Month and called it Conway's Law, which is how most people meet it.
 
@@ -50,13 +51,11 @@ So I draw it as the layer on the outside. A request crosses the delivery, then t
   </Fragment>
 </Wrapping>
 
-Here is the argument I actually find decisive, and it is not about purity.
+An argument I love to use to reinforce this, is: Open some code you wrote three years ago. Measure the distance to what you would write today. Better now, obviously, and that is the problem: context after context, your interfaces will slowly differ exactly that way, and an inconsistent API is worse than an inconsistent service because callers are standing on it. Predictability pays for itself faster in a UI than anywhere else in the system, and predictability comes from having one place where the shape is decided.
 
-Open some code you wrote three years ago. Measure the distance to what you would write today. Better now, obviously, and that is the problem: your interfaces drift exactly that way, and a drifting API is worse than a drifting service because callers are standing on it. Predictability pays for itself faster in a UI than anywhere else in the system, and predictability comes from having one place where the shape is decided.
+In a project with a framework like Symfony, I would have `Ui/` sits at the level where you declare the contexts. Wrapping them rather than hiding inside one of them. That way, yes, it stays flat, but nesting the layers as directories with the contexts inside each one helps neither the vertical slice nor anybody trying to see where the decoupling is.
 
-So `Ui/` sits at the level where you declare the contexts, wrapping them rather than hiding inside one of them. And it stays flat: nesting the layers as directories with the contexts inside each one helps neither the vertical slice nor anybody trying to see where the decoupling is.
-
-You can still split a context into modules underneath that, and the shape holds either way.
+You can still split a context into modules underneath that of course.
 
 <Tree kind="placement" title="Where the delivery goes once there are several contexts">
   <Fragment slot="caption">
@@ -65,4 +64,4 @@ You can still split a context into modules underneath that, and the shape holds 
   </Fragment>
 </Tree>
 
-Next time, the delivery everybody forgets to place. A web page is as much a delivery as the API and the terminal, so where does it go?
+Next time, of course API is not all there is in a project, what about a web page?. A web page is as much a delivery as the API and the terminal, so where does it go?
