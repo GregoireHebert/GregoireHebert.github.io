@@ -1,0 +1,45 @@
+---
+title: "Defend an Architecture: Where does a web page lives?"
+description: "Isn't a page just is a delivery?"
+pubDatetime: 2026-10-29T21:00:00+02:00
+lang: "en"
+author: "Grégoire Hébert"
+tags:
+  - "architecture"
+  - "ddd"
+  - "php"
+  - "symfony"
+  - "api-plaform"
+---
+
+import Branch from "@/components/diagrams/Branch.astro";
+
+The tree we explored so far has an API and a terminal. Then somebody opens a browser, and the usual reflex when you are working API-first is to treat HTML as a third thing that needs routes of its own.
+
+It does not, and the reason is older than every framework you have used.
+
+An HTTP endpoint answers with the representation the client asked for. That is not the REST aficionado that I am opinion, it is how the protocol works. The `Accept` header shipped in HTTP/1.0 in 1996. Roy Fielding, who helped write that specification, went on to name REST in his dissertation in 2000 and put the idea that a resource is separate from its representations at the center of it.
+
+So one address can answer in JSON or in HTML, and which one you get is a property of the request rather than of the URL.
+
+<Branch title="One address answering in two representations">
+  <Fragment slot="caption">
+    One URL. The representation is chosen by the request.
+  </Fragment>
+</Branch>
+
+A page is just a delivery, so it lives beside the others. And thanks to API Platform you'll see that most pages do not need controllers at all.
+
+Twenty-five years on, we often see the header ignored and bolt `.html` onto the end of paths, or add `/page` or even `/api`, stand up a parallel controller that fetches the same data and renders it differently. Three URLs for one thing, and now somebody has to keep them agreeing.
+
+If your resource already offers a read, the page is not a new delivery. It is a second representation of an address you already expose, and what it needs is a template. No controller, no route, no provider. The thing that answers the JSON answers the HTML, and the only new file is the one with the markup in it.
+
+That covers most pagesm but not all of them. Some pages only exist so a person can perform a write, while the resource behind that write offers no read at all. A login form is the clearest case. There is nothing to represent, because "the login form" is not a resource anybody can GET in any format. That page needs a controller.
+
+So the rule we can state can be split in two parts. This specific pages can be put in `Ui/Web/`, a directory tp hold the classic controllers, sitting beside `Ui/Api/` and `Ui/Console/`, and never inside a bounded context. One controller per action, which keeps each file small enough that nobody is tempted to add a second route to it. And a page that renders a resource with a read gets no controller at all.
+
+There is more to say about how a page picks its representation, what happens when a write fails and the person needs their typed values back, and why would write operation gets an HTML representation at all. That argument is a long way further into this series and it has its own part.
+
+What matters here is the placement. A page is a delivery, so it lives with the deliveries. It is not a layer inside a domain, and it is not a third or fourth kind of thing.
+
+Next time, a shorter one, where does the templates for these HTML representation should live?
